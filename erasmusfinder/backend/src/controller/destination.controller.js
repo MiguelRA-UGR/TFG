@@ -15,21 +15,7 @@ destinationCtrlr.getDestinations = async (req, res) => {
 // POST
 destinationCtrlr.createDestination = async (req, res) => {
     try {
-        const { name, 
-            description, 
-            country,
-            coords,
-            population,
-            cost_life,
-            surface,
-            climate,
-            languages,
-            universities,
-            mean_score,
-            users,
-            forus,
-            reviews } = req.body;
-        const newDestination = new Destination({ 
+        const { 
             name, 
             description, 
             country,
@@ -37,13 +23,33 @@ destinationCtrlr.createDestination = async (req, res) => {
             population,
             cost_life,
             surface,
-            climate,
+            clima,
             languages,
             universities,
+            n_users,
+            n_forus,
             mean_score,
             users,
             forus,
-            reviews
+            reviews 
+        } = req.body;
+        const newDestination = new Destination({ 
+            name,
+            description, 
+            country,
+            coords,
+            population,
+            cost_life,
+            surface,
+            clima,
+            languages,
+            universities,
+            n_users,
+            n_forus,
+            mean_score,
+            users,
+            forus,
+            reviews 
         });
         await newDestination.save();
         res.json({ message: "Destino creado" });
@@ -78,8 +84,44 @@ destinationCtrlr.deleteDestination = async (req, res) => {
 // PUT
 destinationCtrlr.updateDestination = async (req, res) => {
     try {
-        const { name } = req.body;
-        await Destination.findByIdAndUpdate(req.params.id, { name });
+        const { 
+            name, 
+            description, 
+            country,
+            coords,
+            population,
+            cost_life,
+            surface,
+            clima,
+            languages,
+            universities,
+            n_users,
+            n_forus,
+            mean_score,
+            users,
+            forus,
+            reviews 
+        } = req.body;
+
+        await Destination.findByIdAndUpdate(req.params.id, { 
+            name,
+            description, 
+            country,
+            coords,
+            population,
+            cost_life,
+            surface,
+            clima,
+            languages,
+            universities,
+            n_users,
+            n_forus,
+            mean_score,
+            users,
+            forus,
+            reviews 
+        });
+
         res.json({ message: "Destino actualizado" });
     } catch (error) {
         res.status(400).json({ message: error.message });

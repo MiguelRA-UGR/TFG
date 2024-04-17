@@ -11,19 +11,26 @@ const destinationSchema = new Schema({
     population: { type: String },
     cost_life: { type: String },
     surface: { type: String },
-    climate: { type: String },
+    clima: {
+        general: { type: String },
+        winter: { type: String },
+        summer: { type: String }
+    },
     languages: [{ type: String }],
     n_users: { type: Number, default: 0 },
     n_forus: { type: Number, default: 0 },
-    universities: [{
-        nombre_universidad: String
-    }],
-    mean_score: { type: Number, default: 0 },
+    mean_score: { type: Number, default: -1 },
     users: [{
         _id: ObjectId,
         name: String,
         photo: String,
         state: String
+    }],
+    universities: [{
+        _id: ObjectId,
+        name: String,
+        url: String,
+        logo: String
     }],
     forus: [{
         _id: ObjectId,
