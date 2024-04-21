@@ -1,10 +1,102 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Destination = () => {
-  const { id } = useParams();
-
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [destination, setDestination] = useState(null);
+  const [following, setFollowing] = useState(false);
+
+  //Fnución para actualizar los destinos seguidos dentro del usuario
+  const updateUser = async (destinationId, following, userId, token) => {
+    try {
+      const updatedUser = following
+        ? {
+            followedDestinations: user.result.followedDestinations.filter(
+              (dest) => dest !== destinationId
+            ),
+          }
+        : {
+            followedDestinations: [
+              ...user.result.followedDestinations,
+              destinationId,
+            ],
+          };
+
+      await axios.put(
+        `http://localhost:4000/api/users/${userId}`,
+        updatedUser,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setUser((prevUser) => ({
+        ...prevUser,
+        result: {
+          ...prevUser.result,
+          followedDestinations: updatedUser.followedDestinations,
+        },
+      }));
+    } catch (error) {
+      console.error("Error al actualizar el usuario:", error);
+    }
+  };
+
+  //Fnución para actualizar los destinos seguidos dentro del usuario
+  const updateDestination = async (destinationId, following, token) => {
+    try {
+      const resGet = await axios.get(
+        `http://localhost:4000/api/dests/${destinationId}`
+      );
+      const dataDest = resGet.data;
+      const newFollowers = following
+        ? dataDest.n_users - 1
+        : dataDest.n_users + 1;
+      const newFollowersList = following
+        ? dataDest.users.filter((userId) => userId !== user.result._id)
+        : [...dataDest.users, user.result._id];
+
+      const resPut = await axios.put(
+        `http://localhost:4000/api/dests/${destinationId}`,
+        {
+          n_users: newFollowers,
+          users: newFollowersList,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!resPut.data) {
+        throw new Error("No se pudo actualizar el destino");
+      }
+
+      setFollowing(!following);
+    } catch (error) {
+      console.error("Error al actualizar el destino:", error);
+    }
+  };
+
+  const handleFollowToggle = async () => {
+    const destinationId = window.location.pathname.split("/").pop();
+    const token = user.token;
+    const userId = user.result._id;
+
+    await updateUser(destinationId, following, userId, token);
+    await updateDestination(destinationId, following, token);
+
+    const updatedDestination = {
+      ...destination,
+      n_users: following ? destination.n_users - 1 : destination.n_users + 1,
+    };
+    setDestination(updatedDestination);
+  };
 
   const getColorForScore = (score) => {
     if (score >= 9) {
@@ -19,13 +111,17 @@ const Destination = () => {
     } else if (score >= 4) {
       //Naranjs
       return "#e25f23";
-    } else if (score == -1) {
+    } else if (score === -1) {
       return "#525252";
     } else {
       //Rojo
       return "#b81414";
     }
   };
+
+  useEffect(() => {
+    localStorage.setItem("profile", JSON.stringify(user));
+  }, [user]);
 
   useEffect(() => {
     const getDestination = async () => {
@@ -43,13 +139,19 @@ const Destination = () => {
         }
         const data = await res.json();
         setDestination(data);
+
+        if (user && user.result.followedDestinations.includes(destinationId)) {
+          setFollowing(true);
+        } else {
+          setFollowing(false);
+        }
       } catch (error) {
         console.error("Error:", error);
       }
     };
 
     getDestination();
-  }, []);
+  }, [user]);
 
   if (!destination) {
     return <div>Cargando destino...</div>;
@@ -116,14 +218,16 @@ const Destination = () => {
 
         <button
           className="btn btn-warning"
+          onClick={handleFollowToggle}
           style={{
             fontSize: "20px",
             fontWeight: "bold",
-            backgroundColor: "#f5973d",
+            backgroundColor: following ? "#969696" : "#f5973d",
             color: "#ffffff",
+            width: "200px",
           }}
         >
-          Seguir
+          {following ? "Dejar de seguir" : "Seguir"}
         </button>
       </div>
 

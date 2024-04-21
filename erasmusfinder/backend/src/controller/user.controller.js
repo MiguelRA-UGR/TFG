@@ -30,7 +30,7 @@ userCtrlr.logIn = async(req, res) =>{
 
 //SIGNUP
 userCtrlr.signUp = async(req, res) =>{
-    const { email, password, userName, userType, photo, nationality, state, description, instagram, facebook, linkedin } = req.body;
+    const { email, password, userName, userType, photo, nationality, state, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
 
     try {
         const existingUser = await User.findOne({email});
@@ -53,7 +53,7 @@ userCtrlr.signUp = async(req, res) =>{
             facebook,
             linkedin,
             followedUsers: [],
-            followedDestinies: [],
+            followedDestinations: [],
             followedForus: []
         });
 
@@ -94,22 +94,32 @@ userCtrlr.deleteUser = async(req, res) =>{
     res.json({message: "Usuario eliminado"});
 }
 //PUT
-userCtrlr.updateUser = async(req, res) =>{
-    const {userName, userType, photo, nationality, state, description, instagram, facebook, linkedin } = req.body;
-    await User.findByIdAndUpdate(req.params.id, {
-        userName,
-        userType,
-        photo,
-        nationality,
-        state,
-        description,
-        instagram,
-        facebook,
-        linkedin,
-    })
+userCtrlr.updateUser = async(req, res) => {
+    const userId = req.params.id;
+    const updates = req.body;
 
-    res.json({message: "Usuario actualizado"});
-}
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        Object.keys(updates).forEach(key => {
+            if (updates[key] !== undefined) {
+                user[key] = updates[key];
+            }
+        });
+
+        await user.save();
+
+        res.json({ message: 'Usuario actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar el usuario:', error);
+        res.status(500).json({ message: 'Algo salió mal al actualizar el usuario' });
+    }
+};
+
 
 //Exportar el controlador de usuario
 module.exports = userCtrlr;

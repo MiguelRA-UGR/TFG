@@ -73,8 +73,8 @@ const Navegation = () => {
               fontWeight: "bold",
             }}
           >
-            <span style={{ color: "#000000" }}>ErasmuS</span>
-            <span style={{ color: "#f5973d" }}>FindeR</span>
+            <span style={{ color: "#000000" }}>Erasmus</span>
+            <span style={{ color: "#f5973d" }}>Finder</span>
           </Link>
           <button
             className="navbar-toggler"
@@ -99,13 +99,13 @@ const Navegation = () => {
                     <Link
                       className="nav-link d-flex align-items-center"
                       to="/Profile"
-                      style={{ fontFamily: "Cambria, serif" }}
+                  
                     >
                       {renderAvatarContent()}
 
                       <span
                         className="navlink ms-2 font-weight-bold"
-                        style={{ fontSize: "25px" }}
+                        style={{ fontSize: "22px" }}
                       >
                         Perfil
                       </span>
@@ -116,7 +116,6 @@ const Navegation = () => {
                     <Link
                       className="nav-link ml-5 d-flex align-items-center"
                       to="/Notifications"
-                      style={{ fontFamily: "Cambria, serif" }}
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +130,7 @@ const Navegation = () => {
 
                       <span
                         className="navlink ms-2 font-weight-bold"
-                        style={{ fontSize: "25px" }}
+                        style={{ fontSize: "22px" }}
                       >
                         Notificaciones
                       </span>
@@ -140,10 +139,12 @@ const Navegation = () => {
                   <li className="nav-item mt-1">
                     <button
                       onClick={logout}
-                      className="btn btn-outline-dark"
+                      className="btn btn-warning"
                       style={{
                         fontSize: "20px",
                         fontWeight: "bold",
+                        backgroundColor: "#969696",
+                        color: "#ffffff",
                       }}
                     >
                       Cerrar Sesión

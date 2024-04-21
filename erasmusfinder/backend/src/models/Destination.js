@@ -21,10 +21,8 @@ const destinationSchema = new Schema({
     n_forus: { type: Number, default: 0 },
     mean_score: { type: Number, default: -1 },
     users: [{
-        _id: ObjectId,
-        name: String,
-        photo: String,
-        state: String
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }],
     universities: [{
         _id: ObjectId,
