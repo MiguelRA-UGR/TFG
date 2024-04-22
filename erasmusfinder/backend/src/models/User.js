@@ -9,11 +9,15 @@ const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     nationality: { type: String },
-    state: { type: String },
+    state: { type: Number ,default:0},
     description: { type: String },
     instagram: { type: String },
     facebook: { type: String },
     linkedin: { type: String },
+    twitter: { type: String },
+    originCity: { type: String },
+    destCity: { type: String },
+    destUniversity: { type: String },
     followedUsers: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

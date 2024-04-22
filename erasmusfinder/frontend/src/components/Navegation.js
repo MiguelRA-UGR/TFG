@@ -31,7 +31,16 @@ const Navegation = () => {
             width: "35px",
             height: "35px",
             lineHeight: "35px",
-            backgroundColor: "#f5973d",
+            backgroundColor:
+                                user.result.state === 0
+                                  ? "transparent"
+                                  : user.result.state === 1
+                                  ? "#f5973d" // Naranja
+                                  : user.result.state === 2
+                                  ? "#6691c3" // Azul
+                                  : user.result.state === 3
+                                  ? "#61bdb8" // Aguamarina
+                                  : "#969696" //Gris
           }}
         >
           {firstLetter}
@@ -68,7 +77,7 @@ const Navegation = () => {
             className="navbar-brand"
             to="/"
             style={{
-              fontSize: "55px",
+              fontSize: "40px",
               fontFamily: "Cambria, serif",
               fontWeight: "bold",
             }}
