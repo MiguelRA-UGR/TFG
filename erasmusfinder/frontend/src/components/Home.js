@@ -59,9 +59,9 @@ const Home = () => {
   };
 
   const users = [
-    { id: 1, name: 'Martina', country: 'Italia', status: 'Buscando destino', status_color:"#f5973d", avatar: "martina", flag: "italia" },
-    { id: 2, name: 'Agnes', country: 'Suecia', status: 'Próximamente en Madrid', status_color:"#6691c3", avatar: "agnes", flag: "suecia" },
-    { id: 3, name: 'Eric', country: 'Francia', status: 'Viviendo en Viena', status_color:"#61bdb8", avatar: "eric", flag: "francia" }
+    { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "italy" },
+    { id: 2, name: 'Agnes', country: 'Sweden', status: 'Coming soon to Madrid', status_color:"#6691c3", avatar: "agnes", flag: "sweden" },
+    { id: 3, name: 'Eric', country: 'France', status: 'Living in Vienna', status_color:"#61bdb8", avatar: "eric", flag: "france" }
   ];
 
   return (
@@ -71,7 +71,7 @@ const Home = () => {
         <input
           type="search"
           className="form-control"
-          placeholder="Buscar destinos"
+          placeholder="Search destinations"
           value={searchTerm}
           onChange={handleSearchChange}
         />
@@ -97,7 +97,7 @@ const Home = () => {
       )}
 
 
-      <span className="mb-5" style={{ fontSize: "35px", color: "#595959", fontFamily: "Cambria, serif", fontWeight: "bold" }}>Descubre...</span>
+      <span className="mb-5" style={{ fontSize: "35px", color: "#595959", fontFamily: "Cambria, serif", fontWeight: "bold" }}>Discover...</span>
 
       <div id="carouselExampleAutoplaying" className="carousel slide d-flex justify-content-center align-items-center" data-bs-ride="carousel">
         <div className="carousel-inner">
@@ -127,7 +127,7 @@ const Home = () => {
       </div>
 
       <div className="mt-4">
-        <span style={{ fontSize: "35px", color: "#595959", fontFamily: "Cambria, serif", fontWeight: "bold"}}>Conecta con gente que busca lo mismo que tú</span>
+        <span style={{ fontSize: "35px", color: "#595959", fontFamily: "Cambria, serif", fontWeight: "bold"}}>Interact with people who are looking for the same as you </span>
       </div>
       <div className="row text-center justify-content-center mt-4">
         {users.map(user => (
@@ -137,7 +137,7 @@ const Home = () => {
               <div className="card-body">
                 <h5 className="card-title">{user.name}</h5>
                 <div className="d-flex align-items-center justify-content-center">
-                  <img src={require(`../imgs/flags/${user.flag}.png`)} alt={user.country} style={{ height: "20px", marginRight: "5px"}} />
+                  <img src={require(`../imgs/badges/${user.flag}.png`)} alt={user.country} style={{ height: "20px", marginRight: "5px"}} />
                   <p className="card-text mb-0">{user.country}</p>
                 </div>
                 <div className="btn btn-link mt-2 form-control" style={{ fontWeight: "bold", fontSize: `${18 - user.status.length * 0.3}px`, background: user.status_color, color: 'white',textDecoration: 'none'}} >{user.status}</div>

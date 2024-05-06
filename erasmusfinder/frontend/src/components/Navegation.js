@@ -116,7 +116,7 @@ const Navegation = () => {
                         className="navlink ms-2 font-weight-bold"
                         style={{ fontSize: "22px" }}
                       >
-                        Perfil
+                        Profile
                       </span>
                     </Link>
                   </li>
@@ -141,7 +141,7 @@ const Navegation = () => {
                         className="navlink ms-2 font-weight-bold"
                         style={{ fontSize: "22px" }}
                       >
-                        Notificaciones
+                        Notifications
                       </span>
                     </Link>
                   </li>
@@ -156,7 +156,7 @@ const Navegation = () => {
                         color: "#ffffff",
                       }}
                     >
-                      Cerrar Sesión
+                      Log Out
                     </button>
                   </li>
                 </>
@@ -172,7 +172,7 @@ const Navegation = () => {
                         color: "#ffffff",
                       }}
                     >
-                      Iniciar Sesión
+                      Log In
                     </button>
                   </Link>
                 </li>

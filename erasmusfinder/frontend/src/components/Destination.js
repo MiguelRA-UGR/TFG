@@ -194,7 +194,7 @@ const Destination = () => {
         <div className="d-flex">
           <img
             className="mt-3"
-            src={require(`../imgs/flags/${destination.country.toLowerCase()}.png`)}
+            src={require(`../imgs/badges/${destination.country.toLowerCase()}.png`)}
             alt={destination.country}
             style={{ height: "50px", marginRight: "15px" }}
           />
@@ -244,7 +244,7 @@ const Destination = () => {
 
         <div className="mt-3 d-flex flex-column justify-self-center align-items-center">
           <h5>{destination.n_users}</h5>
-          <h5>seguidores</h5>
+          <h5>followers</h5>
         </div>
 
         <button
@@ -260,9 +260,9 @@ const Destination = () => {
         >
           {user ? (
             following ? (
-              "Dejar de seguir"
+              "Unfollow"
             ) : (
-              "Seguir"
+              "Follow"
             )
           ) : (
             <>
@@ -276,7 +276,7 @@ const Destination = () => {
               >
                 <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
               </svg>
-              Seguir
+              Follow
             </>
           )}
         </button>
@@ -316,7 +316,7 @@ const Destination = () => {
                   fontWeight: activeTab === "forums" ? "bold" : "",
                 }}
               >
-                Foros
+                Forums
               </button>
             </li>
             <li className="nav-item me-3">
@@ -330,7 +330,7 @@ const Destination = () => {
                   fontWeight: activeTab === "followers" ? "bold" : "",
                 }}
               >
-                Seguidores
+                Followers
               </button>
             </li>
 
@@ -345,7 +345,7 @@ const Destination = () => {
                   fontWeight: activeTab === "reviews" ? "bold" : "",
                 }}
               >
-                Reseñas
+                Reviews
               </button>
             </li>
 
@@ -360,7 +360,7 @@ const Destination = () => {
                   fontWeight: activeTab === "gallery" ? "bold" : "",
                 }}
               >
-                Galería
+                Gallery
               </button>
             </li>
           </ul>
@@ -378,21 +378,21 @@ const Destination = () => {
               <div className="container mt-4">
                 <div className="row">
                   <div className="col-md-6">
-                    <h4>Idiomas</h4>
+                    <h4>Languages</h4>
                     <p>{destination.languages.join(", ")}</p>
                   </div>
                   <div className="col-md-6">
-                    <h4>Nivel de coste de vida</h4>
+                    <h4>Cost of life</h4>
                     <p>{destination.cost_life}</p>
                   </div>
                 </div>
                 <div className="row">
                   <div className="col-md-6">
-                    <h4>Superficie</h4>
+                    <h4>Surface</h4>
                     <p>{destination.surface}</p>
                   </div>
                   <div className="col-md-6 mt-3">
-                    <h4>Universidades</h4>
+                    <h4>Universities</h4>
 
                     <div className="btn-group">
                       <button
@@ -404,7 +404,7 @@ const Destination = () => {
                         data-bs-auto-close="true"
                         aria-expanded="false"
                       >
-                        Enlaces
+                        Links
                       </button>
                       <ul
                         className="dropdown-menu"
@@ -437,18 +437,18 @@ const Destination = () => {
                 </div>
                 <div className="row">
                   <div className="col-md-6">
-                    <h4>Clima</h4>
+                    <h4>Climate</h4>
                     <ul>
                       <li>
-                        <strong>Tipo: </strong>
+                        <strong>Type: </strong>
                         {destination.clima.general}
                       </li>
                       <li>
-                        <strong>Verano: </strong>
+                        <strong>Summer: </strong>
                         {destination.clima.summer}
                       </li>
                       <li>
-                        <strong>Invierno:</strong>
+                        <strong>Winter:</strong>
                         {destination.clima.winter}
                       </li>
                     </ul>
@@ -494,7 +494,7 @@ const Destination = () => {
                           >
                             <div className="flag_icon">
                               <img
-                                src={require(`../imgs/flags/${follower.nationality.toLowerCase()}.png`)}
+                                src={require(`../imgs/badges/${follower.nationality.toLowerCase()}.png`)}
                                 style={{
                                   width: "20px",
                                   height: "20px",

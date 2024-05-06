@@ -1,7 +1,5 @@
 const {Schema, model} = require('mongoose')
 
-//Falta añadir todos los atributos de un usuario y añadir el resto de modelos
-
 const userSchema = new Schema({
     userName: { type: String, required: true },
     userType: { type: String },
@@ -9,15 +7,16 @@ const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     nationality: { type: String },
+    badge: { type: String },
     state: { type: Number ,default:0},
     description: { type: String },
     instagram: { type: String },
     facebook: { type: String },
     linkedin: { type: String },
     twitter: { type: String },
-    originCity: { type: String },
-    destCity: { type: String },
-    destUniversity: { type: String },
+    originCity: { type: String,default:"none" },
+    destCity: { type: String,default:"none" },
+    destUniversity: { type: String,default:"none" },
     followedUsers: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

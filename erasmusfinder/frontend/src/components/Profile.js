@@ -3,13 +3,68 @@ import React, { useState, useEffect } from "react";
 const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isEditing, setIsEditing] = useState(false);
+  const importAll = (r) => r.keys().map(r);
+  const [selectedBadge, setSelectedBadge] = useState(user.result.badge);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allBadges, setAllBadges] = useState([]);
+  const [countries, setCountries] = useState([]);
+  const [filteredBadges, setFilteredBadges] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(user.result.nationality);
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
+  const handleBadgeSelect = (badge) => {
+    setSelectedBadge(badge);
+   
+  };
+
+  const formatBadgeName = (badge) => {
+    return badge
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  //Importar las insignias disponibles en la carpeta badges
+  useEffect(() => {
+    const importAll = (r) => r.keys().map((key) => key.split('/').pop().split('.')[0]);
+    const badgeImages = importAll(
+      require.context("../imgs/badges/", false, /\.(png|jpe?g|svg)$/)
+    );
+    console.log("All badges:", badgeImages);
+    setAllBadges(badgeImages);
+    setFilteredBadges(badgeImages);
+  }, []);
+  
+  //Importar los países desde la api restcountries
+  useEffect(() => {
+    fetch('https://restcountries.com/v3/all')
+      .then(response => response.json())
+      .then(data => {
+        const countryNames = data.map(country => country.name.common);
+        setCountries(countryNames);
+      })
+      .catch(error => console.error('Error fetching countries:', error));
+  }, []);
+  
+  useEffect(() => {
+    const filtered = allBadges.filter(badge =>
+      badge.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log("Filtered badges:", filtered);
+    setFilteredBadges(filtered);
+  }, [searchTerm, allBadges]);
+  
+
   const handleSaveClick = () => {
     setIsEditing(false);
+    //Guardar
   };
 
   const handleFileInputChange = (e) => {
@@ -25,6 +80,18 @@ const Profile = () => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const updatedUser = JSON.parse(localStorage.getItem("profile"));
+      setUser(updatedUser);
+    };
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
 
   return (
     <div className="container-fluid d-flex flex-column align-items-center mt-4">
@@ -183,7 +250,7 @@ const Profile = () => {
       </div>
       <div className="row justify-content-center mt-2">
         <div className="col mt-3">
-          <h5>Descripción:</h5>
+          <h5>Description:</h5>
           {isEditing ? (
             <textarea
               className="form-control"
@@ -193,83 +260,32 @@ const Profile = () => {
               onChange={handleChange}
             />
           ) : (
-            <p>{user.result.description}</p>
+            <p className="form-control" style={{height: "200px"}}>{user.result.description}</p>
           )}
         </div>
       </div>
       <div className="row text-center mt-2">
         <div className="col-md-6">
-          <div className="mb-3 me-4">
-            <h6 style={{width: "200px"}}> Nacionalidad</h6>
-
+          <div className="mb-3 d-flex flex-column align-items-center justify-content-center">
+            <h6 style={{ width: "200px" }}>Country</h6>
             {isEditing ? (
-              <>
-                <div className="input-group mb-3">
-                  <select className="form-select" id="nationality">
-                    <option defaultValue>Choose...</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>
-                  <label
-                    className="input-group-text"
-                  ></label>
-                </div>
-              </>
+              <select
+                className="form-select"
+                name="nationality"
+                value={selectedCountry}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+              >
+                {countries.map(country => (
+                  <option key={country} value={country}>{country}</option>
+                ))}
+              </select>
             ) : (
-              <p>{user.result.nationality}</p>
+              <p>{selectedCountry}</p>
             )}
           </div>
 
-          <div className="mb-3">
-          <h6> Estado</h6>
-
-              {isEditing ? (
-                <>
-                  <div className="input-group mb-3">
-                    <select className="form-select" id="state">
-                      <option defaultValue>Choose...</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                    <label
-                      className="input-group-text"
-                    ></label>
-                  </div>
-                </>
-              ) : (
-                <p>{user.result.state}</p>
-              )}
-          </div>
-
-          <div className="mb-3">
-              <h6> Bandera</h6>
-
-              {isEditing ? (
-                <>
-                  <div className="input-group mb-3">
-                    <select className="form-select" id="flag">
-                      <option defaultValue>Choose...</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
-                    </select>
-                    <label
-                      className="input-group-text"
-                    ></label>
-                  </div>
-                </>
-              ) : (
-                <p>{user.result.flag}</p>
-              )}
-          </div>
-        </div>
-
-        <div className="col-md-6" >
-
-          <div className="mb-3">
-              <h6 style={{width: "200px"}}> Ciudad de origen</h6>
+          <div className="mb-3 d-flex flex-column align-items-center justify-content-center">
+              <h6 style={{width: "200px"}}> Origin City</h6>
 
                 {isEditing ? (
                   <>
@@ -280,29 +296,120 @@ const Profile = () => {
                 )}
           </div>
 
-          <div className="mb-3">
-            <h6 style={{width: "200px"}}> Ciudad de destino</h6>
-
-                {isEditing ? (
-                  <>
-                    <input type="text" className="form-control" id="destCity" />
-                  </>
-                ) : (
-                  <p>{user.result.destCity}</p>
-                )}
-          </div>
+          {(user.result.state === 2 || user.result.state === 3) && (
+            <div className="mb-3 d-flex flex-column align-items-center justify-content-center">
+              <h6 style={{ width: "200px" }}>Destination</h6>
+              {isEditing ? (
+                <>
+                  <input type="text" className="form-control" id="destCity" />
+                </>
+              ) : (
+                <p>{user.result.destCity}</p>
+              )}
+            </div>
+        )}
           
-          <div className="mb-3">
-            <h6 style={{width: "200px"}}> Universidad de destino</h6>
+        </div>
+
+        <div className="col-md-6" >
+
+        <div className="mb-3">
+          <h6> State</h6>
 
               {isEditing ? (
                 <>
-                  <input type="text" className="form-control" id="destUniversity" />
+                  <div className="input-group mb-3">
+                    <select className="form-select" id="state">
+                      <option defaultValue>Choose...</option>
+                      <option style={{ backgroundColor: '#969696', fontWeight: 'bold', color: 'white' }} value="0">Just having a look</option>
+                      <option style={{ backgroundColor: '#f5973d', fontWeight: 'bold', color: 'white' }} value="1">Searching for destination</option>
+                      <option style={{ backgroundColor: '#6691c3', fontWeight: 'bold', color: 'white' }} value="2">I have already got a destination</option>
+                      <option style={{ backgroundColor: '#61bdb8', fontWeight: 'bold', color: 'white' }} value="3">Already in a destination</option>
+                      </select>
+                    <label
+                      className="input-group-text"
+                    ></label>
+                  </div>
                 </>
               ) : (
-                <p>{user.result.destUniversity}</p>
+                <span
+                  style={{
+                    backgroundColor:
+                      user.result.state === 1 ? "#f5973d" :
+                      user.result.state === 2 ? "#6691c3" :
+                      user.result.state === 3 ? "#61bdb8" :
+                      "#969696",
+                    color: "white",
+                    fontWeight: "bold",
+                    fontSize:"15px",
+                    padding: "5px 10px",
+                    borderRadius: "20px",
+                  }}
+                >{
+                    user.result.state === 1 ? "Searching destination" :
+                    user.result.state === 2 ? `Coming soon to ${user.result.destCity}` :
+                    user.result.state === 3 ? `Living in ${user.result.destCity}` :
+                    "Just having a look"}
+                </span>
+
+
               )}
           </div>
+
+          <div className="mb-3">
+            <h6>Badge</h6>
+            {isEditing ? (
+              <div className="input-group mb-3">
+                <input
+                  type="search"
+                  className="form-control"
+                  placeholder="Buscar insignias"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                />
+                {searchTerm && (
+                  <div className="dropdown" style={{ position: 'relative' }}>
+                    <ul className="dropdown-menu" style={{ display: 'block', width: '100%' }}>
+                      {filteredBadges.map(badge => (
+                        <li key={badge} className="dropdown-item" onClick={() => handleBadgeSelect(badge)}>
+                          <img src={require(`../imgs/badges/${badge.toLowerCase()}.png`)} alt={badge} style={{ width: '30px', height: '30px', marginRight: '10px' }} />
+                          {formatBadgeName(badge)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+              </div>
+            ) : (
+              <img
+                src={require(`../imgs/badges/${user.result.badge.toLowerCase()}.png`)}
+                alt="Insignia del usuario"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                }}
+              />
+            )}
+          </div>
+
+
+
+
+        {(user.result.state === 2 || user.result.state === 3) && (
+          <div className="mb-3 d-flex flex-column align-items-center justify-content-center">
+            <h6 style={{ width: "200px" }}>Destination University</h6>
+            {isEditing ? (
+              <>
+                <input type="text" className="form-control" id="destUniversity" />
+              </>
+            ) : (
+              <p>{user.result.destUniversity}</p>
+            )}
+          </div>
+        )}
+
           
         </div>
       </div>
@@ -320,7 +427,7 @@ const Profile = () => {
               className="btn btn-warning form-control"
               onClick={handleSaveClick}
             >
-              Guardar
+              Save
             </button>
           ) : (
             <button
@@ -333,7 +440,7 @@ const Profile = () => {
               className="btn btn-warning form-control"
               onClick={handleEditClick}
             >
-              Editar
+              Edit
             </button>
           )}
         </div>

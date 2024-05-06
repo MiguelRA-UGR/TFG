@@ -30,7 +30,7 @@ userCtrlr.logIn = async(req, res) =>{
 
 //SIGNUP
 userCtrlr.signUp = async(req, res) =>{
-    const { email, password, userName, userType, photo, nationality, state, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
+    const { email, password, userName, userType, photo, nationality,badge, state, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
 
     try {
         const existingUser = await User.findOne({email});
@@ -47,6 +47,7 @@ userCtrlr.signUp = async(req, res) =>{
             userType,
             photo,
             nationality,
+            badge,
             state,
             description,
             instagram,

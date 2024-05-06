@@ -64,19 +64,19 @@ export const SignUp = () => {
             className="text-center mb-4"
             style={{ fontFamily: "Cambria, serif" }}
           >
-            {signUp ? "Registro" : "Inicio de sesión"}
+            {signUp ? "Sign Up" : "Sign In"}
           </h3>
           <div className="form-group mb-3">
             {signUp && (
               <>
                 <div className="form-group mb-3">
-                  <label htmlFor="exampleInputName">Nombre de Usuario</label>
+                  <label htmlFor="exampleInputName">Username</label>
                   <input
                     type="text"
                     name="userName"
                     className="form-control"
                     id="exampleInputName"
-                    placeholder="Introducir nombre de usuario"
+                    placeholder="Introduce your username"
                     onChange={handleFormChange}
                     required
                   />
@@ -84,28 +84,28 @@ export const SignUp = () => {
               </>
             )}
 
-            <label htmlFor="exampleInputEmail1">Correo electrónico</label>
+            <label htmlFor="exampleInputEmail1">E-mail</label>
             <input
               type="email"
               name="email"
               className="form-control"
               id="exampleInputEmail1"
               aria-describedby="emailHelp"
-              placeholder="Introducir correo"
+              placeholder="Introduce your e-mail account"
               onChange={handleFormChange}
               required
             />
           </div>
 
           <div className="form-group mb-3">
-            <label htmlFor="exampleInputPassword1">Contraseña</label>
+            <label htmlFor="exampleInputPassword1">Password</label>
             <div className="input-group">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
                 className="form-control"
                 id="password1"
-                placeholder="Introducir contraseña"
+                placeholder="Introduce your password"
                 onChange={handleFormChange}
                 required
               />
@@ -148,7 +148,7 @@ export const SignUp = () => {
             <>
               <div className="form-group mb-3">
                 <label htmlFor="exampleInputPassword2">
-                  Confirmar Contraseña
+                  Confirm Password
                 </label>
                 <div className="input-group">
                   <input
@@ -156,7 +156,7 @@ export const SignUp = () => {
                     name="confirmPassword"
                     className="form-control"
                     id="password2"
-                    placeholder="Introducir contraseña"
+                    placeholder="Introduce your password"
                     onChange={handleFormChange}
                     required
                   />
@@ -209,7 +209,7 @@ export const SignUp = () => {
                     <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
                   </svg>
                   <p style={{ color: "red", display: "inline-block" }}>
-                    Las contraseñas no coinciden.
+                    Passwords don't match
                   </p>
                 </div>
               )}
@@ -228,20 +228,20 @@ export const SignUp = () => {
               color: "#ffffff",
             }}
           >
-            {signUp ? "Completar registro" : "Iniciar sesión"}
+            {signUp ? "Complete Sign Up" : "Sign In"}
           </button>
 
           <p
             className="text-center mt-3"
             style={{ fontFamily: "Cambria, serif" }}
           >
-            {signUp ? "¿Ya tienes cuenta?" : "¿No tienes cuenta aún?"}{" "}
+            {signUp ? "Do you have an account?" : "You don't have an account yet?"}{" "}
             <a
               href=""
               style={{ color: "#f5973d", fontWeight: "bold" }}
               onClick={toggleSignUp}
             >
-              Click aquí
+              Click here
             </a>
           </p>
         </form>
