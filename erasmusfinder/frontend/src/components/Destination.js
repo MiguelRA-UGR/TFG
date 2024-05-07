@@ -494,7 +494,7 @@ const Destination = () => {
                           >
                             <div className="flag_icon">
                               <img
-                                src={require(`../imgs/badges/${follower.nationality.toLowerCase()}.png`)}
+                                src={require(`../imgs/badges/${follower.badge.toLowerCase()}.png`)}
                                 style={{
                                   width: "20px",
                                   height: "20px",
@@ -507,7 +507,7 @@ const Destination = () => {
                             <div className="image_inner_container">
                               {follower.photo ? (
                                 <img
-                                  src={require(`../imgs/users/${follower.userName.toLowerCase()}.png`)}
+                                  src={require(`../imgs/users/${follower._id}.png`)}
                                   alt={follower.userName}
                                   className="rounded-circle"
                                   style={{
