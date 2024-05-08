@@ -33,7 +33,7 @@ const Navegation = () => {
             lineHeight: "35px",
             backgroundColor:
                                 user.result.state === 0
-                                  ? "transparent"
+                                  ? "#969696"
                                   : user.result.state === 1
                                   ? "#f5973d" // Naranja
                                   : user.result.state === 2

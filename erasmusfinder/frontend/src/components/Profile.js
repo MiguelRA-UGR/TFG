@@ -223,7 +223,7 @@ const updateUserData = () => {
                 border: "3px solid white",
                 backgroundColor:
                   user.result.state === 0
-                    ? "transparent"
+                    ? "#969696"
                     : user.result.state === 1
                     ? "#f5973d" // Naranja
                     : user.result.state === 2
@@ -578,15 +578,18 @@ const updateUserData = () => {
                           className="dropdown-item"
                           onClick={() => handleBadgeSelect(badge)}
                         >
-                          <img
-                            src={`http://localhost:4000/imgs/badges/${badge.toLowerCase()}.png`}
-                            alt={badge}
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              marginRight: "10px",
-                            }}
-                          />
+                          {user.result.badge && (
+                              <img
+                                  src={`http://localhost:4000/imgs/badges/${user.result.badge.toLowerCase()}.png`}
+                                  alt={user.result.badge}
+                                  style={{
+                                      width: "30px",
+                                      height: "30px",
+                                      marginRight: "10px",
+                                  }}
+                              />
+                          )}
+
                           {formatBadgeName(badge)}
                         </li>
                       ))}
