@@ -90,7 +90,7 @@ const Destination = () => {
 
   //Manejar cuando el usuario no está logueado
   const handleLoginReminder = () => {
-    alert("Debes iniciar sesión para poder seguir destinos");
+    alert("You must log in to start following destinations");
   };
 
   //Manejar el seguir/dejar de seguir a un destino
@@ -194,7 +194,7 @@ const Destination = () => {
         <div className="d-flex">
           <img
             className="mt-3"
-            src={require(`../imgs/badges/${destination.country.toLowerCase()}.png`)}
+            src={`http://localhost:4000/imgs/badges/${destination.country.toLowerCase()}.png`}
             alt={destination.country}
             style={{ height: "50px", marginRight: "15px" }}
           />
@@ -471,7 +471,7 @@ const Destination = () => {
               <div className="col-md-12">
                 <ul className="list-unstyled">
                   {followers.map((follower, index) => (
-                    <Link to="/" className="nav-link ml-3">
+                    <Link  to={`/User/${follower._id}`} className="nav-link ml-3">
                       <li
                         key={index}
                         className="d-flex align-items-center mb-2"
@@ -494,7 +494,7 @@ const Destination = () => {
                           >
                             <div className="flag_icon">
                               <img
-                                src={require(`../imgs/badges/${follower.badge.toLowerCase()}.png`)}
+                                src={`http://localhost:4000/imgs/badges/${follower.badge.toLowerCase()}.png`}
                                 style={{
                                   width: "20px",
                                   height: "20px",
@@ -507,7 +507,7 @@ const Destination = () => {
                             <div className="image_inner_container">
                               {follower.photo ? (
                                 <img
-                                  src={require(`../imgs/users/${follower._id}.png`)}
+                                  src={`http://localhost:4000/imgs/users/${follower._id}.png`}
                                   alt={follower.userName}
                                   className="rounded-circle"
                                   style={{

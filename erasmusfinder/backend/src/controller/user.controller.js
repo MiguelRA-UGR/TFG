@@ -2,8 +2,10 @@ const jwt = require('jsonwebtoken');
 
 const userCtrlr = {}
 const bcrypt = require('bcrypt');
-
-const User = require('../models/User')
+const User = require('../models/User');
+const fs = require('fs');
+const path = require('path');
+const upload = require('../middleware/upload');
 
 //LOGIN
 userCtrlr.logIn = async(req, res) =>{
@@ -30,7 +32,9 @@ userCtrlr.logIn = async(req, res) =>{
 
 //SIGNUP
 userCtrlr.signUp = async(req, res) =>{
-    const { email, password, userName, userType, photo, nationality,badge, state, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
+    const { email, password, userName, userType, photo, nationality,badge, state, privacy, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
+
+    console.log(req.body);
 
     try {
         const existingUser = await User.findOne({email});
@@ -49,6 +53,7 @@ userCtrlr.signUp = async(req, res) =>{
             nationality,
             badge,
             state,
+            privacy,
             description,
             instagram,
             twitter,
@@ -58,6 +63,7 @@ userCtrlr.signUp = async(req, res) =>{
             destUniversity,
             linkedin,
             followedUsers: [],
+            followingUsers: [],
             followedDestinations: [],
             followedForus: []
         });
@@ -110,8 +116,17 @@ userCtrlr.updateUser = async(req, res) => {
             return res.status(404).json({ message: 'Usuario no encontrado' });
         }
 
+        if (req.file) {
+            const profilePicture = req.file;
+            const ext = path.extname(profilePicture.originalname);
+            const fileName = userId + ext;
+
+            fs.renameSync(profilePicture.path, path.join(__dirname, `../public/imgs/users/${fileName}`));
+            user.profilePicture = fileName;
+        }
+
         Object.keys(updates).forEach(key => {
-            if (updates[key] !== undefined) {
+            if (updates[key] !== undefined && key !== 'profilePicture') {
                 user[key] = updates[key];
             }
         });
@@ -122,6 +137,35 @@ userCtrlr.updateUser = async(req, res) => {
     } catch (error) {
         console.error('Error al actualizar el usuario:', error);
         res.status(500).json({ message: 'Algo salió mal al actualizar el usuario' });
+    }
+};
+
+// PUT para actualizar la foto de perfil
+userCtrlr.updateProfilePicture = async (req, res) => {
+    const userId = req.params.id;
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        if (!req.file) {
+            user.photo = false;
+        }else{
+
+            const profilePicture = req.file;
+
+            const fileName = req.file.filename;
+            user.photo = true;
+            await user.save();
+
+            res.json({ message: 'Foto de perfil actualizada correctamente' });
+        }
+    } catch (error) {
+        console.error('Error al actualizar la foto de perfil:', error);
+        res.status(500).json({ message: 'Algo salió mal al actualizar la foto de perfil' });
     }
 };
 

@@ -137,7 +137,8 @@ const Home = () => {
               <div className="card-body">
                 <h5 className="card-title">{user.name}</h5>
                 <div className="d-flex align-items-center justify-content-center">
-                  <img src={require(`../imgs/badges/${user.flag}.png`)} alt={user.country} style={{ height: "20px", marginRight: "5px"}} />
+                
+                  <img src={`http://localhost:4000/imgs/badges/${user.flag}.png`} alt={user.country} style={{ height: "20px", marginRight: "5px"}} />
                   <p className="card-text mb-0">{user.country}</p>
                 </div>
                 <div className="btn btn-link mt-2 form-control" style={{ fontWeight: "bold", fontSize: `${18 - user.status.length * 0.3}px`, background: user.status_color, color: 'white',textDecoration: 'none'}} >{user.status}</div>

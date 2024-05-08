@@ -6,6 +6,7 @@ import SignUp from './components/SignUp'
 import Home from './components/Home'
 import Destination from './components/Destination'
 import Profile from './components/Profile'
+import User from './components/User'
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Route path ="/SignUp" element={<SignUp/>}/>
           <Route path ="/Destination/:id" element={<Destination/>}/>
           <Route path ="/Profile" element={<Profile/>}/>
-          <Route path ="/Profile/:id" element={<Profile/>}/>          
+          <Route path ="/User/:id" element={<User/>}/>          
         </Routes>
       </div>
     </div>

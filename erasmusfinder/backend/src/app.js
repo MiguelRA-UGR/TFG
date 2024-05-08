@@ -1,22 +1,36 @@
 const express = require('express');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 
 //Configuración
-//Definir Puerto de escucha del servidor (el 4000 o cualquier otro disponible)
-//4000 para que no choque con el 3000 que utiliza React por defecto
 app.set('port', process.env.PORT || 4000);
 
 //Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(express.static('public'));
 
-//Rutas
+// Ruta para obtener la lista de nombres de archivos de insignias
+const badgesFolderPath = path.join(__dirname, '../public/imgs/badges');
+app.get('/api/badges', (req, res) => {
+  fs.readdir(badgesFolderPath, (err, files) => {
+    if (err) {
+      console.error('Error al leer la carpeta de insignias:', err);
+      res.status(500).send('Error interno del servidor');
+    } else {
+        const badgeNames = files.map(file => path.parse(file).name);
+        res.json(badgeNames);
+    }
+  });
+});
+
+// Rutas existentes
 app.get('/', (req, res) =>{
     res.send('Ejecutando API REST full')
 })
 
-//Ruta para API de usuarios
 app.use('/api/users', require('./routes/users'));
 app.use('/api/dests', require('./routes/dests'));
 

@@ -5,10 +5,11 @@ const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [allBadges, setAllBadges] = useState([]);
+  const [badgeImages, setBadgeImages] = useState([]);
   const [countries, setCountries] = useState([]);
   const [filteredBadges, setFilteredBadges] = useState([]);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
+  const [privacy, setPrivacyOption] = useState(user.result.privacy);
 
   const [selectedCountry, setSelectedCountry] = useState(
     user.result.nationality
@@ -16,6 +17,7 @@ const Profile = () => {
   const [editedUser, setEditedUser] = useState({
     userName: "",
     state: 0,
+    privacy: 0,
     instagram: "",
     twitter: "",
     facebook: "",
@@ -42,7 +44,7 @@ const Profile = () => {
   const handleCountryChange = (e) => {
     const { value } = e.target;
     setSelectedCountry(value);
-    setEditedUser({ ...editedUser, country: value });
+    setEditedUser({ ...editedUser, nationality: value });
   };
 
   const handleStateChange = (e) => {
@@ -50,10 +52,14 @@ const Profile = () => {
     setEditedUser({ ...editedUser, state: newState });
   };
   
+  const handlePrivacyOptionChange = (value) => {
+    setPrivacyOption(value);
+    setEditedUser({ ...editedUser, privacy: value });
+};
 
   const handleBadgeSelect = (badge) => {
     setSearchTerm(formatBadgeName(badge));
-    setEditedUser({ ...editedUser, badge: formatBadgeName(badge) });
+    setEditedUser({ ...editedUser, badge: badge });
   };
 
   const formatBadgeName = (badge) => {
@@ -76,43 +82,78 @@ const Profile = () => {
 
   const handleSaveClick = () => {
     setIsEditing(false);
-    setNewProfilePicture(null);
-  
+
+    if (newProfilePicture) {
+        updateProfilePicture();
+    }
+    updateUserData();
+};
+
+const updateProfilePicture = () => {
+    const formData = new FormData();
+    formData.append("profilePicture", newProfilePicture);
+
+    console.log("New profile picture:", newProfilePicture);
+
     axios
-      .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
-      .then((response) => {
-        setEditedUser({
-          userName: "",
-          state: 0,
-          instagram: "",
-          twitter: "",
-          facebook: "",
-          linkedin: "",
-          description: "",
-          nationality: "",
-          originCity: "",
-          destCity: "",
-          destUniversity: "",
-          badge: "",
+        .put(`http://localhost:4000/api/users/${user.result._id}/profile-picture`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((response) => {
+          window.location.reload();
+        })
+        .catch((error) => {
+          console.error("Error updating profile picture:", error);
         });
-        setUser({ ...user, result: editedUser });
-      })
-      .catch((error) => {
-        console.error("Error updating profile:", error);
-      });
-  };
-  
+};
+
+const updateUserData = () => {
+    axios
+        .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
+        .then((response) => {
+            setEditedUser({
+                userName: "",
+                state: 0,
+                privacy: 0,
+                instagram: "",
+                twitter: "",
+                facebook: "",
+                linkedin: "",
+                description: "",
+                nationality: "",
+                originCity: "",
+                destCity: "",
+                destUniversity: "",
+                badge: "",
+            });
+            setUser({ ...user, result: editedUser });
+        })
+        .catch((error) => {
+            console.error("Error updating user data:", error);
+        });
+};
 
   //Importar las insignias disponibles en la carpeta badges
   useEffect(() => {
-    const importAll = (r) =>
-      r.keys().map((key) => key.split("/").pop().split(".")[0]);
-    const badgeImages = importAll(
-      require.context("../imgs/badges/", false, /\.(png|jpe?g|svg)$/)
-    );
-    setAllBadges(badgeImages);
-    setFilteredBadges(badgeImages);
+    const fetchBadgeImages = async () => {
+      try {
+        const response = await fetch("http://localhost:4000/api/badges");
+        if (!response.ok) {
+          throw new Error("No se pudieron obtener las insignias");
+        }
+        const badgeImages = await response.json();
+        setBadgeImages(badgeImages);
+        setFilteredBadges(badgeImages);
+      } catch (error) {
+        console.error("Error al obtener las insignias:", error);
+      }
+    };
+  
+    fetchBadgeImages();
   }, []);
+  
 
   //Importar los países desde la api restcountries
   useEffect(() => {
@@ -126,11 +167,11 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    const filtered = allBadges.filter((badge) =>
+    const filtered = badgeImages.filter((badge) =>
       badge.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredBadges(filtered);
-  }, [searchTerm, allBadges]);
+  }, [searchTerm, badgeImages]);
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -164,11 +205,13 @@ const Profile = () => {
         <div className="d-flex flex-column align-items-center justify-content-center rounded-circle">
           {user.result.photo ? (
             <img
-              src={require(`../imgs/users/${user.result._id}.png`)}
+              src={`http://localhost:4000/imgs/users/${user.result._id}.png`}
               alt={user.result.userName}
               className="rounded-circle"
               width="120px"
+              height="120px"
             />
+          
           ) : (
             <div
               className="text-center rounded-circle d-flex align-items-center justify-content-center"
@@ -215,9 +258,91 @@ const Profile = () => {
           ) : (
             <h4 className="mt-3">{user.result.userName}</h4>
           )}
+
           <p className="text-secondary mt-2 mb-3">{user.result.email}</p>
+
+
+          {isEditing ? (
+            <>
+
+              <h6> State</h6>
+
+              <div className="input-group mb-3">
+                <select className="form-select" id="state" value={editedUser.state} onChange={handleStateChange}>
+                  <option
+                    style={{
+                      backgroundColor: "#969696",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                    value="0"
+                  >
+                    Just having a look
+                  </option>
+                  <option
+                    style={{
+                      backgroundColor: "#f5973d",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                    value="1"
+                  >
+                    Searching for destination
+                  </option>
+                  <option
+                    style={{
+                      backgroundColor: "#6691c3",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                    value="2"
+                  >
+                    I have already got a destination
+                  </option>
+                  <option
+                    style={{
+                      backgroundColor: "#61bdb8",
+                      fontWeight: "bold",
+                      color: "white",
+                    }}
+                    value="3"
+                  >
+                    Already in a destination
+                  </option>
+                </select>
+                <label className="input-group-text"></label>
+              </div>
+            </>
+          ) : (
+            <span
+              style={{
+                backgroundColor:
+                  user.result.state === 1
+                    ? "#f5973d"
+                    : user.result.state === 2
+                    ? "#6691c3"
+                    : user.result.state === 3
+                    ? "#61bdb8"
+                    : "#969696",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "14px",
+                padding: "5px 10px",
+                borderRadius: "20px",
+              }}
+            >
+              {user.result.state === 1
+                ? "Searching destination"
+                : user.result.state === 2
+                ? `Coming soon to ${user.result.destCity}`
+                : user.result.state === 3
+                ? `Living in ${user.result.destCity}`
+                : "Just having a look"}
+            </span>
+          )}
+
         </div>
-        <div className="row align-items-center">
+        <div className="row align-items-center mt-3">
           <div className="col">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -326,7 +451,7 @@ const Profile = () => {
               onChange={handleChange}
             /> 
           ) : (
-            <p className="form-control" style={{ height: "200px", width:"100%" }}>
+            <p className="form-control" style={{ height: "200px", width:"100%", maxWidth:"700px" }}>
               {user.result.description}
             </p>
           )}
@@ -359,7 +484,7 @@ const Profile = () => {
 
             {isEditing ? (
               <>
-                <input type="text" className="form-control" name="originCity" value={editedUser.originCity} onChange={handleChangeInput}/>
+                <input type="text" className="form-control mt-1" name="originCity" value={editedUser.originCity} onChange={handleChangeInput}/>
               </>
             ) : (
               <p>{user.result.originCity}</p>
@@ -381,85 +506,54 @@ const Profile = () => {
         </div>
 
         <div className="col-md-6">
-          <div className="mb-4">
-            <h6> State</h6>
-
-            {isEditing ? (
-              <>
-                <div className="input-group mb-3">
-                  <select className="form-select" id="state" value={editedUser.state} onChange={handleStateChange}>
-                    <option
-                      style={{
-                        backgroundColor: "#969696",
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                      value="0"
-                    >
-                      Just having a look
-                    </option>
-                    <option
-                      style={{
-                        backgroundColor: "#f5973d",
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                      value="1"
-                    >
-                      Searching for destination
-                    </option>
-                    <option
-                      style={{
-                        backgroundColor: "#6691c3",
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                      value="2"
-                    >
-                      I have already got a destination
-                    </option>
-                    <option
-                      style={{
-                        backgroundColor: "#61bdb8",
-                        fontWeight: "bold",
-                        color: "white",
-                      }}
-                      value="3"
-                    >
-                      Already in a destination
-                    </option>
-                  </select>
-                  <label className="input-group-text"></label>
-                </div>
-              </>
-            ) : (
-              <span
-                style={{
-                  backgroundColor:
-                    user.result.state === 1
-                      ? "#f5973d"
-                      : user.result.state === 2
-                      ? "#6691c3"
-                      : user.result.state === 3
-                      ? "#61bdb8"
-                      : "#969696",
-                  color: "white",
-                  fontWeight: "bold",
-                  fontSize: "14px",
-                  padding: "5px 10px",
-                  borderRadius: "20px",
-                }}
-              >
-                {user.result.state === 1
-                  ? "Searching destination"
-                  : user.result.state === 2
-                  ? `Coming soon to ${user.result.destCity}`
-                  : user.result.state === 3
-                  ? `Living in ${user.result.destCity}`
-                  : "Just having a look"}
-              </span>
-            )}
-          </div>
+        <div className="mb-4">
+        <h6>Privacy options</h6>
+          {isEditing ? (
+            <div className="input-group mb-3 justify-content-center" style={{fontSize:"13px"}}>
+              <div className="form-check form-check-inline mt-2">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="privacy"
+                  value="0"
+                  checked={privacy === 0}
+                  onChange={() => handlePrivacyOptionChange(0)}
+                />
+                <label className="form-check-label">Public Profile</label>
+              </div>
+              <div className="form-check form-check-inline mt-2">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="privacy"
+                  value="1"
+                  checked={privacy === 1}
+                  onChange={() => handlePrivacyOptionChange(1)}
+                />
+                <label className="form-check-label">Hide Contact Data</label>
+              </div>
+              <div className="form-check form-check-inline mt-2">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="privacy"
+                  value="2"
+                  checked={privacy === 2}
+                  onChange={() => handlePrivacyOptionChange(2)}
+                />
+                <label className="form-check-label">Private Profile</label>
+              </div>
+            </div>
+          ) : (
+            <p>
+              {user.result.privacy === 0
+                ? "Public Profile"
+                : user.result.privacy === 1
+                ? "Hide Contact Data"
+                : "Private Profile"}
+            </p>
+          )}
+        </div>
 
           <div className="mb-4">
             <h6>Badge</h6>
@@ -485,7 +579,7 @@ const Profile = () => {
                           onClick={() => handleBadgeSelect(badge)}
                         >
                           <img
-                            src={require(`../imgs/badges/${badge.toLowerCase()}.png`)}
+                            src={`http://localhost:4000/imgs/badges/${badge.toLowerCase()}.png`}
                             alt={badge}
                             style={{
                               width: "30px",
@@ -502,7 +596,7 @@ const Profile = () => {
               </div>
             ) : (
               <img
-                src={require(`../imgs/badges/${user.result.badge.toLowerCase()}.png`)}
+                src={`http://localhost:4000/imgs/badges/${user.result.badge.toLowerCase()}.png`}
                 alt="User's badge"
                 style={{
                   width: "40px",
