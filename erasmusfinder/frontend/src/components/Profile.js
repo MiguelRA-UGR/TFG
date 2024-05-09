@@ -110,30 +110,32 @@ const updateProfilePicture = () => {
 };
 
 const updateUserData = () => {
-    axios
-        .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
-        .then((response) => {
-            setEditedUser({
-                userName: "",
-                state: 0,
-                privacy: 0,
-                instagram: "",
-                twitter: "",
-                facebook: "",
-                linkedin: "",
-                description: "",
-                nationality: "",
-                originCity: "",
-                destCity: "",
-                destUniversity: "",
-                badge: "",
-            });
-            setUser({ ...user, result: editedUser });
-        })
-        .catch((error) => {
-            console.error("Error updating user data:", error);
-        });
+  axios
+      .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
+      .then((response) => {
+          setUser({...user, result: {...user.result, ...editedUser}});
+          setEditedUser({
+              userName: "",
+              state: 0,
+              privacy: 0,
+              instagram: "",
+              twitter: "",
+              facebook: "",
+              linkedin: "",
+              description: "",
+              nationality: "",
+              originCity: "",
+              destCity: "",
+              destUniversity: "",
+              badge: "",
+          });
+          window.location.reload();
+      })
+      .catch((error) => {
+          console.error("Error updating user data:", error);
+      });
 };
+
 
   //Importar las insignias disponibles en la carpeta badges
   useEffect(() => {
@@ -580,7 +582,7 @@ const updateUserData = () => {
                         >
                           {user.result.badge && (
                               <img
-                                  src={`http://localhost:4000/imgs/badges/${user.result.badge.toLowerCase()}.png`}
+                                  src={`http://localhost:4000/imgs/badges/${badge.toLowerCase()}.png`}
                                   alt={user.result.badge}
                                   style={{
                                       width: "30px",

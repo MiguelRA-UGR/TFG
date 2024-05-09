@@ -1,21 +1,18 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const User = () => {
-    const [userProfile, setUser] = useState(null);
+    const [userProfile, setUserProf] = useState(null);
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
 
     useEffect(() => {
         const getUserProf = async () => {
             try {
                 const userId = window.location.pathname.split("/").pop();
 
-                const res = await fetch(`http://localhost:4000/api/users/${userId}`, {
-                    method: "GET",
-                });
-                if (!res.ok) {
-                    throw new Error("Error al obtener los datos del usuario");
-                }
-                const data = await res.json();
-                setUser(data);
+                const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
+
+                setUserProf(response.data);
 
             } catch (error) {
                 console.error("Error:", error);
@@ -25,6 +22,18 @@ const User = () => {
         getUserProf();
     }, []);
 
+    const handleFollowToggle = async () => {
+
+      };
+
+    if (!userProfile) {
+        return <div>Obteniendo datos del usuario...</div>;
+    }
+
+    //Mostrar datos en función de la opción que tenga el usuario
+    const isFollowing = () => {
+        return userProfile.followingUsers.includes(user._id);
+    };
 
     return (
         <div className="container-fluid d-flex flex-column align-items-center mt-4">
@@ -67,7 +76,7 @@ const User = () => {
                                     border: "3px solid white",
                                     backgroundColor:
                                         userProfile.state === 0
-                                            ? "transparent"
+                                            ? "#969696"
                                             : userProfile.state === 1
                                                 ? "#f5973d" // Naranja
                                                 : userProfile.state === 2
@@ -81,7 +90,6 @@ const User = () => {
                             </div>
                         )}
                         <h4 className="mt-3">{userProfile.userName}</h4>
-                        <p className="text-secondary mt-2 mb-3">{userProfile.email}</p>
                         <span
                             style={{
                                 backgroundColor:
@@ -108,7 +116,9 @@ const User = () => {
                                         : "Just having a look"}
                         </span>
                     </div>
-                    <div className="row align-items-center mt-3">
+
+                    {isFollowing() ? (
+                        <><div className="row align-items-center mt-3">
                         <div className="col">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -128,27 +138,27 @@ const User = () => {
                                 width="16"
                                 height="16"
                                 fill="currentColor"
-                                className="bi bi-facebook"
+                                className="bi bi-twitter"
                                 viewBox="0 0 16 16"
                             >
-                                <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
+                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
                             </svg>{" "}
-                            {userProfile.facebook}
+                            {userProfile.twitter}
                         </div>
                     </div>
-                    <div className="row justify-content-center mt-2">
+                    <div className="row align-items-center mt-3">
                         <div className="col">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="16"
                                 height="16"
                                 fill="currentColor"
-                                className="bi bi-twitter-x"
+                                className="bi bi-facebook"
                                 viewBox="0 0 16 16"
                             >
-                                <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z" />
+                                <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951" />
                             </svg>{" "}
-                            {userProfile.twitter}
+                            {userProfile.facebook}
                         </div>
                         <div className="col">
                             <svg
@@ -163,7 +173,8 @@ const User = () => {
                             </svg>{" "}
                             {userProfile.linkedin}
                         </div>
-                    </div>
+                    </div></>
+                    ):(<></>)} 
                 </div>
                 <div className="col-md-6 mt-2">
                     <h5>Description:</h5>
@@ -172,6 +183,64 @@ const User = () => {
                     </p>
                 </div>
             </div>
+
+
+            <div className="row justify-content-center text-center mt-3 w-100">
+                <div className="col-md-6">
+                    <h6>Nationality:</h6>
+                    <p> {userProfile.nationality}</p>
+                    
+                    {(userProfile.state === 2 || userProfile.state === 3) && (
+                        <>
+                            <h6>Destination City:</h6>
+                            <p> {userProfile.destCity}</p>
+                        </>
+                    )}
+                    
+                </div>
+                <div className="col-md-6">
+
+                    <h6>Origin City: </h6>
+                    <p>{userProfile.originCity}</p>  
+
+                    {(userProfile.state === 1 || userProfile.state === 3) && (
+                        <>                 
+                            <h6>Destination University: </h6>
+                            <p> {userProfile.destUniversity}</p>
+                        </>
+                    )}
+                </div>
+            </div>
+
+            {isFollowing ? (
+            <button
+              type="button"
+              style={{
+                fontWeight: "bold",
+                backgroundColor: "#696969",
+                color: "#ffffff",
+              }}
+              className="btn btn-warning"
+              onClick={handleFollowToggle}
+            >
+              Unfollow
+            </button>
+          ) : (
+            <button
+              type="submit"
+              style={{
+                fontWeight: "bold",
+                backgroundColor: "#f5973d",
+                color: "#ffffff",
+              }}
+              className="btn btn-warning"
+              onClick={handleFollowToggle}
+            >
+              Follow
+            </button>
+          )}
+
+
         </div>
     );
 };

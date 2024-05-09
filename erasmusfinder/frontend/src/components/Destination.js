@@ -471,7 +471,10 @@ const Destination = () => {
               <div className="col-md-12">
                 <ul className="list-unstyled">
                   {followers.map((follower, index) => (
-                    <Link  to={`/User/${follower._id}`} className="nav-link ml-3">
+                    <Link
+                    to={user.result._id === follower._id ? `/Profile` : `/User/${follower._id}`}
+                    className="nav-link ml-3"
+                  >
                       <li
                         key={index}
                         className="d-flex align-items-center mb-2"
@@ -482,7 +485,7 @@ const Destination = () => {
                             style={{
                               backgroundColor:
                                 follower.state === 0
-                                  ? "transparent"
+                                  ? "#969696"
                                   : follower.state === 1
                                   ? "#f5973d" // Naranja
                                   : follower.state === 2
