@@ -32,9 +32,9 @@ userCtrlr.logIn = async(req, res) =>{
 
 //SIGNUP
 userCtrlr.signUp = async(req, res) =>{
-    const { email, password, userName, userType, photo, nationality,badge, state, privacy, description, instagram, facebook, linkedin, followedDestinations, followedForus, followedUsers } = req.body;
+    const { email, password, userName} = req.body;
 
-    console.log(req.body);
+    console.log("Hola");
 
     try {
         const existingUser = await User.findOne({email});
@@ -47,25 +47,7 @@ userCtrlr.signUp = async(req, res) =>{
         const result = await User.create({
             email,
             password: hashedPassword,
-            userName,
-            userType,
-            photo,
-            nationality,
-            badge,
-            state,
-            privacy,
-            description,
-            instagram,
-            twitter,
-            facebook,
-            originCity,
-            destCity,
-            destUniversity,
-            linkedin,
-            followedUsers: [],
-            followingUsers: [],
-            followedDestinations: [],
-            followedForus: []
+            userName
         });
 
         const token = jwt.sign({email: result.email, id: result._id}, 'test', {expiresIn : "1h"});

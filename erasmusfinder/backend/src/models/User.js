@@ -7,7 +7,7 @@ const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     nationality: { type: String },
-    badge: { type: String },
+    badge: { type: String, default: "newbie" },
     state: { type: Number ,default:0},
     privacy: { type: Number ,default:0},
     description: { type: String },
