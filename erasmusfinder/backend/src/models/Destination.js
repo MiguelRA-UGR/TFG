@@ -2,6 +2,7 @@ const { Schema, model, ObjectId } = require('mongoose');
 
 const destinationSchema = new Schema({
     name: { type: String, required: true},
+    iso: {type: String},
     description: { type: String, required:false},
     country: { type: String, required:true},
     coords: {

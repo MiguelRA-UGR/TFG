@@ -85,7 +85,8 @@ destinationCtrlr.deleteDestination = async (req, res) => {
 destinationCtrlr.updateDestination = async (req, res) => {
     try {
         const { 
-            name, 
+            name,
+            iso, 
             description, 
             country,
             coords,
@@ -105,6 +106,7 @@ destinationCtrlr.updateDestination = async (req, res) => {
 
         await Destination.findByIdAndUpdate(req.params.id, { 
             name,
+            iso,
             description, 
             country,
             coords,

@@ -4,12 +4,10 @@ import axios from "axios";
 const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isEditing, setIsEditing] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [badgeImages, setBadgeImages] = useState([]);
-  const [countries, setCountries] = useState([]);
-  const [filteredBadges, setFilteredBadges] = useState([]);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [privacy, setPrivacyOption] = useState(user.result.privacy);
+  const [countries, setCountries] = useState({});
+  const [countryNames, setCountryNames] = useState({});
 
   const [selectedCountry, setSelectedCountry] = useState(
     user.result.nationality
@@ -38,13 +36,15 @@ const Profile = () => {
     const originalUserCopy = { ...user.result };
     setEditedUser(originalUserCopy);
     setIsEditing(true);
-    setSearchTerm(user.result.badge);
   };
 
   const handleCountryChange = (e) => {
     const { value } = e.target;
     setSelectedCountry(value);
-    setEditedUser({ ...editedUser, nationality: value });
+
+    console.log(value);
+
+    setEditedUser({ ...editedUser, nationality: value, badge: value });
   };
 
   const handleStateChange = (e) => {
@@ -56,24 +56,6 @@ const Profile = () => {
     setPrivacyOption(value);
     setEditedUser({ ...editedUser, privacy: value });
 };
-
-  const handleBadgeSelect = (badge) => {
-    setSearchTerm(formatBadgeName(badge));
-    setEditedUser({ ...editedUser, badge: badge });
-  };
-
-  const formatBadgeName = (badge) => {
-    return badge
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-
-    setEditedUser({ ...editedUser, badge: e.target.value });
-  };
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -136,44 +118,34 @@ const updateUserData = () => {
       });
 };
 
+//Obtener banderas de la API flagcdn
+const fetchCountryFlags = async () => {
+  try {
+    const response = await axios.get("https://flagcdn.com/en/codes.json");
+    const data = response.data;
 
-  //Importar las insignias disponibles en la carpeta badges
+    // Eliminar estados de USA
+    const filteredData = Object.entries(data)
+      .filter(([key, value]) => !key.includes("us-"))
+      .reduce((acc, [key, value]) => {
+        acc[key] = value;
+        return acc;
+      }, {});
+
+    const countryCodes = Object.keys(filteredData);
+
+    setCountries(countryCodes);
+    setCountryNames(filteredData);
+  } catch (error) {
+    console.error("Error al obtener las banderas de los países:", error);
+  }
+};
+
+
   useEffect(() => {
-    const fetchBadgeImages = async () => {
-      try {
-        const response = await fetch("http://localhost:4000/api/badges");
-        if (!response.ok) {
-          throw new Error("No se pudieron obtener las insignias");
-        }
-        const badgeImages = await response.json();
-        setBadgeImages(badgeImages);
-        setFilteredBadges(badgeImages);
-      } catch (error) {
-        console.error("Error al obtener las insignias:", error);
-      }
-    };
-  
-    fetchBadgeImages();
+    fetchCountryFlags();
   }, []);
   
-
-  //Importar los países desde la api restcountries
-  useEffect(() => {
-    fetch("https://restcountries.com/v3/all")
-      .then((response) => response.json())
-      .then((data) => {
-        const countryNames = data.map((country) => country.name.common);
-        setCountries(countryNames);
-      })
-      .catch((error) => console.error("Error fetching countries:", error));
-  }, []);
-
-  useEffect(() => {
-    const filtered = badgeImages.filter((badge) =>
-      badge.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredBadges(filtered);
-  }, [searchTerm, badgeImages]);
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -472,12 +444,22 @@ const updateUserData = () => {
               >
                 {countries.map((country) => (
                   <option key={country} value={country}>
-                    {country}
+                    {countryNames[country]}
                   </option>
                 ))}
               </select>
             ) : (
-              <p>{selectedCountry}</p>
+              <div className="d-flex align-items-center">
+                <img
+                    className="mb-3 me-1"
+                    src={`https://flagcdn.com/${selectedCountry}.svg`}
+                    alt={`${selectedCountry} flag`}
+                    style={{ width: '20px',height: '20px', objectFit: "cover", borderRadius: "50%"}}
+                  />
+                <p>{countryNames[selectedCountry]}</p>
+                  
+              </div>
+
             )}
           </div>
 
@@ -558,57 +540,13 @@ const updateUserData = () => {
         </div>
 
           <div className="mb-4">
-            <h6>Badge</h6>
+            <h6>Occupation</h6>
             {isEditing ? (
-              <div className="input-group mb-3">
-                <input
-                  type="search"
-                  className="form-control"
-                  placeholder="Search badges"
-                  value={searchTerm}
-                  onChange={handleSearchChange}
-                />
-                {searchTerm && (
-                  <div className="dropdown" style={{ position: "relative" }}>
-                    <ul
-                      className="dropdown-menu"
-                      style={{ display: "block", width: "100%" }}
-                    >
-                      {filteredBadges.map((badge) => (
-                        <li
-                          key={badge}
-                          className="dropdown-item"
-                          onClick={() => handleBadgeSelect(badge)}
-                        >
-                          {user.result.badge && (
-                              <img
-                                  src={`http://localhost:4000/imgs/badges/${badge.toLowerCase()}.png`}
-                                  alt={user.result.badge}
-                                  style={{
-                                      width: "30px",
-                                      height: "30px",
-                                      marginRight: "10px",
-                                  }}
-                              />
-                          )}
-
-                          {formatBadgeName(badge)}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+              <>
+                <input type="text" className="form-control mt-1" name="originCity" value={editedUser.occupation} onChange={handleChangeInput}/>
+              </>
             ) : (
-              <img
-                src={`http://localhost:4000/imgs/badges/${user.result.badge.toLowerCase()}.png`}
-                alt="User's badge"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                }}
-              />
+              <p>{user.result.occupation}</p>
             )}
           </div>
 

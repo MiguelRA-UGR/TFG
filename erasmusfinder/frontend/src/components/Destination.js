@@ -194,9 +194,10 @@ const Destination = () => {
         <div className="d-flex">
           <img
             className="mt-3"
-            src={`http://localhost:4000/imgs/badges/${destination.country.toLowerCase()}.png`}
+            
+            src={`https://flagcdn.com/${destination.iso}.svg`}
             alt={destination.country}
-            style={{ height: "50px", marginRight: "15px" }}
+            style={{ height: "50px",width: "50px", marginRight: "15px" ,borderRadius: "50%", objectFit: "cover"}}
           />
 
           <div className="d-flex flex-column">
@@ -283,7 +284,7 @@ const Destination = () => {
       </div>
 
       <img
-        src={require(`../imgs/frontpages/${destination.name.toLowerCase()}2.png`)}
+        src={`http://localhost:4000/imgs/frontpages/${destination.name.toLowerCase()}2.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}
         alt={destination.name}
       />
@@ -497,13 +498,15 @@ const Destination = () => {
                           >
                             <div className="flag_icon">
                               <img
-                                src={`http://localhost:4000/imgs/badges/${follower.badge.toLowerCase()}.png`}
+                                src={`https://flagcdn.com/${follower.badge}.svg`}
+                                alt="User's Flag"
                                 style={{
                                   width: "20px",
                                   height: "20px",
                                   objectFit: "cover",
                                   border: "3px solid white",
                                   borderRadius: "50%",
+                                  
                                 }}
                               />
                             </div>

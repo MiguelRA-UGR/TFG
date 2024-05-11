@@ -7,6 +7,7 @@ const userSchema = new Schema({
     email: { type: String, required: true },
     password: { type: String, required: true },
     nationality: { type: String },
+    occupation: { type: String },
     badge: { type: String, default: "newbie" },
     state: { type: Number ,default:0},
     privacy: { type: Number ,default:0},
@@ -18,6 +19,14 @@ const userSchema = new Schema({
     originCity: { type: String,default:"none" },
     destCity: { type: String,default:"none" },
     destUniversity: { type: String,default:"none" },
+    pendingContact: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    incomingContactRequest: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     followedUsers: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

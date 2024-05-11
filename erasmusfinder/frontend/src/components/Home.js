@@ -59,14 +59,14 @@ const Home = () => {
   };
 
   const users = [
-    { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "italy" },
-    { id: 2, name: 'Agnes', country: 'Sweden', status: 'Coming soon to Madrid', status_color:"#6691c3", avatar: "agnes", flag: "sweden" },
-    { id: 3, name: 'Eric', country: 'France', status: 'Living in Vienna', status_color:"#61bdb8", avatar: "eric", flag: "france" }
+    { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "it" },
+    { id: 2, name: 'Agnes', country: 'Sweden', status: 'Coming soon to Madrid', status_color:"#6691c3", avatar: "agnes", flag: "se" },
+    { id: 3, name: 'Eric', country: 'France', status: 'Living in Vienna', status_color:"#61bdb8", avatar: "eric", flag: "fr" }
   ];
 
   return (
     <div className="container text-center">
-
+      
         <div className="input-group mb-3">
         <input
           type="search"
@@ -96,6 +96,8 @@ const Home = () => {
         </div>
       )}
 
+    {!user && (
+        <>
 
       <span className="mb-5" style={{ fontSize: "35px", color: "#595959", fontFamily: "Cambria, serif", fontWeight: "bold" }}>Discover...</span>
 
@@ -104,7 +106,7 @@ const Home = () => {
           {destinations.map((destination, index) => (
               <div key={index} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
               <Link to={`/Destination/${destination._id}`}>
-                  <img src={require(`../imgs/frontpages/${destination.name.toLowerCase()}.png`)} style={{maxHeight: "700px", objectFit: 'cover' }} alt={destination.name} />
+                  <img src={`http://localhost:4000/imgs/frontpages/${destination.name.toLowerCase()}.png`} style={{maxHeight: "700px", objectFit: 'cover' }} alt={destination.name} />
               </Link>
               <div className="carousel-caption d-flex justify-content-center align-items-center" style={{ position: "absolute", bottom: "0", left: "0", right: "0", backgroundColor: "rgba(0, 0, 0, 0.6)"}}>
                 <div className="text-center">
@@ -138,7 +140,7 @@ const Home = () => {
                 <h5 className="card-title">{user.name}</h5>
                 <div className="d-flex align-items-center justify-content-center">
                 
-                  <img src={`http://localhost:4000/imgs/badges/${user.flag}.png`} alt={user.country} style={{ height: "20px", marginRight: "5px"}} />
+                  <img src={`https://flagcdn.com/${user.flag}.svg`} alt={user.country} style={{ height: "20px",width: "20px",borderRadius:"50%",objectFit: "cover", marginRight: "5px"}} />
                   <p className="card-text mb-0">{user.country}</p>
                 </div>
                 <div className="btn btn-link mt-2 form-control" style={{ fontWeight: "bold", fontSize: `${18 - user.status.length * 0.3}px`, background: user.status_color, color: 'white',textDecoration: 'none'}} >{user.status}</div>
@@ -147,6 +149,8 @@ const Home = () => {
           </div>
         ))}
       </div>
+      </>)}
+
     </div>
   );
 }

@@ -151,6 +151,70 @@ userCtrlr.updateProfilePicture = async (req, res) => {
     }
 };
 
+// Crear un nuevo contacto
+userCtrlr.contact = async (req, res) => {
+    try {
+        const { snd, rcv} = req.body;
+        const sender = await User.findById(snd);
+        const receiver = await User.findById(rcv);
+
+        sender.followedUsers.push(rcv);
+        sender.followingUsers.push(rcv);
+
+        receiver.followedUsers.push(snd);
+        receiver.followingUsers.push(snd);
+
+        await sender.save();
+        await receiver.save();
+
+        res.json({ message: 'Contacto establecido correctamente' });
+
+    } catch (error) {
+        console.error('Error al establecer contacto con usuario:', error);
+        res.status(500).json({ message: 'Algo salió mal al intentar establecer contacto con usuario' });
+    }
+};
+
+// Romper un contacto existente
+userCtrlr.breakcontact = async (req, res) => {
+    try {
+        const { snd, rcv} = req.body;
+        const sender = await User.findById(snd);
+        const receiver = await User.findById(rcv);
+
+
+        await User.findByIdAndUpdate(snd, { $pull: { followedUsers: rcv, followingUsers: rcv } });
+        await User.findByIdAndUpdate(rcv, { $pull: { followedUsers: snd, followingUsers: snd } });
+
+        res.json({ message: 'Contacto eliminado correctamente' });
+
+    } catch (error) {
+        console.error('Error al eliminar el contacto con usuario:', error);
+        res.status(500).json({ message: 'Algo salió mal al intentar romper contacto con usuario' });
+    }
+};
+
+// Enviar una solicitud de contacto
+userCtrlr.sendrequest = async (req, res) => {
+    try {
+
+        const { snd, rcv} = req.body;
+        const sender = await User.findById(snd);
+        const receiver = await User.findById(rcv);
+
+        sender.pendingContact.push(rcv);
+
+        receiver.incomingContactRequest.push(snd);
+
+        await sender.save();
+        await receiver.save();
+
+        res.json({ message: 'Solicitud de contacto enviada correctamente' });
+    } catch (error) {
+        console.error('Error al enviar la solicitud de contacto:', error);
+        res.status(500).json({ message: 'Algo salió mal al enviar la solicitud de contacto' });
+    }
+};
 
 //Exportar el controlador de usuario
 module.exports = userCtrlr;
