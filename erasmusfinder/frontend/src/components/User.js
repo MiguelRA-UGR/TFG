@@ -13,9 +13,9 @@ const initialState = {
 };
 
 const User = () => {
-  const [dataContact, setFormData] = useState(initialState);
+  const [dataContact] = useState(initialState);
   const [userProfile, setUserProf] = useState(null);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const [countryNames, setCountryNames] = useState({});
   const dispatch = useDispatch();
 
@@ -39,6 +39,9 @@ const User = () => {
   const handleUnfollow = async () => {
     dataContact.snd = user.result._id;
     dataContact.rcv = userProfile._id;
+
+    console.log(user.result._id)
+    console.log(userProfile._id)
 
     try {
       dispatch(breakContact(dataContact));

@@ -11,6 +11,10 @@ const Destination = () => {
   const [activeTab, setActiveTab] = useState("info");
   const [followers, setFollowers] = useState([]);
 
+  function formatedName(name) {
+      return name.toLowerCase().replace(/\s+/g, '');
+  }
+
   //Fnución para actualizar los destinos seguidos dentro del usuario
   const updateUser = async (destinationId, following, userId, token) => {
     try {
@@ -284,7 +288,7 @@ const Destination = () => {
       </div>
 
       <img
-        src={`http://localhost:4000/imgs/frontpages/${destination.name.toLowerCase()}2.png`}
+        src={`http://localhost:4000/imgs/frontpages/${formatedName(destination.name)}2.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}
         alt={destination.name}
       />

@@ -7,6 +7,7 @@ import Home from './components/Home'
 import Destination from './components/Destination'
 import Profile from './components/Profile'
 import User from './components/User'
+import Notifications from './components/Notifications'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path ="/SignUp" element={<SignUp/>}/>
           <Route path ="/Destination/:id" element={<Destination/>}/>
           <Route path ="/Profile" element={<Profile/>}/>
+          <Route path ="/Notifications" element={<Notifications/>}/>
           <Route path ="/User/:id" element={<User/>}/>          
         </Routes>
       </div>

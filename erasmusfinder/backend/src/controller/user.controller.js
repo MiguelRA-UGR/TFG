@@ -164,6 +164,9 @@ userCtrlr.contact = async (req, res) => {
         receiver.followedUsers.push(snd);
         receiver.followingUsers.push(snd);
 
+        receiver.incomingContactRequest.pull(snd._id);
+        sender.pendingContact.pull(rcv._id);
+
         await sender.save();
         await receiver.save();
 
@@ -182,9 +185,17 @@ userCtrlr.breakcontact = async (req, res) => {
         const sender = await User.findById(snd);
         const receiver = await User.findById(rcv);
 
+        receiver.incomingContactRequest.pull(snd);
+        sender.pendingContact.pull(rcv);
 
-        await User.findByIdAndUpdate(snd, { $pull: { followedUsers: rcv, followingUsers: rcv } });
-        await User.findByIdAndUpdate(rcv, { $pull: { followedUsers: snd, followingUsers: snd } });
+        sender.followedUsers.pull(rcv);
+        sender.followingUsers.pull(rcv);
+
+        receiver.followedUsers.pull(snd);
+        receiver.followingUsers.pull(snd);
+
+        await sender.save();
+        await receiver.save();
 
         res.json({ message: 'Contacto eliminado correctamente' });
 
