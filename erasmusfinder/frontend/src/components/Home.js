@@ -1,15 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
+import CarouselCard from "./CarouselCard.js";
+ 
 import '../index.css';
 
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 1024 },
+    items: 5,
+    slidesToSlide: 2,
+  },
+  desktop: {
+    breakpoint: { max: 1024, min: 800 },
+    items: 4,
+  },
+  tablet: {
+    breakpoint: { max: 800, min: 464 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
 
 const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [user] = useState(JSON.parse(localStorage.getItem('profile')));
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [followedDestinations, setFollowedDestinations] = useState([]);
   
+
   useEffect(() => {
     const getDestinations = async () => {
       try {
@@ -21,6 +45,9 @@ const Home = () => {
         }
         const data = await res.json();
         setDestinations(data);
+
+        filterFollowedDestinations(data);
+
       } catch (error) {
         console.error('Error:', error);
       }
@@ -28,6 +55,20 @@ const Home = () => {
 
     getDestinations();
   }, []);
+
+  const filterFollowedDestinations = (allDestinations) => {
+    const followedIds = user?.result?.followedDestinations || [];
+    const followed = allDestinations.filter(destination => followedIds.includes(destination._id));
+    setFollowedDestinations(followed);
+  };
+
+  const followeDestination = followedDestinations.map((destination) => (
+    <CarouselCard
+      name={destination.name}
+      image={destination.frontpage}
+      id={destination._id}
+    />
+  ));
 
   function formatedName(name) {
     return name.toLowerCase().replace(/\s+/g, '');
@@ -44,22 +85,6 @@ const Home = () => {
   const clearSearch = () => {
     setSearchTerm('');
     setSearchResults([]);
-  };
-
-  const DropdownResults = () => {
-    if (searchTerm === '') {
-      return null;
-    }
-
-    return (
-      <div className="dropdown-menu show">
-        {searchResults.map(destination => (
-          <Link key={destination._id} to={`/Destination/${destination._id}`} className="dropdown-item">
-            {destination.name}
-          </Link>
-        ))}
-      </div>
-    );
   };
 
   const users = [
@@ -303,7 +328,9 @@ const Home = () => {
           Followed destinations
         </span>
 
-          
+        <Carousel showDots={false} autoPlay={true} responsive={responsive}>
+          {followeDestination}
+        </Carousel>
 
 
         </>
