@@ -3,6 +3,7 @@ import axios from "axios";
 
 import "../index.css";
 import { Link } from "react-router-dom";
+import Avatar from "./Avatar"
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -484,66 +485,13 @@ const Destination = () => {
                         key={index}
                         className="d-flex align-items-center mb-2"
                       >
-                        <div className="d-flex justify-content-center h-100">
-                          <div
-                            className="image_outer_container"
-                            style={{
-                              backgroundColor:
-                                follower.state === 0
-                                  ? "#969696"
-                                  : follower.state === 1
-                                  ? "#f5973d" // Naranja
-                                  : follower.state === 2
-                                  ? "#6691c3" // Azul
-                                  : follower.state === 3
-                                  ? "#61bdb8" // Aguamarina
-                                  : "#969696" //Gris
-                            }}
-                          >
-                            <div className="flag_icon">
-                              <img
-                                src={`https://flagcdn.com/${follower.badge}.svg`}
-                                alt="User's Flag"
-                                style={{
-                                  width: "20px",
-                                  height: "20px",
-                                  objectFit: "cover",
-                                  border: "3px solid white",
-                                  borderRadius: "50%",
-                                  
-                                }}
-                              />
-                            </div>
-                            <div className="image_inner_container">
-                              {follower.photo ? (
-                                <img
-                                  src={`http://localhost:4000/imgs/users/${follower._id}.png`}
-                                  alt={follower.userName}
-                                  className="rounded-circle"
-                                  style={{
-                                    width: "45px",
-                                    height: "45px",
-                                    border: "2px solid white",
-                                  }}
-                                />
-                              ) : (
-                                <div
-                                  className="text-center rounded-circle d-flex align-items-center justify-content-center"
-                                  style={{
-                                    fontSize: "18px",
-                                    color: "white",
-                                    width: "45px",
-                                    height: "45px",
-                                    border: "3px solid white",
-                                    backgroundColor: "969696",
-                                  }}
-                                >
-                                  {follower.userName.charAt(0).toUpperCase()}
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </div>
+
+                        <Avatar user={follower}
+                          outerSize="60px"
+                          innerSize="50px"
+                          flagSize="20px">
+                        </Avatar>
+
 
                         <span className="ms-3">{follower.userName}</span>
                       </li>

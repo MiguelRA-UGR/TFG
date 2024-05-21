@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import Avatar from "./Avatar"
 
 import { createContact, breakContact } from "../actions/usersContact";
 
@@ -50,64 +51,14 @@ const ContactRequest = ({ user, userRequest }) => {
         <div className="d-flex align-items-center mb-2">
           <div className="d-flex justify-content-center h-100">
           <Link to={`/User/${userRequest._id}`} className="nav-link ml-3" >
-            <div
-              className="image_outer_container"
-              style={{
-                backgroundColor:
-                userRequest.state === 0
-                    ? "#969696"
-                    : userRequest.state === 1
-                    ? "#f5973d" // Naranja
-                    : userRequest.state === 2
-                    ? "#6691c3" // Azul
-                    : userRequest.state === 3
-                    ? "#61bdb8" // Aguamarina
-                    : "#969696", //Gris
-              }}
-            >
-              <div className="flag_icon">
-                <img
-                  src={`https://flagcdn.com/${userRequest.badge}.svg`}
-                  alt="User's Flag"
-                  style={{
-                    width: "20px",
-                    height: "20px",
-                    objectFit: "cover",
-                    border: "3px solid white",
-                    borderRadius: "50%",
-                  }}
-                />
-              </div>
-              <div className="image_inner_container">
-                {userRequest.photo ? (
-                  <img
-                    src={`http://localhost:4000/imgs/users/${userRequest._id}.png`}
-                    alt={userRequest.userName}
-                    className="rounded-circle"
-                    style={{
-                      width: "45px",
-                      height: "45px",
-                      border: "2px solid white",
-                    }}
-                  />
-                ) : (
-                  <div
-                    className="text-center rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      fontSize: "18px",
-                      color: "white",
-                      width: "45px",
-                      height: "45px",
-                      border: "3px solid white",
-                      backgroundColor: "969696",
-                    }}
-                  >
-                    {userRequest.userName.charAt(0).toUpperCase()}
-                  </div>
-                )}
-              </div>
-            </div>
-            </Link>
+           
+          <Avatar user={userRequest}
+            outerSize="60px"
+            innerSize="50px"
+            flagSize="20px">
+          </Avatar>
+
+          </Link>
           </div>
           <h5 className="mt-0" style={{ marginLeft: "10px" }}>
             {userRequest.userName}

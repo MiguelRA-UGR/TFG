@@ -213,9 +213,13 @@ userCtrlr.sendrequest = async (req, res) => {
         const sender = await User.findById(snd);
         const receiver = await User.findById(rcv);
 
-        sender.pendingContact.push(rcv);
+        if (!sender.pendingContact.includes(rcv)) {
+            sender.pendingContact.push(rcv);
+        }
 
-        receiver.incomingContactRequest.push(snd);
+        if (!receiver.incomingContactRequest.includes(snd)) {
+            receiver.incomingContactRequest.push(snd);
+        }
 
         await sender.save();
         await receiver.save();

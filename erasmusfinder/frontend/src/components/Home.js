@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom';
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CarouselCard from "./CarouselCard.js";
+import CarouselUser from "./CarouselUser.js";
  
 import '../index.css';
 
+//Objeto para configurar el carrusel
 const responsive = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 1024 },
@@ -28,6 +30,7 @@ const responsive = {
 
 const Home = () => {
   const [destinations, setDestinations] = useState([]);
+  const [contacts, setContacts] = useState([]);
   const [user] = useState(JSON.parse(localStorage.getItem('profile')));
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -56,6 +59,32 @@ const Home = () => {
     getDestinations();
   }, []);
 
+  useEffect(() => {
+    const getContacts = async () => {
+      try {
+        const res = await fetch('http://localhost:4000/api/users', {
+          method: 'GET',
+        });
+        if (!res.ok) {
+          throw new Error('Error al obtener los contactos');
+        }
+        const data = await res.json();
+        filterContacts(data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    getContacts();
+  }, []);
+
+  const filterContacts = (allContacts) => {
+    const followedIds = user?.result?.followedUsers || [];
+
+    const followed = allContacts.filter(contact => followedIds.includes(contact._id));
+    setContacts(followed);
+  };
+
   const filterFollowedDestinations = (allDestinations) => {
     const followedIds = user?.result?.followedDestinations || [];
     const followed = allDestinations.filter(destination => followedIds.includes(destination._id));
@@ -67,6 +96,18 @@ const Home = () => {
       name={destination.name}
       image={destination.frontpage}
       id={destination._id}
+    />
+  ));
+
+
+
+  const contact = contacts.map((user) => (
+    <CarouselUser
+      userName={user.userName}
+      _id={user._id}
+      badge={user.badge}
+      state={user.state}
+      photo={user.photo}
     />
   ));
 
@@ -94,7 +135,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="container text-center">
+    <div className="container">
       <div className="input-group mb-3">
         <input
           type="search"
@@ -153,7 +194,7 @@ const Home = () => {
         </div>
       )}
 
-      {!user || (user.result.followedDestinations.length === 0 && (
+      {(!user || (user.result.followedDestinations.length === 0)) && (
           <>
             <span
               className="mb-5"
@@ -241,22 +282,10 @@ const Home = () => {
               </button>
             </div>
           </>
-        ))}
+        )}
 
       {!user && (
         <>
-          <span
-            className="mb-5"
-            style={{
-              fontSize: "35px",
-              color: "#595959",
-              fontFamily: "Cambria, serif",
-              fontWeight: "bold",
-            }}
-          >
-            Discover...
-          </span>
-
           <div className="mt-4">
             <span
               style={{
@@ -328,10 +357,24 @@ const Home = () => {
           Followed destinations
         </span>
 
-        <Carousel showDots={false} autoPlay={true} responsive={responsive}>
+        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsive}>
           {followeDestination}
         </Carousel>
 
+        <span className='mt-3'
+          style={{
+            fontSize: "20px",
+            color: "#595959",
+            fontFamily: "Cambria, serif",
+            fontWeight: "bold",
+          }}
+        >
+          Contacts
+        </span>
+
+        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsive}>
+          {contact}
+        </Carousel>
 
         </>
       )}
