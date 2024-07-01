@@ -58,7 +58,7 @@ destinationCtrlr.createDestination = async (req, res) => {
     }
 };
 
-// GET by ID
+// GET
 destinationCtrlr.getDestination = async (req, res) => {
     try {
         const destination = await Destination.findById(req.params.id);
@@ -130,5 +130,4 @@ destinationCtrlr.updateDestination = async (req, res) => {
     }
 };
 
-// Export destination controller
 module.exports = destinationCtrlr;

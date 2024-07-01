@@ -4,6 +4,7 @@ import axios from "axios";
 import "../index.css";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
+import Review from "./Review"
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -11,6 +12,7 @@ const Destination = () => {
   const [following, setFollowing] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
   const [followers, setFollowers] = useState([]);
+  const [reviews, setReviews] = useState([]);
 
   function formatedName(name) {
       return name.toLowerCase().replace(/\s+/g, '');
@@ -150,12 +152,10 @@ const Destination = () => {
       try {
         const destinationId = window.location.pathname.split("/").pop();
 
-        const res = await fetch(
-          `http://localhost:4000/api/dests/${destinationId}`,
-          {
-            method: "GET",
-          }
-        );
+        // Obtener los datos del destino
+        const res = await fetch(`http://localhost:4000/api/dests/${destinationId}`, {
+          method: "GET",
+        });
         if (!res.ok) {
           throw new Error("Error al obtener el destino");
         }
@@ -163,26 +163,47 @@ const Destination = () => {
         setDestination(data);
 
         const followerIds = data.users;
+        const reviewsIds = data.reviews;
+
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
-            const userRes = await fetch(
-              `http://localhost:4000/api/users/${followerId}`
-            );
+            const userRes = await fetch(`http://localhost:4000/api/users/${followerId}`);
             if (!userRes.ok) {
               throw new Error("Error al obtener los datos del seguidor");
             }
-            return await userRes.json();
+            const userData = await userRes.json();
+            return { [followerId]: userData };
           })
         );
-        setFollowers(followersData);
 
+        const followersObject = Object.assign({}, ...followersData);
+        setFollowers(followersObject);
+
+        const reviewsData = await Promise.all(
+          reviewsIds.map(async (reviewId) => {
+            const reviewRes = await fetch(`http://localhost:4000/api/reviews/${reviewId}`);
+            if (!reviewRes.ok) {
+              throw new Error("Error al obtener los datos de la reseña");
+            }
+            const reviewData = await reviewRes.json();
+            return reviewData;
+          })
+        );
+
+        const reviewsWithUsers = reviewsData.map((review) => ({
+          ...review,
+          author: followersObject[review.user],
+        }));
+        setReviews(reviewsWithUsers);
+
+        // Verificar si el usuario sigue el destino
         if (user && user.result.followedDestinations.includes(destinationId)) {
           setFollowing(true);
         } else {
           setFollowing(false);
         }
       } catch (error) {
-        console.error("Error:", error);
+        console.error(error);
       }
     };
 
@@ -476,28 +497,24 @@ const Destination = () => {
             <div className="row">
               <div className="col-md-12">
                 <ul className="list-unstyled">
-                  {followers.map((follower, index) => (
-                    <Link
-                    to={user.result._id === follower._id ? `/Profile` : `/User/${follower._id}`}
-                    className="nav-link ml-3"
-                  >
-                      <li
-                        key={index}
-                        className="d-flex align-items-center mb-2"
+                    {Object.values(followers).map((follower) => (
+                      <Link
+                        to={user && user.result._id === follower._id ? `/Profile` : `/User/${follower._id}`}
+                        className="nav-link ml-3"
+                        key={follower._id}
                       >
-
-                        <Avatar user={follower}
-                          outerSize="60px"
-                          innerSize="50px"
-                          flagSize="20px">
-                        </Avatar>
-
-
-                        <span className="ms-3">{follower.userName}</span>
-                      </li>
-                    </Link>
-                  ))}
-                </ul>
+                        <li className="d-flex align-items-center mb-2">
+                          <Avatar
+                            user={follower}
+                            outerSize="60px"
+                            innerSize="50px"
+                            flagSize="20px"
+                          />
+                          <span className="ms-3">{follower.userName}</span>
+                        </li>
+                      </Link>
+                    ))}
+                  </ul>
               </div>
             </div>
           </>
@@ -505,7 +522,18 @@ const Destination = () => {
 
         {activeTab === "reviews" && (
           <>
-            <div className="row"></div>
+            <div className="row">
+            {reviews.map((review, index) => (
+
+                <Review 
+                  comment={review.comment}
+                  author={review.author}
+                  score={review.score}
+                  date={review.createdAt}
+                ></Review>
+
+              ))}
+            </div>
           </>
         )}
 

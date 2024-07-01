@@ -37,9 +37,8 @@ const destinationSchema = new Schema({
         name: String
     }],
     reviews: [{
-        _id: ObjectId,
-        comment: String,
-        score: { type: Number, default: 0 }
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
     }]
 }, {
     timestamps: true
