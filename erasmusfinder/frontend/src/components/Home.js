@@ -4,11 +4,12 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CarouselCard from "./CarouselCard.js";
 import CarouselUser from "./CarouselUser.js";
+import Review from "./Review"
  
 import '../index.css';
 
-//Objeto para configurar el carrusel
-const responsive = {
+//Objetos para configurar el carrusel
+const responsiveDests = {
   superLargeDesktop: {
     breakpoint: { max: 4000, min: 1024 },
     items: 5,
@@ -28,6 +29,26 @@ const responsive = {
   },
 };
 
+const responsiveReviews = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 1024 },
+    items: 4,
+    slidesToSlide: 2,
+  },
+  desktop: {
+    breakpoint: { max: 1024, min: 800 },
+    items: 3,
+  },
+  tablet: {
+    breakpoint: { max: 800, min: 464 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
+
 const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [contacts, setContacts] = useState([]);
@@ -35,7 +56,31 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [followedDestinations, setFollowedDestinations] = useState([]);
+  const [reviews, setUserReviews] = useState([]);
   
+  useEffect(() => {
+    const getUserReviews = async () => {
+      if (!user.result.reviews) return;
+      
+      try {
+        const reviewIds = user.result.reviews;
+        const reviewsData = await Promise.all(
+          reviewIds.map(async (reviewId) => {
+            const res = await fetch(`http://localhost:4000/api/reviews/${reviewId}`);
+            if (!res.ok) {
+              throw new Error('Error al obtener las reseñas');
+            }
+            return await res.json();
+          })
+        );
+        setUserReviews(reviewsData);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    getUserReviews();
+  }, [user]);
 
   useEffect(() => {
     const getDestinations = async () => {
@@ -109,6 +154,15 @@ const Home = () => {
       state={user.state}
       photo={user.photo}
     />
+  ));
+
+  const review = reviews.map((rev) => (
+    <Review 
+      comment={rev.comment}
+      author={user.result}
+      score={rev.score}
+      date={rev.createdAt}
+    ></Review>
   ));
 
   function formatedName(name) {
@@ -287,14 +341,7 @@ const Home = () => {
       {!user && (
         <>
           <div className="mt-4">
-            <span
-              style={{
-                fontSize: "35px",
-                color: "#595959",
-                fontFamily: "Cambria, serif",
-                fontWeight: "bold",
-              }}
-            >
+            <span className="section-title">
               Interact with people who are looking for the same as you{" "}
             </span>
           </div>
@@ -346,36 +393,37 @@ const Home = () => {
   
       {user && user.result.followedDestinations.length > 0 && (
         <>
-        <span
-          style={{
-            fontSize: "20px",
-            color: "#595959",
-            fontFamily: "Cambria, serif",
-            fontWeight: "bold",
-          }}
-        >
-          Followed destinations
-        </span>
+          <span className="section-title">
+            Followed destinations
+          </span>
 
-        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsive}>
+        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveDests}>
           {followeDestination}
         </Carousel>
+        </>
+      )}
 
-        <span className='mt-3'
-          style={{
-            fontSize: "20px",
-            color: "#595959",
-            fontFamily: "Cambria, serif",
-            fontWeight: "bold",
-          }}
-        >
-          Contacts
-        </span>
+      {user && user.result.reviews.length > 0 && (
+        <>
+      <span className="section-title">
+        Contacts
+      </span>
 
-        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsive}>
+        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveDests}>
           {contact}
         </Carousel>
+        </>
+      )}
 
+      {user && user.result.reviews.length > 0 && (
+        <>
+        <span className="section-title">
+        Reviews
+        </span>
+
+        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveReviews}>
+          {review}
+        </Carousel>
         </>
       )}
 

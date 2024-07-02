@@ -39,6 +39,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Destination'
     }],
+    reviews: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
     followedForus: [{
         forusName: String
     }]

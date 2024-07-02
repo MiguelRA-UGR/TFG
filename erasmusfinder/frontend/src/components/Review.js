@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
 
 const getColorForScore = (score) => {
@@ -28,12 +29,19 @@ const getColorForScore = (score) => {
       <div className="card mb-3" style={{ maxWidth: '400px', margin: 'auto' }}>
         <div className="card-body">
           <div className="d-flex align-items-center mb-3">
-            <Avatar
+            <Link
+              to={`/User/${author._id}`}
+              className="nav-link ml-3"
+              key={author._id}
+              >
+              <Avatar
               user={author}
               outerSize="60px"
               innerSize="50px"
               flagSize="20px"
             />
+          </Link>
+            
             <div className="ms-3 flex-grow-1">
               <h5>{author.userName}</h5>
             </div>

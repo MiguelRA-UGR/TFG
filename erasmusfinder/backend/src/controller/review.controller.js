@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const reviewCtrlr = {};
 const Review = require('../models/Review');
 const Destination = require('../models/Destination');
+const User = require('../models/User');
 
 // GET
 reviewCtrlr.getReviews = async (req, res) => {
@@ -37,11 +38,14 @@ reviewCtrlr.createReview = async (req, res) => {
         });
 
         const dest = await Destination.findById(destination);
+        const author = await User.findById(user);
 
         await newReview.save();
 
         dest.reviews.push(newReview._id);
+        author.reviews.push(newReview._id)
         await dest.save();
+        await author.save();
 
         if (score > -1 && score <= 10 ) {
             //Actualizar puntuacion del destino
