@@ -498,11 +498,6 @@ const Destination = () => {
               <div className="col-md-12">
                 <ul className="list-unstyled">
                     {Object.values(followers).map((follower) => (
-                      <Link
-                        to={user && user.result._id === follower._id ? `/Profile` : `/User/${follower._id}`}
-                        className="nav-link ml-3"
-                        key={follower._id}
-                      >
                         <li className="d-flex align-items-center mb-2">
                           <Avatar
                             user={follower}
@@ -512,7 +507,6 @@ const Destination = () => {
                           />
                           <span className="ms-3">{follower.userName}</span>
                         </li>
-                      </Link>
                     ))}
                   </ul>
               </div>
@@ -532,6 +526,8 @@ const Destination = () => {
                     author={review.author}
                     score={review.score}
                     date={review.createdAt}
+                    destination={destination}
+                    mode={0}
                   />
                 ))}
               </div>

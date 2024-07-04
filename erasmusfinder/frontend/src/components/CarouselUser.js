@@ -6,7 +6,6 @@ import "../index.css";
 
 export default function User(user) {
   return (
-    <Link to={`/User/${user._id}`} style={{ textDecoration: "none" }}>
       <div
         className="card text-center"
         id="custom_card"
@@ -27,6 +26,5 @@ export default function User(user) {
 
         <h5>{user.userName}</h5>
       </div>
-    </Link>
   );
 }

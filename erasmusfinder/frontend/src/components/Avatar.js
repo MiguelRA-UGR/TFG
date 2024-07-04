@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 
 const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
-    const color =
+  const [userToken] = useState(JSON.parse(localStorage.getItem('profile')));
+  const color =
     user.state === 0
       ? "#969696"
       : user.state === 1
@@ -43,33 +45,40 @@ const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
   };
 
   return (
+    
     <div className="d-flex justify-content-center h-100">
-      <div className="image_outer_container" style={outerStyles}>
-        <div className="flag_icon" style={{ zIndex: 1}}>
-          <img
-            src={`https://flagcdn.com/${user.badge}.svg`}
-            alt="User's Flag"
-            style={flagStyles}
-          />
-        </div>
-        <div className="image_inner_container">
-          {user.photo ? (
+      <Link
+        to={userToken.result._id === user._id ? `/Profile` : `/User/${user._id}`}
+        className="nav-link ml-3"
+        key={user._id}
+        >
+        <div className="image_outer_container" style={outerStyles}>
+          <div className="flag_icon" style={{ zIndex: 1}}>
             <img
-              src={`http://localhost:4000/imgs/users/${user._id}.png`}
-              alt={user.userName}
-              className="rounded-circle"
-              style={innerStyles}
+              src={`https://flagcdn.com/${user.badge}.svg`}
+              alt="User's Flag"
+              style={flagStyles}
             />
-          ) : (
-            <div
-              className="text-center rounded-circle d-flex align-items-center justify-content-center"
-              style={placeholderStyles}
-            >
-              {user.userName.charAt(0).toUpperCase()}
-            </div>
-          )}
+          </div>
+          <div className="image_inner_container">
+            {user.photo ? (
+              <img
+                src={`http://localhost:4000/imgs/users/${user._id}.png`}
+                alt={user.userName}
+                className="rounded-circle"
+                style={innerStyles}
+              />
+            ) : (
+              <div
+                className="text-center rounded-circle d-flex align-items-center justify-content-center"
+                style={placeholderStyles}
+              >
+                {user.userName.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+      </Link>
     </div>
   );
 };

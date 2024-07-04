@@ -53,9 +53,9 @@ const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [user] = useState(JSON.parse(localStorage.getItem('profile')));
+  const [followedDestinations, setFollowedDestinations] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-  const [followedDestinations, setFollowedDestinations] = useState([]);
   const [reviews, setUserReviews] = useState([]);
   
   useEffect(() => {
@@ -135,35 +135,13 @@ const Home = () => {
     const followed = allDestinations.filter(destination => followedIds.includes(destination._id));
     setFollowedDestinations(followed);
   };
+  //Mapear los destinos por sus ids
+  const destinationById = {};
 
-  const followeDestination = followedDestinations.map((destination) => (
-    <CarouselCard
-      name={destination.name}
-      image={destination.frontpage}
-      id={destination._id}
-    />
-  ));
+  followedDestinations.forEach((destination) => {
+    destinationById[destination._id] = destination;
+  });
 
-
-
-  const contact = contacts.map((user) => (
-    <CarouselUser
-      userName={user.userName}
-      _id={user._id}
-      badge={user.badge}
-      state={user.state}
-      photo={user.photo}
-    />
-  ));
-
-  const review = reviews.map((rev) => (
-    <Review 
-      comment={rev.comment}
-      author={user.result}
-      score={rev.score}
-      date={rev.createdAt}
-    ></Review>
-  ));
 
   function formatedName(name) {
     return name.toLowerCase().replace(/\s+/g, '');
@@ -181,6 +159,43 @@ const Home = () => {
     setSearchTerm('');
     setSearchResults([]);
   };
+
+  const followeDestination = followedDestinations.map((destination) => (
+    <CarouselCard
+      name={destination.name}
+      image={destination.frontpage}
+      id={destination._id}
+    />
+  ));
+
+  const contact = contacts.map((user) => (
+    <CarouselUser
+      userName={user.userName}
+      _id={user._id}
+      badge={user.badge}
+      state={user.state}
+      photo={user.photo}
+    />
+  ));
+
+  const review = reviews.map((rev) => {
+    //Obtener el destino a través del id almacenado en la review
+    const dest = destinationById[rev.destination];
+
+    if(dest != null){
+      return (
+        <Review 
+          comment={rev.comment}
+          author={user.result}
+          score={rev.score}
+          date={rev.createdAt}
+          destination={dest}
+          mode={1}
+          anonymous={false}
+        />
+      );
+    }    
+  });
 
   const users = [
     { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "it" },
@@ -403,7 +418,7 @@ const Home = () => {
         </>
       )}
 
-      {user && user.result.reviews.length > 0 && (
+      {user && user.result.followedUsers.length > 0 && (
         <>
       <span className="section-title">
         Contacts
@@ -418,7 +433,7 @@ const Home = () => {
       {user && user.result.reviews.length > 0 && (
         <>
         <span className="section-title">
-        Reviews
+        Your Reviews
         </span>
 
         <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveReviews}>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   createContact,
   breakContact,
@@ -75,9 +76,10 @@ const User = () => {
 
   useEffect(() => {
     const getUserProf = async () => {
-      try {
-        const userId = window.location.pathname.split("/").pop();
+      
+      const userId = window.location.pathname.split("/").pop();
 
+      try {
         const response = await axios.get(
           `http://localhost:4000/api/users/${userId}`
         );
@@ -86,9 +88,10 @@ const User = () => {
       } catch (error) {
         console.error("Error:", error);
       }
+      
     };
-
     getUserProf();
+
   }, []);
 
   if (!userProfile) {

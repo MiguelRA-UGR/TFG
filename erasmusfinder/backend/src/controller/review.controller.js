@@ -28,13 +28,14 @@ reviewCtrlr.getReviewsByDestination = async (req, res) => {
 // POST
 reviewCtrlr.createReview = async (req, res) => {
     try {
-        const { destination, comment, score, user } = req.body;
+        const { destination, comment, score, user, anonymous } = req.body;
 
         const newReview = new Review({ 
             destination, 
             comment, 
             score, 
-            user 
+            user,
+            anonymous 
         });
 
         const dest = await Destination.findById(destination);
