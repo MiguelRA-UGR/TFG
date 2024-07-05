@@ -60,7 +60,7 @@ const Home = () => {
   
   useEffect(() => {
     const getUserReviews = async () => {
-      if (!user.result.reviews) return;
+      if (!user || !user.result.reviews) return;
       
       try {
         const reviewIds = user.result.reviews;

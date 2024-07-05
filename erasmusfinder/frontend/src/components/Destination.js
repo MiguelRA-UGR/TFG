@@ -5,6 +5,7 @@ import "../index.css";
 import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
 import Review from "./Review"
+import ReviewForm from "./ReviewForm";
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -540,41 +541,7 @@ const Destination = () => {
                 </div>
 
                   <div className="row text-center justify-content-center">
-                    <form className="form-control" style={{width:"50%"}}>
-                      <div class="mb-3">
-                        <label for="comment" class="form-label">Comment</label>
-                        <input type="email" class="form-control" id="comment"/>
-                      </div>
-                      <div id="rating1" class="star-rating" role="rating" data-rating="3">
-                        <label for="rating1" class="form-label">Score: </label>
-                        <span class="star" data-value="1">&#10122;<span class="star-notification"></span></span>
-                        <span class="star" data-value="2">&#10123;<span class="star-notification"></span></span>
-                        <span class="star" data-value="3">&#10124;<span class="star-notification"></span></span>
-                        <span class="star" data-value="4">&#10125;<span class="star-notification"></span></span>
-                        <span class="star" data-value="5">&#10126;<span class="star-notification"></span></span>
-                        <span class="star" data-value="6">&#10127;<span class="star-notification"></span></span>
-                        <span class="star" data-value="7">&#10128;<span class="star-notification"></span></span>
-                        <span class="star" data-value="8">&#10129;<span class="star-notification"></span></span>
-                        <span class="star" data-value="9">&#10130;<span class="star-notification"></span></span>
-                        <span class="star" data-value="10">&#10131;<span class="star-notification"></span></span>
-
-                      </div>
-                      <div class="mb-3 form-check">
-                        <label class="form-check-label" for="anonymous">Hide Username</label>
-                        <input type="checkbox" class="form-check-input" id="anonymous"/>
-                      </div>
-                      <button
-                        type="submit"
-                        style={{
-                          fontWeight: "bold",
-                          backgroundColor: "#f5973d",
-                          color: "#ffffff",
-                        }}
-                        className="btn btn-warning"
-                      >
-                        Review
-                      </button>
-                    </form>
+                    <ReviewForm user_id={user.result._id} destination_id={destination._id}></ReviewForm>
                   </div>
               </div>
 

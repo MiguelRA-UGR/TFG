@@ -55,6 +55,7 @@ const Navegation = () => {
     history("/");
 
     setUser(null);
+    window.location.reload();
   };
 
   useEffect(() => {

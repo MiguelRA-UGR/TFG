@@ -10,12 +10,13 @@ const {
 } = require('../controller/review.controller.js');
 
 router.route('/')
-    .post(createReview)
     .get(getReviews);
 
 router.route('/:id')
     .get(getReview)
     .get(getReviewsByDestination)
-    .delete(deleteReview)
+
+router.post('/review', createReview);
+router.post('/deletereview', deleteReview);
 
 module.exports = router;
