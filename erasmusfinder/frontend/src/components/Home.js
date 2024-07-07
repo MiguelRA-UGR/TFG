@@ -7,6 +7,7 @@ import CarouselUser from "./CarouselUser.js";
 import Review from "./Review"
  
 import '../index.css';
+import MapComponent from './MapComponent.js';
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -185,7 +186,7 @@ const Home = () => {
     if(dest != null){
       return (
         <Review 
-          id={rev._id}
+          id={review._id}
           comment={rev.comment}
           author={user.result}
           score={rev.score}
@@ -442,6 +443,8 @@ const Home = () => {
         </Carousel>
         </>
       )}
+
+    <MapComponent></MapComponent>
 
     </div>
   );
