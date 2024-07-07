@@ -10,7 +10,9 @@ import ReviewForm from "./ReviewForm";
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [destination, setDestination] = useState(null);
+  const [userReview, setUserReview] = useState(null);
   const [following, setFollowing] = useState(false);
+  const [hasReviewed, setReviewed] = useState(false);
   const [activeTab, setActiveTab] = useState("info");
   const [followers, setFollowers] = useState([]);
   const [reviews, setReviews] = useState([]);
@@ -210,6 +212,21 @@ const Destination = () => {
 
     getDestination();
   }, [user]);
+
+  useEffect(() => {
+    if (user && reviews.length > 0) {
+      const foundUserReview = reviews.find(review => review.user === user.result._id);
+
+      if (foundUserReview) {
+        setReviewed(true);
+        console.log("Rseña hecha por el usuario:", foundUserReview);
+        setUserReview(foundUserReview);
+      } else {
+        setReviewed(false);
+        setUserReview(null);
+      }
+    }
+  }, [reviews, user]); // Dependencia en reviews y user
 
   if (!destination) {
     return <div>Cargando destino...</div>;
@@ -489,66 +506,141 @@ const Destination = () => {
 
         {activeTab === "forums" && (
           <>
-            <div className="row"></div>
+          {following ? (
+            <></>
+          ) : (
+            <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
+              <div className="row mb-4 align-items-center text-center justify-content-center">
+                <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }}/>
+                <h5>You must follow the destination if you want to access the forums</h5>
+              </div>
+            </div>
+          )}
           </>
         )}
 
         {activeTab === "followers" && (
           <>
+          {following ? (
             <div className="row">
-              <div className="col-md-12">
-                <ul className="list-unstyled">
-                    {Object.values(followers).map((follower) => (
-                        <li className="d-flex align-items-center mb-2">
-                          <Avatar
-                            user={follower}
-                            outerSize="60px"
-                            innerSize="50px"
-                            flagSize="20px"
-                          />
-                          <span className="ms-3">{follower.userName}</span>
-                        </li>
-                    ))}
-                  </ul>
+            <div className="col-md-12">
+              <ul className="list-unstyled">
+                  {Object.values(followers).map((follower) => (
+                      <li className="d-flex align-items-center mb-2">
+                        <Avatar
+                          user={follower}
+                          outerSize="60px"
+                          innerSize="50px"
+                          flagSize="20px"
+                        />
+                        <span className="ms-3">{follower.userName}</span>
+                      </li>
+                  ))}
+                </ul>
+            </div>
+          </div>
+        
+          ) : (
+            <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
+              <div className="row mb-4 align-items-center text-center justify-content-center">
+                <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }}/>
+                <h5>You must follow the destination if you want to see the followers</h5>
               </div>
             </div>
+          )}
           </>
         )}
 
         {activeTab === "reviews" && (
-          
           <>
-            {reviews.length > 0 ? (
-              <div className="row">
-                {reviews.map((review, index) => (
-                  <Review 
-                    key={index}
-                    comment={review.comment}
-                    author={review.author}
-                    score={review.score}
-                    date={review.createdAt}
-                    destination={destination}
-                    mode={0}
-                  />
-                ))}
-              </div>
-            ) : (
-              <div className="container">
-                <div className="row mb-4 align-items-center text-center justify-content-center">
-                  <h4>Wow, it's a bit lonely in here</h4>
-                  <p>Be the first to review this destination</p>
-                  <img src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png" alt="Tumbleweed" style={{width:"100px"}}/>
-                </div>
+            {following ? (
+              reviews.length > 0 ? (
+                <>
+                  {hasReviewed ? (
+                    <>
+                      <div className="row mb-4 align-items-center text-center justify-content-center">
+                        <span className="section-title">
+                          Your Review:
+                        </span>
+                      </div>
+                      
+                      <Review 
+                        id={userReview._id}
+                        comment={userReview.comment}
+                        author={userReview.author}
+                        score={userReview.score}
+                        date={userReview.createdAt}
+                        destination={destination}
+                        anonymous={userReview.anonymous}
+                        mode={1}
+                      />
+                    </>
+                  ):(
+                    <div className="row mb-4 align-items-center text-center justify-content-center">
+                      <span className="section-title">
+                        What do you think about{" "}
+                        <span style={{ color: '#f5973d', fontWeight: 'bold' }}>
+                          {destination.name}
+                        </span>
+                        ?
+                      </span>
+                      <ReviewForm user_id={user.result._id} destination_id={destination._id} />
+                    </div>
+                  )}
 
-                  <div className="row text-center justify-content-center">
-                    <ReviewForm user_id={user.result._id} destination_id={destination._id}></ReviewForm>
+                  <div className="row">
+
+                    <span className="section-title text-center">
+                      What people think about {""}
+
+                      <span style={{ color: '#f5973d', fontWeight: 'bold' }}>
+                        {destination.name}
+                      </span>
+                      :
+                    </span>
+
+                    {reviews
+                      .filter(review => !hasReviewed || review._id !== userReview._id)
+                      .map((review, index) => (
+                        <Review 
+                          key={review._id || index}
+                          id={review._id}
+                          comment={review.comment}
+                          author={review.author}
+                          score={review.score}
+                          date={review.createdAt}
+                          destination={destination}
+                          anonymous={review.anonymous}
+                          mode={0}
+                        />
+                      ))
+                    }
                   </div>
+                </>
+              ) : (
+                <div className="container">
+                  <div className="row mb-4 align-items-center text-center justify-content-center">
+                    <h4>Wow, it's a bit lonely in here</h4>
+                    <p>Be the first to review this destination</p>
+                    <img src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png" alt="Tumbleweed" style={{width:"100px"}}/>
+                  </div>
+                  <div className="row text-center justify-content-center">
+                    <ReviewForm user_id={user.result._id} destination_id={destination._id} />
+                  </div>
+                </div>
+              )
+            ) : (
+              <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
+                <div className="row mb-4 align-items-center text-center justify-content-center">
+                  <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }} />
+                  <h5>You must follow the destination if you want to see the reviews</h5>
+                </div>
               </div>
-
             )}
           </>
-
         )}
+
+
 
         {activeTab === "gallery" && (
           <>

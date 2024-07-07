@@ -185,6 +185,7 @@ const Home = () => {
     if(dest != null){
       return (
         <Review 
+          id={rev._id}
           comment={rev.comment}
           author={user.result}
           score={rev.score}

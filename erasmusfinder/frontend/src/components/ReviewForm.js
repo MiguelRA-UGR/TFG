@@ -17,7 +17,7 @@ const ReviewForm = ({ user_id, destination_id }) => {
   const [comment, setComment] = useState("");
   const [anonymous, setAnonymous] = useState(false);
   const dispatch = useDispatch();
-  const [reviewData, setReviewData] = useState(initialState);
+  const [reviewData] = useState(initialState);
 
   const ratingColors = [
     "#800000", "#b81414", "#e76e24", "#ed8e5c", "#e8bd33",

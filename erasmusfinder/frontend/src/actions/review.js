@@ -15,7 +15,6 @@ export const createReview = (formData) => async(dispatch) =>{
 }
 
 export const deleteReview = (formData) => async(dispatch) =>{
-    
     try {
         const { data } = await api.deleteReview(formData);
 
