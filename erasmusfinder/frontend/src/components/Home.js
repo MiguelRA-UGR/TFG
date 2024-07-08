@@ -58,6 +58,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [reviews, setUserReviews] = useState([]);
+  const [pins, setPins] = useState([]);
   
   useEffect(() => {
     const getUserReviews = async () => {
@@ -135,6 +136,20 @@ const Home = () => {
     const followedIds = user?.result?.followedDestinations || [];
     const followed = allDestinations.filter(destination => followedIds.includes(destination._id));
     setFollowedDestinations(followed);
+
+    const pinData = allDestinations.map(dest => ({
+      position: { lat: dest.coords.lat, lng: dest.coords.long },
+      icon: {
+        url: followedIds.includes(dest._id) 
+          ? "../imgs/icons/push-pin-blue.png"
+          : "../imgs/icons/push-pin-orange.png",
+        scaledSize: { width: 30, height: 30 }
+      },
+      link: `/Destination/${dest._id}`,
+    }));
+
+    setPins(pinData);
+
   };
   //Mapear los destinos por sus ids
   const destinationById = {};
@@ -198,7 +213,7 @@ const Home = () => {
       );
     }    
   });
-
+  
   const users = [
     { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "it" },
     { id: 2, name: 'Agnes', country: 'Sweden', status: 'Coming soon to Madrid', status_color:"#6691c3", avatar: "agnes", flag: "se" },
@@ -267,15 +282,7 @@ const Home = () => {
 
       {(!user || (user.result.followedDestinations.length === 0)) && (
           <>
-            <span
-              className="mb-5"
-              style={{
-                fontSize: "35px",
-                color: "#595959",
-                fontFamily: "Cambria, serif",
-                fontWeight: "bold",
-              }}
-            >
+            <span className="section-title" style={{fontSize:"35px"}}>
               Discover...
             </span>
 
@@ -443,8 +450,14 @@ const Home = () => {
         </Carousel>
         </>
       )}
+      
+      {user && user.result.reviews.length > 0 && (
+      <span className="section-title">
+        Find the destination that better suits you!
+      </span>
+      )}
 
-    <MapComponent></MapComponent>
+      <MapComponent pinData={pins}></MapComponent>
 
     </div>
   );
