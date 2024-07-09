@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
 import Review from "./Review"
 import ReviewForm from "./ReviewForm";
+import { getColorForScore, stateColors } from './utils';
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -122,27 +123,6 @@ const Destination = () => {
   //Manejar botones del menú
   const handleTabChange = (tab) => {
     setActiveTab(tab);
-  };
-
-  const getColorForScore = (score) => {
-    if (score >= 9) {
-      //Verde
-      return "#00913f";
-    } else if (score >= 7) {
-      //Verde-amarillo
-      return "#c6ce00";
-    } else if (score >= 6) {
-      //Amarillo
-      return "#e6c619";
-    } else if (score >= 4) {
-      //Naranjs
-      return "#e25f23";
-    } else if (score === -1) {
-      return "#969696";
-    } else {
-      //Rojo
-      return "#b81414";
-    }
   };
 
   useEffect(() => {
@@ -298,7 +278,7 @@ const Destination = () => {
           style={{
             fontSize: "20px",
             fontWeight: "bold",
-            backgroundColor: user && !following ? "#f5973d" : "#969696",
+            backgroundColor: user && !following ? stateColors.one : stateColors.zero,
             color: "#ffffff",
             width: "200px",
           }}
@@ -343,7 +323,7 @@ const Destination = () => {
                 }`}
                 onClick={() => handleTabChange("info")}
                 style={{
-                  color: activeTab === "info" ? "#f5973d" : "",
+                  color: activeTab === "info" ? stateColors.one : "",
                   fontWeight: activeTab === "info" ? "bold" : "",
                 }}
               >
@@ -357,7 +337,7 @@ const Destination = () => {
                 }`}
                 onClick={() => handleTabChange("forums")}
                 style={{
-                  color: activeTab === "forums" ? "#f5973d" : "",
+                  color: activeTab === "forums" ? stateColors.one : "",
                   fontWeight: activeTab === "forums" ? "bold" : "",
                 }}
               >
@@ -371,7 +351,7 @@ const Destination = () => {
                 }`}
                 onClick={() => handleTabChange("followers")}
                 style={{
-                  color: activeTab === "followers" ? "#f5973d" : "",
+                  color: activeTab === "followers" ? stateColors.one : "",
                   fontWeight: activeTab === "followers" ? "bold" : "",
                 }}
               >
@@ -386,7 +366,7 @@ const Destination = () => {
                 }`}
                 onClick={() => handleTabChange("reviews")}
                 style={{
-                  color: activeTab === "reviews" ? "#f5973d" : "",
+                  color: activeTab === "reviews" ? stateColors.one : "",
                   fontWeight: activeTab === "reviews" ? "bold" : "",
                 }}
               >
@@ -401,7 +381,7 @@ const Destination = () => {
                 }`}
                 onClick={() => handleTabChange("gallery")}
                 style={{
-                  color: activeTab === "gallery" ? "#f5973d" : "",
+                  color: activeTab === "gallery" ? stateColors.one : "",
                   fontWeight: activeTab === "gallery" ? "bold" : "",
                 }}
               >
@@ -579,7 +559,7 @@ const Destination = () => {
                     <div className="row mb-4 align-items-center text-center justify-content-center">
                       <span className="section-title">
                         What do you think about{" "}
-                        <span style={{ color: '#f5973d', fontWeight: 'bold' }}>
+                        <span style={{ color: stateColors.one, fontWeight: 'bold' }}>
                           {destination.name}
                         </span>
                         ?
@@ -593,7 +573,7 @@ const Destination = () => {
                     <span className="section-title text-center">
                       What people think about {""}
 
-                      <span style={{ color: '#f5973d', fontWeight: 'bold' }}>
+                      <span style={{ color: stateColors.one, fontWeight: 'bold' }}>
                         {destination.name}
                       </span>
                       :

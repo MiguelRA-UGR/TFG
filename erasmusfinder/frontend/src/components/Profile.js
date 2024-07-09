@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { stateColors } from "./utils";
 
 const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -197,14 +198,14 @@ const fetchCountryFlags = async () => {
                 border: "3px solid white",
                 backgroundColor:
                   user.result.state === 0
-                    ? "#969696"
+                    ? stateColors.zero
                     : user.result.state === 1
-                    ? "#f5973d" // Naranja
+                    ? stateColors.one
                     : user.result.state === 2
-                    ? "#6691c3" // Azul
+                    ? stateColors.two
                     : user.result.state === 3
-                    ? "#61bdb8" // Aguamarina
-                    : "#969696",
+                    ? stateColors.three
+                    : stateColors.zero,
               }}
             >
               {user.result.userName.charAt(0).toUpperCase()}
@@ -245,7 +246,7 @@ const fetchCountryFlags = async () => {
                 <select className="form-select" id="state" value={editedUser.state} onChange={handleStateChange}>
                   <option
                     style={{
-                      backgroundColor: "#969696",
+                      backgroundColor: stateColors.zero,
                       fontWeight: "bold",
                       color: "white",
                     }}
@@ -255,7 +256,7 @@ const fetchCountryFlags = async () => {
                   </option>
                   <option
                     style={{
-                      backgroundColor: "#f5973d",
+                      backgroundColor: stateColors.one,
                       fontWeight: "bold",
                       color: "white",
                     }}
@@ -265,7 +266,7 @@ const fetchCountryFlags = async () => {
                   </option>
                   <option
                     style={{
-                      backgroundColor: "#6691c3",
+                      backgroundColor: stateColors.two,
                       fontWeight: "bold",
                       color: "white",
                     }}
@@ -275,7 +276,7 @@ const fetchCountryFlags = async () => {
                   </option>
                   <option
                     style={{
-                      backgroundColor: "#61bdb8",
+                      backgroundColor: stateColors.three,
                       fontWeight: "bold",
                       color: "white",
                     }}
@@ -291,13 +292,15 @@ const fetchCountryFlags = async () => {
             <span
               style={{
                 backgroundColor:
-                  user.result.state === 1
-                    ? "#f5973d"
+                  user.result.state === 0
+                    ? stateColors.zero
+                    : user.result.state === 1
+                    ? stateColors.one
                     : user.result.state === 2
-                    ? "#6691c3"
+                    ? stateColors.two
                     : user.result.state === 3
-                    ? "#61bdb8"
-                    : "#969696",
+                    ? stateColors.three
+                    : stateColors.zero,
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "14px",
@@ -578,7 +581,7 @@ const fetchCountryFlags = async () => {
               type="button"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning form-control"
@@ -591,7 +594,7 @@ const fetchCountryFlags = async () => {
               type="submit"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning form-control"

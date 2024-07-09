@@ -4,27 +4,7 @@ import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
 import { useDispatch } from "react-redux";
 import { deleteReview } from "../actions/review.js";
-
-const getColorForScore = (score) => {
-    if (score >= 9) {
-      //Verde
-      return "#00913f";
-    } else if (score >= 7) {
-      //Verde-amarillo
-      return "#c6ce00";
-    } else if (score >= 6) {
-      //Amarillo
-      return "#e6c619";
-    } else if (score >= 4) {
-      //Naranjs
-      return "#e25f23";
-    } else if (score === -1) {
-      return "#969696";
-    } else {
-      //Rojo
-      return "#b81414";
-    }
-  };
+import { getColorForScore } from './utils';
 
   const Review = ({ id, comment, author, date, score,destination, mode, anonymous }) => {
     const dispatch = useDispatch();

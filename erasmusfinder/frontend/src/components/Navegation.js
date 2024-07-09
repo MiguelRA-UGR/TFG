@@ -3,6 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as actionType from "../constants/actionTypes";
 import { jwtDecode } from "jwt-decode";
+import { stateColors } from "./utils";
 
 const Navegation = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -32,15 +33,15 @@ const Navegation = () => {
             height: "35px",
             lineHeight: "35px",
             backgroundColor:
-                                user.result.state === 0
-                                  ? "#969696"
-                                  : user.result.state === 1
-                                  ? "#f5973d" // Naranja
-                                  : user.result.state === 2
-                                  ? "#6691c3" // Azul
-                                  : user.result.state === 3
-                                  ? "#61bdb8" // Aguamarina
-                                  : "#969696" //Gris
+              user.result.state === 0
+                ? stateColors.zero
+                : user.result.state === 1
+                ? stateColors.one
+                : user.result.state === 2
+                ? stateColors.two
+                : user.result.state === 3
+                ? stateColors.three
+                : stateColors.zero,
           }}
         >
           {firstLetter}
@@ -84,7 +85,7 @@ const Navegation = () => {
             }}
           >
             <span style={{ color: "#000000" }}>Erasmus</span>
-            <span style={{ color: "#f5973d" }}>Finder</span>
+            <span style={{ color: stateColors.one }}>Finder</span>
           </Link>
           <button
             className="navbar-toggler"
@@ -153,7 +154,7 @@ const Navegation = () => {
                       style={{
                         fontSize: "20px",
                         fontWeight: "bold",
-                        backgroundColor: "#969696",
+                        backgroundColor: stateColors.zero,
                         color: "#ffffff",
                       }}
                     >
@@ -169,7 +170,7 @@ const Navegation = () => {
                       style={{
                         fontSize: "20px",
                         fontWeight: "bold",
-                        backgroundColor: "#f5973d",
+                        backgroundColor: stateColors.one,
                         color: "#ffffff",
                       }}
                     >

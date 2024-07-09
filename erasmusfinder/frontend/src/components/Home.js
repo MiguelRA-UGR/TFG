@@ -139,6 +139,10 @@ const Home = () => {
 
     const pinData = allDestinations.map(dest => ({
       position: { lat: dest.coords.lat, lng: dest.coords.long },
+      name: dest.name,
+      score: dest.mean_score,
+      country: dest.country,
+      iso: dest.iso,
       icon: {
         url: followedIds.includes(dest._id) 
           ? "../imgs/icons/push-pin-blue.png"
@@ -451,7 +455,7 @@ const Home = () => {
         </>
       )}
       
-      {user && user.result.reviews.length > 0 && (
+      {!user && (
       <span className="section-title">
         Find the destination that better suits you!
       </span>

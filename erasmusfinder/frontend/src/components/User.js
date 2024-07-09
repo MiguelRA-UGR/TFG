@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { stateColors } from "./utils";
 import {
   createContact,
   breakContact,
@@ -158,14 +159,14 @@ const User = () => {
                   border: "3px solid white",
                   backgroundColor:
                     userProfile.state === 0
-                      ? "#969696"
+                      ? stateColors.zero
                       : userProfile.state === 1
-                      ? "#f5973d" // Naranja
+                      ? stateColors.one
                       : userProfile.state === 2
-                      ? "#6691c3" // Azul
+                      ? stateColors.two
                       : userProfile.state === 3
-                      ? "#61bdb8" // Aguamarina
-                      : "#969696",
+                      ? stateColors.three
+                      : stateColors.zero,
                 }}
               >
                 {userProfile.userName.charAt(0).toUpperCase()}
@@ -175,13 +176,15 @@ const User = () => {
             <span
               style={{
                 backgroundColor:
-                  userProfile.state === 1
-                    ? "#f5973d"
+                  userProfile.state === 0
+                    ? stateColors.zero
+                    : userProfile.state === 1
+                    ? stateColors.one
                     : userProfile.state === 2
-                    ? "#6691c3"
+                    ? stateColors.two
                     : userProfile.state === 3
-                    ? "#61bdb8"
-                    : "#969696",
+                    ? stateColors.three
+                    : stateColors.zero,
                 color: "white",
                 fontWeight: "bold",
                 fontSize: "14px",
@@ -323,7 +326,7 @@ const User = () => {
           type="button"
           style={{
             fontWeight: "bold",
-            backgroundColor: "#696969",
+            backgroundColor: stateColors.zero,
             color: "#ffffff",
           }}
           className="btn btn-warning mt-4"
@@ -338,7 +341,7 @@ const User = () => {
               type="button"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#696969",
+                backgroundColor: stateColors.zero,
                 color: "#ffffff",
               }}
               className="btn btn-warning mt-4"
@@ -351,7 +354,7 @@ const User = () => {
               type="submit"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { createReview } from "../actions/review.js";
 import PropTypes from "prop-types";
+import { ratingColors } from './utils';
 
 const initialState = {
   comment: "",
@@ -18,11 +19,6 @@ const ReviewForm = ({ user_id, destination_id }) => {
   const [anonymous, setAnonymous] = useState(false);
   const dispatch = useDispatch();
   const [reviewData] = useState(initialState);
-
-  const ratingColors = [
-    "#800000", "#b81414", "#e76e24", "#ed8e5c", "#e8bd33",
-    "#e5e937", "#a0ec55", "#3ae620", "#16c839", "#2f9711"
-  ];
 
   const handleMouseEnter = (value) => {
     setHoverRating(value);

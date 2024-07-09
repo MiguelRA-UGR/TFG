@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { APIProvider, Map, Marker, InfoWindow } from '@vis.gl/react-google-maps';
-import mapStyles from '../mapStyles.json'; 
+import mapStyles from '../mapStyles.json';
+import { Link } from "react-router-dom";
+import { getColorForScore } from './utils';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const MapComponent = ({ pinData }) => {
   const navigate = useNavigate();
-  const [selectedPin, setSelectedPin] = useState(null);
   const [hoveredPin, setHoveredPin] = useState(null);
 
   const mapOptions = {
@@ -16,20 +17,16 @@ const MapComponent = ({ pinData }) => {
     styles: mapStyles, 
   };
 
-  const handleMarkerClick = (pin) => {
-    navigate(pin.link);
-  };
-
   const handleMarkerMouseOver = (pin) => {
     setHoveredPin(pin);
   };
 
-  const handleMarkerMouseOut = () => {
-    setTimeout(() => {
-      if (hoveredPin === null) {
-        setSelectedPin(null);
-      }
-    }, 100);
+  const handleMarkerMouseOut = () => {};
+
+  const handleInfoWindowMouseOver = () => {};
+
+  const handleInfoWindowMouseOut = () => {
+    setHoveredPin(null);
   };
 
   return (
@@ -47,20 +44,53 @@ const MapComponent = ({ pinData }) => {
             key={index}
             position={pin.position}
             icon={pin.icon}
-            onClick={() => handleMarkerClick(pin)}
             onMouseOver={() => handleMarkerMouseOver(pin)}
-            onMouseOut={() => handleMarkerMouseOut()}
+            onMouseOut={handleMarkerMouseOut}
           />
         ))}
-        {(selectedPin || hoveredPin) && (
+        {hoveredPin && (
           <InfoWindow
-            position={(selectedPin || hoveredPin).position}
-            onCloseClick={() => handleMarkerMouseOut}
+            position={hoveredPin.position}
+            onCloseClick={() => setHoveredPin(null)}
           >
-            <div>
-              <h2>{"Hola"}</h2>
-              <p>{"Description"}</p>
-            </div>
+              <Link
+                to={hoveredPin.link}
+                className="nav-link"
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="d-flex flex-column align-items-start">
+                    <h5 style={{ marginBottom: '5px' }}>{hoveredPin.name}</h5>
+                    <div className="d-flex align-items-center">
+                      <p style={{ fontSize: '14px', margin: '0' }}>{hoveredPin.country}</p>
+                      <img
+                        src={`https://flagcdn.com/${hoveredPin.iso}.svg`}
+                        alt={hoveredPin.country}
+                        style={{ height: "20px", width: "20px", marginLeft: "5px", borderRadius: "50%", objectFit: "cover" }}
+                      />
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      marginLeft: "10px",
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: getColorForScore(hoveredPin.score),
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      textAlign: "center",
+                    }}
+                  >
+                    <span
+                      style={{ fontSize: "25px", color: "#ffffff", fontWeight: "bold" }}
+                    >
+                      {hoveredPin.score === -1 ? "-" : hoveredPin.score}
+                    </span>
+                  </div>
+                </div>
+              </Link>
           </InfoWindow>
         )}
       </div>
