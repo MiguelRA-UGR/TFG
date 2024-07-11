@@ -221,14 +221,13 @@ const Destination = () => {
 
       if (foundUserReview) {
         setReviewed(true);
-        console.log("Rseña hecha por el usuario:", foundUserReview);
         setUserReview(foundUserReview);
       } else {
         setReviewed(false);
         setUserReview(null);
       }
     }
-  }, [reviews, user]); // Dependencia en reviews y user
+  }, [reviews, user]);
 
   if (!destination) {
     return <div>Cargando destino...</div>;
@@ -528,7 +527,7 @@ const Destination = () => {
             <div className="col-md-12">
               <ul className="list-unstyled">
                   {Object.values(followers).map((follower) => (
-                      <li className="d-flex align-items-center mb-2">
+                      <li className="d-flex align-items-center mb-2" key={follower._id}>
                         <Avatar
                           user={follower}
                           outerSize="60px"
@@ -567,13 +566,8 @@ const Destination = () => {
                       </div>
                       
                       <Review 
-                        id={userReview._id}
-                        comment={userReview.comment}
-                        author={userReview.author}
-                        score={userReview.score}
-                        date={userReview.createdAt}
+                        review={userReview}
                         destination={destination}
-                        anonymous={userReview.anonymous}
                         mode={1}
                       />
                     </>

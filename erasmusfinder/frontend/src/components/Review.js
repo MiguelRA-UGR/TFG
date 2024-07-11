@@ -151,14 +151,9 @@ import { getColorForScore } from './utils';
   };
   
   Review.propTypes = {
-    id: PropTypes.string.isRequired,
-    comment: PropTypes.string.isRequired,
-    author: PropTypes.object.isRequired,
-    date: PropTypes.string.isRequired,
-    score: PropTypes.number.isRequired,
+    review: PropTypes.object.isRequired,
     destination: PropTypes.object,
     mode: PropTypes.number.isRequired,
-    anonymous: PropTypes.bool.isRequired,
   };
   
   export default Review;
