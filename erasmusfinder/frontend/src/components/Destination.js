@@ -6,6 +6,8 @@ import { Link } from "react-router-dom";
 import Avatar from "./Avatar"
 import Review from "./Review"
 import ReviewForm from "./ReviewForm";
+import UploadAndDisplayImage from "./UploadPhoto";
+import Photo from "./Photo";
 import { getColorForScore, stateColors } from './utils';
 
 const Destination = () => {
@@ -17,6 +19,7 @@ const Destination = () => {
   const [activeTab, setActiveTab] = useState("info");
   const [followers, setFollowers] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [photos, setPhotos] = useState([]);
 
   function formatedName(name) {
       return name.toLowerCase().replace(/\s+/g, '');
@@ -147,6 +150,8 @@ const Destination = () => {
 
         const followerIds = data.users;
         const reviewsIds = data.reviews;
+        const photosIds = data.photos;
+
 
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
@@ -178,6 +183,23 @@ const Destination = () => {
           author: followersObject[review.user],
         }));
         setReviews(reviewsWithUsers);
+
+        const photosData = await Promise.all(
+          photosIds.map(async (photoId) => {
+            const photosRes = await fetch(`http://localhost:4000/api/photos/${photoId}`);
+            if (!photosRes.ok) {
+              throw new Error("Error al obtener los datos de las fotos");
+            }
+            const photoData = await photosRes.json();
+            return photoData;
+          })
+        );
+
+        const photosWithUsers = photosData.map((photo) => ({
+          ...photo,
+          author: followersObject[photo.user],
+        }));
+        setPhotos(photosWithUsers);
 
         // Verificar si el usuario sigue el destino
         if (user && user.result.followedDestinations.includes(destinationId)) {
@@ -581,16 +603,10 @@ const Destination = () => {
 
                     {reviews
                       .filter(review => !hasReviewed || review._id !== userReview._id)
-                      .map((review, index) => (
+                      .map((review) => (
                         <Review 
-                          key={review._id || index}
-                          id={review._id}
-                          comment={review.comment}
-                          author={review.author}
-                          score={review.score}
-                          date={review.createdAt}
+                          review={review}
                           destination={destination}
-                          anonymous={review.anonymous}
                           mode={0}
                         />
                       ))
@@ -624,7 +640,15 @@ const Destination = () => {
 
         {activeTab === "gallery" && (
           <>
-            <div className="row"></div>
+            <div className="row justify-content-center" >
+                <div className="col-12 mb-3 upload-image">
+                    <UploadAndDisplayImage />
+                </div>
+                
+                {photos.map((photo) => (
+                    <Photo photo={photo}></Photo>
+                ))}
+            </div>
           </>
         )}
       </div>

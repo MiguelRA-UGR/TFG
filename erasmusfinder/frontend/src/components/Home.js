@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import CarouselCard from "./CarouselCard.js";
 import CarouselUser from "./CarouselUser.js";
-import Review from "./Review"
- 
-import '../index.css';
-import MapComponent from './MapComponent.js';
+import Review from "./Review";
+
+import "../index.css";
+import MapComponent from "./MapComponent.js";
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -53,31 +53,33 @@ const responsiveReviews = {
 const Home = () => {
   const [destinations, setDestinations] = useState([]);
   const [contacts, setContacts] = useState([]);
-  const [user] = useState(JSON.parse(localStorage.getItem('profile')));
+  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const [followedDestinations, setFollowedDestinations] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [reviews, setUserReviews] = useState([]);
   const [pins, setPins] = useState([]);
-  
+
   useEffect(() => {
     const getUserReviews = async () => {
       if (!user || !user.result.reviews) return;
-      
+
       try {
         const reviewIds = user.result.reviews;
         const reviewsData = await Promise.all(
           reviewIds.map(async (reviewId) => {
-            const res = await fetch(`http://localhost:4000/api/reviews/${reviewId}`);
+            const res = await fetch(
+              `http://localhost:4000/api/reviews/${reviewId}`
+            );
             if (!res.ok) {
-              throw new Error('Error al obtener las reseñas');
+              throw new Error("Error al obtener las reseñas");
             }
             return await res.json();
           })
         );
         setUserReviews(reviewsData);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -87,19 +89,18 @@ const Home = () => {
   useEffect(() => {
     const getDestinations = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/dests', {
-          method: 'GET',
+        const res = await fetch("http://localhost:4000/api/dests", {
+          method: "GET",
         });
         if (!res.ok) {
-          throw new Error('Error al obtener los destinos');
+          throw new Error("Error al obtener los destinos");
         }
         const data = await res.json();
         setDestinations(data);
 
         filterFollowedDestinations(data);
-
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -109,16 +110,16 @@ const Home = () => {
   useEffect(() => {
     const getContacts = async () => {
       try {
-        const res = await fetch('http://localhost:4000/api/users', {
-          method: 'GET',
+        const res = await fetch("http://localhost:4000/api/users", {
+          method: "GET",
         });
         if (!res.ok) {
-          throw new Error('Error al obtener los contactos');
+          throw new Error("Error al obtener los contactos");
         }
         const data = await res.json();
         filterContacts(data);
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     };
 
@@ -128,32 +129,35 @@ const Home = () => {
   const filterContacts = (allContacts) => {
     const followedIds = user?.result?.followedUsers || [];
 
-    const followed = allContacts.filter(contact => followedIds.includes(contact._id));
+    const followed = allContacts.filter((contact) =>
+      followedIds.includes(contact._id)
+    );
     setContacts(followed);
   };
 
   const filterFollowedDestinations = (allDestinations) => {
     const followedIds = user?.result?.followedDestinations || [];
-    const followed = allDestinations.filter(destination => followedIds.includes(destination._id));
+    const followed = allDestinations.filter((destination) =>
+      followedIds.includes(destination._id)
+    );
     setFollowedDestinations(followed);
 
-    const pinData = allDestinations.map(dest => ({
+    const pinData = allDestinations.map((dest) => ({
       position: { lat: dest.coords.lat, lng: dest.coords.long },
       name: dest.name,
       score: dest.mean_score,
       country: dest.country,
       iso: dest.iso,
       icon: {
-        url: followedIds.includes(dest._id) 
+        url: followedIds.includes(dest._id)
           ? "../imgs/icons/push-pin-blue.png"
           : "../imgs/icons/push-pin-orange.png",
-        scaledSize: { width: 30, height: 30 }
+        scaledSize: { width: 30, height: 30 },
       },
       link: `/Destination/${dest._id}`,
     }));
 
     setPins(pinData);
-
   };
   //Mapear los destinos por sus ids
   const destinationById = {};
@@ -162,21 +166,20 @@ const Home = () => {
     destinationById[destination._id] = destination;
   });
 
-
   function formatedName(name) {
-    return name.toLowerCase().replace(/\s+/g, '');
+    return name.toLowerCase().replace(/\s+/g, "");
   }
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    const filteredDestinations = destinations.filter(destination =>
+    const filteredDestinations = destinations.filter((destination) =>
       destination.name.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setSearchResults(filteredDestinations);
   };
 
   const clearSearch = () => {
-    setSearchTerm('');
+    setSearchTerm("");
     setSearchResults([]);
   };
 
@@ -198,30 +201,56 @@ const Home = () => {
     />
   ));
 
-  const review = reviews.map((rev) => {
-    //Obtener el destino a través del id almacenado en la review
+  var review = "null";
+
+  var review = reviews.map((rev) => {
     const dest = destinationById[rev.destination];
 
-    if(dest != null){
+    if (dest != null) {
+      const reviewData = {
+        id: rev._id,
+        comment: rev.comment,
+        author: user.result,
+        score: rev.score,
+        date: rev.createdAt,
+        destination: dest,
+        anonymous: false,
+      };
+
       return (
-        <Review 
-          id={review._id}
-          comment={rev.comment}
-          author={user.result}
-          score={rev.score}
-          date={rev.createdAt}
-          destination={dest}
-          mode={1}
-          anonymous={false}
-        />
+        <Review review={reviewData} destination={dest} mode={1} key={rev._id} />
       );
-    }    
+    }
   });
-  
+
   const users = [
-    { id: 1, name: 'Martina', country: 'Italy', status: 'Searching destination', status_color:"#f5973d", avatar: "martina", flag: "it" },
-    { id: 2, name: 'Agnes', country: 'Sweden', status: 'Coming soon to Madrid', status_color:"#6691c3", avatar: "agnes", flag: "se" },
-    { id: 3, name: 'Eric', country: 'France', status: 'Living in Vienna', status_color:"#61bdb8", avatar: "eric", flag: "fr" }
+    {
+      id: 1,
+      name: "Martina",
+      country: "Italy",
+      status: "Searching destination",
+      status_color: "#f5973d",
+      avatar: "martina",
+      flag: "it",
+    },
+    {
+      id: 2,
+      name: "Agnes",
+      country: "Sweden",
+      status: "Coming soon to Madrid",
+      status_color: "#6691c3",
+      avatar: "agnes",
+      flag: "se",
+    },
+    {
+      id: 3,
+      name: "Eric",
+      country: "France",
+      status: "Living in Vienna",
+      status_color: "#61bdb8",
+      avatar: "eric",
+      flag: "fr",
+    },
   ];
 
   return (
@@ -284,87 +313,87 @@ const Home = () => {
         </div>
       )}
 
-      {(!user || (user.result.followedDestinations.length === 0)) && (
-          <>
-            <span className="section-title" style={{fontSize:"35px"}}>
-              Discover...
-            </span>
+      {(!user || user.result.followedDestinations.length === 0) && (
+        <>
+          <span className="section-title" style={{ fontSize: "35px" }}>
+            Discover...
+          </span>
 
-            <div
-              id="carouselExampleAutoplaying"
-              className="carousel slide d-flex justify-content-center align-items-center"
-              data-bs-ride="carousel"
-            >
-              <div className="carousel-inner">
-                {destinations.map((destination, index) => (
+          <div
+            id="carouselExampleAutoplaying"
+            className="carousel slide d-flex justify-content-center align-items-center"
+            data-bs-ride="carousel"
+          >
+            <div className="carousel-inner">
+              {destinations.map((destination, index) => (
+                <div
+                  key={index}
+                  className={`carousel-item ${index === 0 ? "active" : ""}`}
+                >
+                  <Link to={`/Destination/${destination._id}`}>
+                    <img
+                      src={`http://localhost:4000/imgs/frontpages/${formatedName(
+                        destination.name
+                      )}.png`}
+                      style={{ maxHeight: "700px", objectFit: "cover" }}
+                      alt={destination.name}
+                    />
+                  </Link>
                   <div
-                    key={index}
-                    className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    className="carousel-caption d-flex justify-content-center align-items-center"
+                    style={{
+                      position: "absolute",
+                      bottom: "0",
+                      left: "0",
+                      right: "0",
+                      backgroundColor: "rgba(0, 0, 0, 0.6)",
+                    }}
                   >
-                    <Link to={`/Destination/${destination._id}`}>
-                      <img
-                        src={`http://localhost:4000/imgs/frontpages/${formatedName(
-                          destination.name
-                        )}.png`}
-                        style={{ maxHeight: "700px", objectFit: "cover" }}
-                        alt={destination.name}
-                      />
-                    </Link>
-                    <div
-                      className="carousel-caption d-flex justify-content-center align-items-center"
-                      style={{
-                        position: "absolute",
-                        bottom: "0",
-                        left: "0",
-                        right: "0",
-                        backgroundColor: "rgba(0, 0, 0, 0.6)",
-                      }}
-                    >
-                      <div className="text-center">
-                        <h5
-                          style={{
-                            fontSize: "25px",
-                            fontFamily: "Cambria, serif",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {destination.name}
-                        </h5>
-                        <p style={{ maxWidth: "60%", margin: "0 auto" }}>
-                          {destination.description}
-                        </p>
-                      </div>
+                    <div className="text-center">
+                      <h5
+                        style={{
+                          fontSize: "25px",
+                          fontFamily: "Cambria, serif",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {destination.name}
+                      </h5>
+                      <p style={{ maxWidth: "60%", margin: "0 auto" }}>
+                        {destination.description}
+                      </p>
                     </div>
                   </div>
-                ))}
-              </div>
-              <button
-                className="carousel-control-prev"
-                type="button"
-                data-bs-target="#carouselExampleAutoplaying"
-                data-bs-slide="prev"
-              >
-                <span
-                  className="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-                <span className="visually-hidden">Previous</span>
-              </button>
-              <button
-                className="carousel-control-next"
-                type="button"
-                data-bs-target="#carouselExampleAutoplaying"
-                data-bs-slide="next"
-              >
-                <span
-                  className="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-                <span className="visually-hidden">Next</span>
-              </button>
+                </div>
+              ))}
             </div>
-          </>
-        )}
+            <button
+              className="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleAutoplaying"
+              data-bs-slide="prev"
+            >
+              <span
+                className="carousel-control-prev-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Previous</span>
+            </button>
+            <button
+              className="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleAutoplaying"
+              data-bs-slide="next"
+            >
+              <span
+                className="carousel-control-next-icon"
+                aria-hidden="true"
+              ></span>
+              <span className="visually-hidden">Next</span>
+            </button>
+          </div>
+        </>
+      )}
 
       {!user && (
         <>
@@ -418,53 +447,66 @@ const Home = () => {
           </div>
         </>
       )}
-  
+
       {user && user.result.followedDestinations.length > 0 && (
         <>
-          <span className="section-title">
-            Followed destinations
-          </span>
-
-        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveDests}>
-          {followeDestination}
-        </Carousel>
+          <span className="section-title">Followed destinations</span>
+          <img
+            src={"../imgs/icons/push-pin-blue.png"}
+            alt="Push Pin Icon"
+            className="icon"
+            style={{ width: "20px", height: "20px" }}
+          />
+          <Carousel
+            className="mb-3"
+            showDots={false}
+            autoPlay={true}
+            responsive={responsiveDests}
+          >
+            {followeDestination}
+          </Carousel>
         </>
       )}
 
       {user && user.result.followedUsers.length > 0 && (
         <>
-      <span className="section-title">
-        Contacts
-      </span>
+          <span className="section-title">Contacts</span>
 
-        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveDests}>
-          {contact}
-        </Carousel>
+          <Carousel
+            className="mb-3"
+            showDots={false}
+            autoPlay={true}
+            responsive={responsiveDests}
+          >
+            {contact}
+          </Carousel>
         </>
       )}
 
       {user && user.result.reviews.length > 0 && (
         <>
-        <span className="section-title">
-        Your Reviews
-        </span>
+          <span className="section-title">Your Reviews</span>
 
-        <Carousel className="mb-3" showDots={false} autoPlay={true} responsive={responsiveReviews}>
-          {review}
-        </Carousel>
+          <Carousel
+            className="mb-3"
+            showDots={false}
+            autoPlay={true}
+            responsive={responsiveReviews}
+          >
+            {review}
+          </Carousel>
         </>
       )}
-      
+
       {!user && (
-      <span className="section-title">
-        Find the destination that better suits you!
-      </span>
+        <span className="section-title">
+          Find the destination that better suits you!
+        </span>
       )}
 
       <MapComponent pinData={pins}></MapComponent>
-
     </div>
   );
-}
+};
 
 export default Home;
