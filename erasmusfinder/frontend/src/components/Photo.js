@@ -7,25 +7,43 @@ const Photo = ({ photo }) => {
   
   return (
     <div className="card" style={{ width: "300px", height: "auto", position: "relative" }}>
-      <div className="card-body d-flex flex-column align-items-center">
+      <div className="card-body d-flex flex-column">
         <div className="image-container mb-3" style={{ width: "275px", height: "275px" }}>
           <img
             className="card-img-top"
-            src={`http://localhost:4000/imgs/posts/${photo.url}`}
+            src={`http://localhost:4000${photo.url}`}
             style={{ objectFit: "cover", width: "100%", height: "100%", borderRadius:"5px" }}
             alt={photo.ubication.name}
           />
         </div>
 
         <div className="d-flex align-items-center mb-2" style={{ width: "100%" }}>
-          <Avatar
-            user={photo.author}
-            outerSize="40px"
-            innerSize="30px"
-            flagSize="1px"
-          />
+        {photo.anonymous ? (
+              <div
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  backgroundColor: 'grey',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  color: 'white',
+                  fontSize: '30px'
+                }}
+                >
+                  ?
+                </div>
+              ) : (
+              <Avatar
+                user={photo.author}
+                outerSize="40px"
+                innerSize="30px"
+                flagSize="1px"
+              />
+              )}
           <div className="ms-2">
-            <span>{photo.author.userName}</span>
+            <span>{photo.anonymous ? 'Anonymous' : photo.author.userName}</span>
           </div>
         </div>
 

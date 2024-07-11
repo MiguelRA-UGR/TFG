@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 import "../index.css";
-import { Link } from "react-router-dom";
-import Avatar from "./Avatar"
-import Review from "./Review"
+import Avatar from "./Avatar";
+import Review from "./Review";
 import ReviewForm from "./ReviewForm";
-import UploadAndDisplayImage from "./UploadPhoto";
+import PhotoForm from "./PhotoForm";
+import PhotoCrop from "./PhotoCrop";
 import Photo from "./Photo";
-import { getColorForScore, stateColors } from './utils';
+import { getColorForScore, stateColors } from "./utils";
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -22,7 +22,7 @@ const Destination = () => {
   const [photos, setPhotos] = useState([]);
 
   function formatedName(name) {
-      return name.toLowerCase().replace(/\s+/g, '');
+    return name.toLowerCase().replace(/\s+/g, "");
   }
 
   //Fnución para actualizar los destinos seguidos dentro del usuario
@@ -139,9 +139,12 @@ const Destination = () => {
         const destinationId = window.location.pathname.split("/").pop();
 
         // Obtener los datos del destino
-        const res = await fetch(`http://localhost:4000/api/dests/${destinationId}`, {
-          method: "GET",
-        });
+        const res = await fetch(
+          `http://localhost:4000/api/dests/${destinationId}`,
+          {
+            method: "GET",
+          }
+        );
         if (!res.ok) {
           throw new Error("Error al obtener el destino");
         }
@@ -152,10 +155,11 @@ const Destination = () => {
         const reviewsIds = data.reviews;
         const photosIds = data.photos;
 
-
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
-            const userRes = await fetch(`http://localhost:4000/api/users/${followerId}`);
+            const userRes = await fetch(
+              `http://localhost:4000/api/users/${followerId}`
+            );
             if (!userRes.ok) {
               throw new Error("Error al obtener los datos del seguidor");
             }
@@ -169,7 +173,9 @@ const Destination = () => {
 
         const reviewsData = await Promise.all(
           reviewsIds.map(async (reviewId) => {
-            const reviewRes = await fetch(`http://localhost:4000/api/reviews/${reviewId}`);
+            const reviewRes = await fetch(
+              `http://localhost:4000/api/reviews/${reviewId}`
+            );
             if (!reviewRes.ok) {
               throw new Error("Error al obtener los datos de la reseña");
             }
@@ -186,7 +192,9 @@ const Destination = () => {
 
         const photosData = await Promise.all(
           photosIds.map(async (photoId) => {
-            const photosRes = await fetch(`http://localhost:4000/api/photos/${photoId}`);
+            const photosRes = await fetch(
+              `http://localhost:4000/api/photos/${photoId}`
+            );
             if (!photosRes.ok) {
               throw new Error("Error al obtener los datos de las fotos");
             }
@@ -217,7 +225,9 @@ const Destination = () => {
 
   useEffect(() => {
     if (user && reviews.length > 0) {
-      const foundUserReview = reviews.find(review => review.user === user.result._id);
+      const foundUserReview = reviews.find(
+        (review) => review.user === user.result._id
+      );
 
       if (foundUserReview) {
         setReviewed(true);
@@ -239,10 +249,15 @@ const Destination = () => {
         <div className="d-flex">
           <img
             className="mt-3"
-            
             src={`https://flagcdn.com/${destination.iso}.svg`}
             alt={destination.country}
-            style={{ height: "50px",width: "50px", marginRight: "15px" ,borderRadius: "50%", objectFit: "cover"}}
+            style={{
+              height: "50px",
+              width: "50px",
+              marginRight: "15px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
           />
 
           <div className="d-flex flex-column">
@@ -270,7 +285,8 @@ const Destination = () => {
           </div>
         </div>
 
-        <div className="mt-3"
+        <div
+          className="mt-3"
           style={{
             width: "45px",
             height: "45px",
@@ -299,7 +315,8 @@ const Destination = () => {
           style={{
             fontSize: "20px",
             fontWeight: "bold",
-            backgroundColor: user && !following ? stateColors.one : stateColors.zero,
+            backgroundColor:
+              user && !following ? stateColors.one : stateColors.zero,
             color: "#ffffff",
             width: "200px",
           }}
@@ -329,7 +346,9 @@ const Destination = () => {
       </div>
 
       <img
-        src={`http://localhost:4000/imgs/frontpages/${formatedName(destination.name)}2.png`}
+        src={`http://localhost:4000/imgs/frontpages/${formatedName(
+          destination.name
+        )}2.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}
         alt={destination.name}
       />
@@ -507,27 +526,41 @@ const Destination = () => {
 
         {activeTab === "forums" && (
           <>
-          {following ? (
-            <></>
-          ) : (
-            <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
-              <div className="row mb-4 align-items-center text-center justify-content-center">
-                <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }}/>
-                <h5>You must follow the destination if you want to access the forums</h5>
+            {following ? (
+              <></>
+            ) : (
+              <div
+                className="container d-flex flex-column align-items-center justify-content-center"
+                style={{ minHeight: "300px" }}
+              >
+                <div className="row mb-4 align-items-center text-center justify-content-center">
+                  <img
+                    className="mb-3"
+                    src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png"
+                    alt="Lock"
+                    style={{ width: "100px" }}
+                  />
+                  <h5>
+                    You must follow the destination if you want to access the
+                    forums
+                  </h5>
+                </div>
               </div>
-            </div>
-          )}
+            )}
           </>
         )}
 
         {activeTab === "followers" && (
           <>
-          {following ? (
-            <div className="row">
-            <div className="col-md-12">
-              <ul className="list-unstyled">
-                  {Object.values(followers).map((follower) => (
-                      <li className="d-flex align-items-center mb-2" key={follower._id}>
+            {following ? (
+              <div className="row">
+                <div className="col-md-12">
+                  <ul className="list-unstyled">
+                    {Object.values(followers).map((follower) => (
+                      <li
+                        className="d-flex align-items-center mb-2"
+                        key={follower._id}
+                      >
                         <Avatar
                           user={follower}
                           outerSize="60px"
@@ -536,19 +569,29 @@ const Destination = () => {
                         />
                         <span className="ms-3">{follower.userName}</span>
                       </li>
-                  ))}
-                </ul>
-            </div>
-          </div>
-        
-          ) : (
-            <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
-              <div className="row mb-4 align-items-center text-center justify-content-center">
-                <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }}/>
-                <h5>You must follow the destination if you want to see the followers</h5>
+                    ))}
+                  </ul>
+                </div>
               </div>
-            </div>
-          )}
+            ) : (
+              <div
+                className="container d-flex flex-column align-items-center justify-content-center"
+                style={{ minHeight: "300px" }}
+              >
+                <div className="row mb-4 align-items-center text-center justify-content-center">
+                  <img
+                    className="mb-3"
+                    src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png"
+                    alt="Lock"
+                    style={{ width: "100px" }}
+                  />
+                  <h5>
+                    You must follow the destination if you want to see the
+                    followers
+                  </h5>
+                </div>
+              </div>
+            )}
           </>
         )}
 
@@ -560,51 +603,56 @@ const Destination = () => {
                   {hasReviewed ? (
                     <>
                       <div className="row mb-4 align-items-center text-center justify-content-center">
-                        <span className="section-title">
-                          Your Review:
-                        </span>
+                        <span className="section-title">Your Review:</span>
                       </div>
-                      
-                      <Review 
+
+                      <Review
                         review={userReview}
                         destination={destination}
                         mode={1}
                       />
                     </>
-                  ):(
+                  ) : (
                     <div className="row mb-4 align-items-center text-center justify-content-center">
                       <span className="section-title">
                         What do you think about{" "}
-                        <span style={{ color: stateColors.one, fontWeight: 'bold' }}>
+                        <span
+                          style={{ color: stateColors.one, fontWeight: "bold" }}
+                        >
                           {destination.name}
                         </span>
                         ?
                       </span>
-                      <ReviewForm user_id={user.result._id} destination_id={destination._id} />
+                      <ReviewForm
+                        user_id={user.result._id}
+                        destination_id={destination._id}
+                      />
                     </div>
                   )}
 
                   <div className="row">
-
                     <span className="section-title text-center">
                       What people think about {""}
-
-                      <span style={{ color: stateColors.one, fontWeight: 'bold' }}>
+                      <span
+                        style={{ color: stateColors.one, fontWeight: "bold" }}
+                      >
                         {destination.name}
                       </span>
                       :
                     </span>
 
                     {reviews
-                      .filter(review => !hasReviewed || review._id !== userReview._id)
+                      .filter(
+                        (review) =>
+                          !hasReviewed || review._id !== userReview._id
+                      )
                       .map((review) => (
-                        <Review 
+                        <Review
                           review={review}
                           destination={destination}
                           mode={0}
                         />
-                      ))
-                    }
+                      ))}
                   </div>
                 </>
               ) : (
@@ -612,38 +660,56 @@ const Destination = () => {
                   <div className="row mb-4 align-items-center text-center justify-content-center">
                     <h4>Wow, it's a bit lonely in here</h4>
                     <p>Be the first to review this destination</p>
-                    <img src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png" alt="Tumbleweed" style={{width:"100px"}}/>
+                    <img
+                      src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png"
+                      alt="Tumbleweed"
+                      style={{ width: "100px" }}
+                    />
                   </div>
                   <div className="row text-center justify-content-center">
-                    <ReviewForm user_id={user.result._id} destination_id={destination._id} />
+                    <ReviewForm
+                      user_id={user.result._id}
+                      destination_id={destination._id}
+                    />
                   </div>
                 </div>
               )
             ) : (
-              <div className="container d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '300px' }}>
+              <div
+                className="container d-flex flex-column align-items-center justify-content-center"
+                style={{ minHeight: "300px" }}
+              >
                 <div className="row mb-4 align-items-center text-center justify-content-center">
-                  <img className="mb-3" src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png" alt="Lock" style={{ width: "100px" }} />
-                  <h5>You must follow the destination if you want to see the reviews</h5>
+                  <img
+                    className="mb-3"
+                    src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png"
+                    alt="Lock"
+                    style={{ width: "100px" }}
+                  />
+                  <h5>
+                    You must follow the destination if you want to see the
+                    reviews
+                  </h5>
                 </div>
               </div>
             )}
           </>
         )}
 
-
-
         {activeTab === "gallery" && (
-          <>
-            <div className="row justify-content-center" >
-                <div className="col-12 mb-3 upload-image">
-                    <UploadAndDisplayImage />
+          <div className="container">
+            <div className="row">
+              {photos.map((photo) => (
+                <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
+                  <Photo photo={photo} />
                 </div>
-                
-                {photos.map((photo) => (
-                    <Photo photo={photo}></Photo>
-                ))}
+              ))}
             </div>
-          </>
+
+            <div className="row justify-content-center text-center mt-3">
+              <PhotoForm/>
+            </div>
+          </div>
         )}
       </div>
     </div>

@@ -32,7 +32,7 @@ photoCtrlr.uploadPhoto = async (req, res) => {
 
         const author = await User.findById(user);
         
-        console.log(author);
+        console.log(req.body);
 
         const newPhoto = new Photo({ 
             url,
@@ -43,6 +43,8 @@ photoCtrlr.uploadPhoto = async (req, res) => {
             user,
             anonymous 
         });
+        
+        console.log(newPhoto);
 
         const dest = await Destination.findById(destination);
         

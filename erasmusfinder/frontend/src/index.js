@@ -6,7 +6,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
-//import { thunk } from 'redux-thunk';
 
 import { reducers } from './reducers';
 

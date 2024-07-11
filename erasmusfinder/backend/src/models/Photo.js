@@ -2,20 +2,18 @@ const { Schema, model, ObjectId } = require('mongoose');
 
 const photoSchema = new Schema({
     ubication: {
-        name: { type: String, required: true},
-        lat: { type: Number, required:true},
-        long: { type: Number, required:true}
+        name: { type: String},
+        lat: { type: Number},
+        long: { type: Number}
     },
 
     likes: [{
         type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'User'
     }],
     destination: {
         type: Schema.Types.ObjectId,
-        ref: 'Destination',
-        required: true
+        ref: 'Destination'
     },
 
     user: {
@@ -23,9 +21,9 @@ const photoSchema = new Schema({
         ref: 'User',
         required: true
     },
-    url: { type:String, required: true},
-    comment: { type:String, required: true},
-    anonymous: { type:Boolean, required: true}
+    url: { type:String},
+    comment: { type:String},
+    anonymous: { type:Boolean}
 
 
 }, {
