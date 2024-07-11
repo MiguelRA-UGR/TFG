@@ -39,6 +39,14 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Destination'
     }],
+    photos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Photo'
+    }],
+    likedPhotos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Photo'
+    }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'

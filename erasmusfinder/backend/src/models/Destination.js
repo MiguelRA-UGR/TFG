@@ -36,6 +36,10 @@ const destinationSchema = new Schema({
         image: String,
         name: String
     }],
+    photos: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+    }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'

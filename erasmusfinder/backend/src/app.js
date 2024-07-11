@@ -34,6 +34,7 @@ app.get('/', (req, res) =>{
 app.use('/api/users', require('./routes/users'));
 app.use('/api/dests', require('./routes/dests'));
 app.use('/api/reviews', require('./routes/reviews'));
+app.use('/api/photos', require('./routes/photos'));
 
 //Exportar la app para utilizarlo en otras partes del proyecto
 module.exports = app;
