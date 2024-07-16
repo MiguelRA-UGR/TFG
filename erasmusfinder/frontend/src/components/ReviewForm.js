@@ -67,6 +67,7 @@ const ReviewForm = ({ user_id, destination_id }) => {
           className="form-control"
           name="comment"
           value={comment}
+          maxLength={300}
           onChange={handleCommentChange}
         />
       </div>

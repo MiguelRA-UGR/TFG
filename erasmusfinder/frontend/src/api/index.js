@@ -21,5 +21,5 @@ export const deleteReview = (id) => API.delete(`/api/reviews/${id}`);
 export const uploadPhoto = (photoData) => API.post('/api/photos/photo', photoData);
 export const deletePhoto = (id) => API.delete(`/api/photos/${id}`);
 export const likePhoto = (likeData) => API.put(`/api/photos/like`, likeData);
-export const dislikePhoto = (dislikeData) => API.put(`/api/photos/dislike`, dislikeData);
+export const dislikePhoto = (likeData) => API.put(`/api/photos/dislike`, likeData);
 

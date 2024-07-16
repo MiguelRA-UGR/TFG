@@ -24,24 +24,24 @@ export const deletePhoto = (photoData) => async(dispatch) =>{
 
 }
 
-export const like = (photoData) => async(dispatch) =>{
+export const like = (photoData) => async (dispatch) => {
     try {
         const { data } = await api.likePhoto(photoData);
-
-        dispatch({type: LIKE, data});
+        dispatch({ type: LIKE, payload: data });
+        return data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
+};
 
-}
-
-export const dislike = (photoData) => async(dispatch) =>{
+export const dislike = (photoData) => async (dispatch) => {
     try {
         const { data } = await api.dislikePhoto(photoData);
-
-        dispatch({type: DISLIKE, data});
+        dispatch({ type: DISLIKE, payload: data });
+        return data;
     } catch (error) {
         console.log(error);
+        throw error;
     }
-
-}
+};

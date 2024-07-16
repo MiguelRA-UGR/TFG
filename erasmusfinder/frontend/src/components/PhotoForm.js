@@ -4,21 +4,24 @@ import { useDispatch } from "react-redux";
 import { uploadPhoto } from "../actions/photo.js";
 import axios from 'axios';
 
+
 function extractLatLngFromGoogleMaps(url) {
-  const regex = /(?:https?:\/\/)?(?:www\.)?google\.com\/maps\/(?:place\/|@)(?:[^\/]+\/)?([\d.]+),([\d.]+)/;
+  //Se extrae la latitud y longitud con una expresión regular. Lo que sigue a la @ son las coordenada
+  const regex = /@([\d.-]+),([\d.-]+)/;
   const matches = url.match(regex);
+
   if (matches) {
     return {
       lat: parseFloat(matches[1]),
       long: parseFloat(matches[2]),
     };
+  }else{
+    return {
+      lat: 0,
+      long: 0,
+    };
   }
-  return {
-    lat: 0,
-    long: 0,
-  };
 }
-
 const initialState = {
   comment: "",
   url: "",
@@ -100,6 +103,8 @@ const PhotoForm = () => {
             setAnonymous(false);
             setCropped(false);
             //setPhotoUrl("");
+
+            window.location.reload();
         } catch (error) {
             console.error("Error al subir la foto: ", error);
         }
@@ -108,7 +113,7 @@ const PhotoForm = () => {
   return (
     <div>
       <form className="form-control text-center" onSubmit={handlePost}>
-        <h4>Post your own photo</h4>
+        <h4>Post your own photos</h4>
         <div className="row">
           <div className="col-md-6 mb-3 d-flex justify-content-center">
             <PhotoCrop

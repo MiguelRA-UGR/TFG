@@ -31,9 +31,9 @@ router.route('/:id')
     .get(getPhoto)
     .get(getPhotosByDestination)
     .delete(deletePhoto)
-    .put(likePhoto)
-    .put(disLikePhoto)
 
 router.post('/photo', uploadPhoto)
+router.put('/like', likePhoto)
+router.put('/dislike', disLikePhoto)
 
 module.exports = router;

@@ -698,17 +698,38 @@ const Destination = () => {
 
         {activeTab === "gallery" && (
           <div className="container">
-            <div className="row">
-              {photos.map((photo) => (
-                <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
-                  <Photo photo={photo} />
+            {following ? (
+              <>
+                <div className="row justify-content-center">
+                  {photos.map((photo) => (
+                    <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
+                      <Photo photo={photo} delete={photo.user===user.result._id} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div className="row justify-content-center text-center mt-3">
-              <PhotoForm/>
-            </div>
+                <div className="row justify-content-center text-center mt-3">
+                  <PhotoForm />
+                </div>
+              </>
+            ) : (
+              <div
+                className="container d-flex flex-column align-items-center justify-content-center"
+                style={{ minHeight: "300px" }}
+              >
+                <div className="row mb-4 align-items-center text-center justify-content-center">
+                  <img
+                    className="mb-3"
+                    src="https://cdn-icons-png.flaticon.com/512/2889/2889676.png"
+                    alt="Lock"
+                    style={{ width: "100px" }}
+                  />
+                  <h5>
+                    You must follow the destination if you want to access the gallery
+                  </h5>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>

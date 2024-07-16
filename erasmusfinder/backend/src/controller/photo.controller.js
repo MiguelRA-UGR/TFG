@@ -32,8 +32,6 @@ photoCtrlr.uploadPhoto = async (req, res) => {
 
         const author = await User.findById(user);
         
-        console.log(req.body);
-
         const newPhoto = new Photo({ 
             url,
             destination, 
@@ -44,8 +42,6 @@ photoCtrlr.uploadPhoto = async (req, res) => {
             anonymous 
         });
         
-        console.log(newPhoto);
-
         const dest = await Destination.findById(destination);
         
         await newPhoto.save();
@@ -104,49 +100,44 @@ photoCtrlr.deletePhoto = async (req, res) => {
 // LIKE
 photoCtrlr.likePhoto = async (req, res) => {
     try {
-        const photo = await Photo.findById(req.params.id);
-        
+        const photo = await Photo.findById(req.body.photoId);
+
         if (!photo) {
             return res.status(404).json({ message: "Foto no encontrada" });
         }
 
-        photo.likes.push(req.params.userLike)
+        if (!photo.likes.includes(req.body.userId)) {
+            photo.likes.push(req.body.userId);
+        }
+
         await photo.save();
 
-        const author = await User.findById(photo.user);
-        author.photos.push(photo._id);
-
-        await author.save();
-
-        res.json({ message: "Foto con me gusta correcto" });
+        res.json({ message: "Foto con me gusta correcto", nLikes: photo.likes.length });
     } catch (error) {
         res.status(500).json({ message: "Error al dar like", error });
     }
 };
 
-// LIKE
+
+// DISLIKE
 photoCtrlr.disLikePhoto = async (req, res) => {
     try {
-        const photo = await Photo.findById(req.params.id);
-        
+        const photo = await Photo.findById(req.body.photoId);
+
         if (!photo) {
             return res.status(404).json({ message: "Foto no encontrada" });
         }
 
-        photo.likes.pull(req.params.userDislike)
+        photo.likes.pull(req.body.userId)
+
         await photo.save();
 
-        const author = await User.findById(photo.user);
-        author.photos.pull(photo._id);
-        await author.save();
-
-        res.json({ message: "Foto con me gusta quitado correctamente" });
+        res.json({ message: "Foto con me gusta quitado correctamente", nLikes: photo.likes.length });
     } catch (error) {
-        res.status(500).json({ message: "Error al dar like", error });
+        
+        res.status(500).json({ message: "Error al quitar like", error });
     }
 };
 
-
-
-//Exportar el controlador de reseñas
+//Exportar el controlador de las fotos
 module.exports = photoCtrlr;

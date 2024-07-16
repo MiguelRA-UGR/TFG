@@ -135,6 +135,8 @@ const Home = () => {
     setContacts(followed);
   };
 
+  
+
   const filterFollowedDestinations = (allDestinations) => {
     const followedIds = user?.result?.followedDestinations || [];
     const followed = allDestinations.filter((destination) =>
@@ -212,9 +214,8 @@ const Home = () => {
         comment: rev.comment,
         author: user.result,
         score: rev.score,
-        date: rev.createdAt,
-        destination: dest,
-        anonymous: false,
+        createdAt: rev.createdAt,
+        anonymous: false
       };
 
       return (
