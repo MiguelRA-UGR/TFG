@@ -75,6 +75,11 @@ destinationCtrlr.getDestination = async (req, res) => {
 destinationCtrlr.deleteDestination = async (req, res) => {
     try {
         await Destination.findByIdAndDelete(req.params.id);
+
+        // Eliminar las fotos y reseñas asociadas al destino
+        await Photo.deleteMany({ destination: destinationId });
+        await Review.deleteMany({ destination: destinationId });
+
         res.json({ message: "Destino eliminado" });
     } catch (error) {
         res.status(500).json({ message: error.message });

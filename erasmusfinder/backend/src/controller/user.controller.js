@@ -6,6 +6,7 @@ const User = require('../models/User');
 const fs = require('fs');
 const path = require('path');
 const upload = require('../middleware/upload');
+const Review = require('../models/Review');
 
 //LOGIN
 userCtrlr.logIn = async(req, res) =>{
@@ -82,10 +83,22 @@ userCtrlr.getUser = async(req, res) =>{
     
 }
 //DELETE
-userCtrlr.deleteUser = async(req, res) =>{
-    await User.findByIdAndDelete(req.params.id)
-    res.json({message: "Usuario eliminado"});
-}
+userCtrlr.deleteUser = async(req, res) => {
+    try {
+      const userId = req.params.id;
+  
+      await User.findByIdAndDelete(userId);
+  
+      // Eliminar las fotos y reseñas del usuario
+      await Photo.deleteMany({ user: userId });
+      await Review.deleteMany({ author: userId });
+  
+      res.json({ message: "Usuario eliminado" });
+    } catch (error) {
+      res.status(500).json({ message: "Error al eliminar el usuario" });
+    }
+  };
+
 //PUT
 userCtrlr.updateUser = async(req, res) => {
     const userId = req.params.id;

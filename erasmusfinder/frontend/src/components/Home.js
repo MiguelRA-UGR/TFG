@@ -135,8 +135,6 @@ const Home = () => {
     setContacts(followed);
   };
 
-  
-
   const filterFollowedDestinations = (allDestinations) => {
     const followedIds = user?.result?.followedDestinations || [];
     const followed = allDestinations.filter((destination) =>
@@ -215,7 +213,7 @@ const Home = () => {
         author: user.result,
         score: rev.score,
         createdAt: rev.createdAt,
-        anonymous: false
+        anonymous: false,
       };
 
       return (
@@ -505,7 +503,30 @@ const Home = () => {
         </span>
       )}
 
-      <MapComponent pinData={pins}></MapComponent>
+      <MapComponent className pinData={pins}></MapComponent>
+
+      {user && (
+        <div className="mt-3 text-center d-flex flex-column">
+          <span className="section-title mb-2">
+            Do you think there is something our platform could improve? Let us
+            know!
+          </span>
+          
+          <Link to={`/RequestForm`}>
+            <button
+              type="submit"
+              style={{
+                fontWeight: "bold",
+                backgroundColor: "#f5973d",
+                color: "#ffffff",
+              }}
+              className="btn btn-warning"
+            >
+              Make a Request
+            </button>
+          </Link>
+        </div>
+      )}
     </div>
   );
 };
