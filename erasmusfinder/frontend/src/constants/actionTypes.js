@@ -9,3 +9,4 @@ export const LIKE = 'LIKE';
 export const DISLIKE = 'DISLIKE';
 export const CONTACT = 'LIKE';
 export const REVIEW = 'REVIEW';
+export const REQUEST = 'REQUEST';

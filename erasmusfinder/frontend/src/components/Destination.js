@@ -262,7 +262,7 @@ const Destination = () => {
 
           <div className="d-flex flex-column">
             <span
-              className=""
+              className="destination-name"
               style={{
                 fontSize: "40px",
                 fontFamily: "Cambria, serif",
@@ -317,8 +317,7 @@ const Destination = () => {
             fontWeight: "bold",
             backgroundColor:
               user && !following ? stateColors.one : stateColors.zero,
-            color: "#ffffff",
-            width: "200px",
+            color: "#ffffff"
           }}
         >
           {user ? (

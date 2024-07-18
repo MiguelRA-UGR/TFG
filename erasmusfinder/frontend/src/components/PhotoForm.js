@@ -102,7 +102,6 @@ const PhotoForm = () => {
             setUbicationName("");
             setAnonymous(false);
             setCropped(false);
-            //setPhotoUrl("");
 
             window.location.reload();
         } catch (error) {

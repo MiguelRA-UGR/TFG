@@ -31,3 +31,33 @@ export const getColorForScore = (score) => {
     two:"#6691c3",
     three:"#61bdb8"
 };
+
+export const defaultUsers = [
+  {
+    id: 1,
+    name: "Martina",
+    country: "Italy",
+    status: "Searching destination",
+    status_color: "#f5973d",
+    avatar: "martina",
+    flag: "it",
+  },
+  {
+    id: 2,
+    name: "Agnes",
+    country: "Sweden",
+    status: "Coming soon to Madrid",
+    status_color: "#6691c3",
+    avatar: "agnes",
+    flag: "se",
+  },
+  {
+    id: 3,
+    name: "Eric",
+    country: "France",
+    status: "Living in Vienna",
+    status_color: "#61bdb8",
+    avatar: "eric",
+    flag: "fr",
+  },
+];

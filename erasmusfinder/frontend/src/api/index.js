@@ -16,10 +16,15 @@ export const contact = (formData) => API.post('/api/users/contact', formData);
 export const breakContact = (dataContact) => API.post('/api/users/breakcontact', dataContact);
 export const sendRequest = (dataContact) => API.post('/api/users/sendrequest', dataContact);
 export const createReview = (reviewData) => API.post('/api/reviews/review', reviewData);
+
 export const deleteReview = (id) => API.delete(`/api/reviews/${id}`);
 
 export const uploadPhoto = (photoData) => API.post('/api/photos/photo', photoData);
 export const deletePhoto = (id) => API.delete(`/api/photos/${id}`);
 export const likePhoto = (likeData) => API.put(`/api/photos/like`, likeData);
 export const dislikePhoto = (likeData) => API.put(`/api/photos/dislike`, likeData);
+
+export const deleteRequest = (id) => API.delete(`/api/requests/${id}`);
+export const approveRequest = (id) => API.delete(`/api/requests/${id}`);
+export const createRequest = (requestData) => API.post('/api/requests/request', requestData);
 

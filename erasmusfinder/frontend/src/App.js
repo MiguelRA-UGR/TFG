@@ -23,10 +23,10 @@ function App() {
           <Route path="/Profile" element={<Profile />} />
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/User/:id" element={<User />} />
-          <Route path="/RequestForm/:id" element={<RequestForm />} />
+          <Route path="/RequestForm" element={<RequestForm />} />
         </Routes>
       </div>
-      <Footer/>
+      
     </div>
   );
 }
