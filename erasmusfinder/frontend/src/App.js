@@ -10,6 +10,7 @@ import User from "./components/User";
 import Notifications from "./components/Notifications";
 import Footer from "./components/Footer";
 import RequestForm from "./components/RequestForm";
+import Forum from "./components/Forum"
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/Notifications" element={<Notifications />} />
           <Route path="/User/:id" element={<User />} />
           <Route path="/RequestForm" element={<RequestForm />} />
+          <Route path="/Forum/:id" element={<Forum />} />
         </Routes>
       </div>
       

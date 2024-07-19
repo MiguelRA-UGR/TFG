@@ -63,6 +63,7 @@ const RequestForm = () => {
             <option value={0}>Destination Request</option>
             <option value={1}>Destination Change Request</option>
             <option value={2}>Forus Request</option>
+            <option value={3}>Other</option>
           </select>
         </div>
         {(type === 1 || type === 2) && (

@@ -51,8 +51,9 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }],
-    followedForus: [{
-        forusName: String
+    followedForums: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Forum'
     }]
 }, {
     timestamps: true

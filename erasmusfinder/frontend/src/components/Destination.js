@@ -6,8 +6,8 @@ import Avatar from "./Avatar";
 import Review from "./Review";
 import ReviewForm from "./ReviewForm";
 import PhotoForm from "./PhotoForm";
-import PhotoCrop from "./PhotoCrop";
 import Photo from "./Photo";
+import ForumPreview from "./ForumPreview"
 import { getColorForScore, stateColors } from "./utils";
 
 const Destination = () => {
@@ -20,6 +20,7 @@ const Destination = () => {
   const [followers, setFollowers] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [photos, setPhotos] = useState([]);
+  const [forums, setForums] = useState([]);
 
   function formatedName(name) {
     return name.toLowerCase().replace(/\s+/g, "");
@@ -139,32 +140,25 @@ const Destination = () => {
         const destinationId = window.location.pathname.split("/").pop();
 
         // Obtener los datos del destino
-        const res = await fetch(
-          `http://localhost:4000/api/dests/${destinationId}`,
-          {
-            method: "GET",
-          }
-        );
-        if (!res.ok) {
+        const res = await axios.get(`http://localhost:4000/api/dests/${destinationId}`);
+        if (res.status !== 200) {
           throw new Error("Error al obtener el destino");
         }
-        const data = await res.json();
+        const data = res.data;
         setDestination(data);
 
         const followerIds = data.users;
         const reviewsIds = data.reviews;
         const photosIds = data.photos;
+        const forumsIds = data.forums;
 
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
-            const userRes = await fetch(
-              `http://localhost:4000/api/users/${followerId}`
-            );
-            if (!userRes.ok) {
+            const userRes = await axios.get(`http://localhost:4000/api/users/${followerId}`);
+            if (userRes.status !== 200) {
               throw new Error("Error al obtener los datos del seguidor");
             }
-            const userData = await userRes.json();
-            return { [followerId]: userData };
+            return { [followerId]: userRes.data };
           })
         );
 
@@ -173,14 +167,11 @@ const Destination = () => {
 
         const reviewsData = await Promise.all(
           reviewsIds.map(async (reviewId) => {
-            const reviewRes = await fetch(
-              `http://localhost:4000/api/reviews/${reviewId}`
-            );
-            if (!reviewRes.ok) {
+            const reviewRes = await axios.get(`http://localhost:4000/api/reviews/${reviewId}`);
+            if (reviewRes.status !== 200) {
               throw new Error("Error al obtener los datos de la reseña");
             }
-            const reviewData = await reviewRes.json();
-            return reviewData;
+            return reviewRes.data;
           })
         );
 
@@ -192,14 +183,11 @@ const Destination = () => {
 
         const photosData = await Promise.all(
           photosIds.map(async (photoId) => {
-            const photosRes = await fetch(
-              `http://localhost:4000/api/photos/${photoId}`
-            );
-            if (!photosRes.ok) {
+            const photosRes = await axios.get(`http://localhost:4000/api/photos/${photoId}`);
+            if (photosRes.status !== 200) {
               throw new Error("Error al obtener los datos de las fotos");
             }
-            const photoData = await photosRes.json();
-            return photoData;
+            return photosRes.data;
           })
         );
 
@@ -208,6 +196,22 @@ const Destination = () => {
           author: followersObject[photo.user],
         }));
         setPhotos(photosWithUsers);
+
+        const forumsData = await Promise.all(
+          forumsIds.map(async (forumId) => {
+            const forumsRes = await axios.get(`http://localhost:4000/api/forums/${forumId}`);
+            if (forumsRes.status !== 200) {
+              throw new Error("Error al obtener los datos de los foros");
+            }
+            return forumsRes.data;
+          })
+        );
+
+        const forumsWithUsers = forumsData.map((forum) => ({
+          ...forum,
+          author: followersObject[forum.user],
+        }));
+        setForums(forumsWithUsers);
 
         // Verificar si el usuario sigue el destino
         if (user && user.result.followedDestinations.includes(destinationId)) {
@@ -222,6 +226,7 @@ const Destination = () => {
 
     getDestination();
   }, [user]);
+
 
   useEffect(() => {
     if (user && reviews.length > 0) {
@@ -315,6 +320,7 @@ const Destination = () => {
           style={{
             fontSize: "20px",
             fontWeight: "bold",
+            width:"75px",
             backgroundColor:
               user && !following ? stateColors.one : stateColors.zero,
             color: "#ffffff"
@@ -526,7 +532,19 @@ const Destination = () => {
         {activeTab === "forums" && (
           <>
             {following ? (
-              <></>
+              <>
+                <div className="row">
+                  <div className="col-md-12">
+                    <ul className="list-unstyled">
+                      {Object.values(forums).map((forum) => (
+                        <li className="d-flex align-items-center mb-2" key={forum._id}>
+                          <ForumPreview forum={forum}/>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </>
             ) : (
               <div
                 className="container d-flex flex-column align-items-center justify-content-center"

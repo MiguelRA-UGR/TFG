@@ -40,6 +40,10 @@ const destinationSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Review'
     }],
+    forums: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Forum'
+    }],
     reviews: [{
         type: Schema.Types.ObjectId,
         ref: 'Review'
