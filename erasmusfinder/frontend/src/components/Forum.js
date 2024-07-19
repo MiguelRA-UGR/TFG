@@ -9,13 +9,13 @@ import { stateColors } from "./utils";
 const Forum = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [forum, setForum] = useState(null);
-  const [following, setFollowing] = useState(false);
+  const [member, setMember] = useState(false);
   const [followers, setFollowers] = useState([]);
   const [threads, setThreads] = useState([]);
 
-  const updateUser = async (forumId, following, userId, token) => {
+  const updateUser = async (forumId, member, userId, token) => {
     try {
-      const updatedUser = following
+      const updatedUser = member
         ? {
             followedForums: user.result.followedForums.filter(
               (forum) => forum !== forumId
@@ -48,16 +48,16 @@ const Forum = () => {
     }
   };
 
-  const updateForum = async (forumId, following, token) => {
+  const updateForum = async (forumId, member, token) => {
     try {
       const resGet = await axios.get(
         `http://localhost:4000/api/forums/${forumId}`
       );
       const dataForum = resGet.data;
-      const newFollowers = following
+      const newFollowers = member
         ? dataForum.n_users - 1
         : dataForum.n_users + 1;
-      const newFollowersList = following
+      const newFollowersList = member
         ? dataForum.users.filter((userId) => userId !== user.result._id)
         : [...dataForum.users, user.result._id];
 
@@ -79,7 +79,7 @@ const Forum = () => {
         throw new Error("No se pudo actualizar el foro");
       }
 
-      setFollowing(!following);
+      setMember(!member);
       setForum((prevForum) => ({
         ...prevForum,
         n_users: newFollowers,
@@ -95,10 +95,10 @@ const Forum = () => {
     const token = user ? user.token : null;
     const userId = user ? user.result._id : null;
 
-    await updateUser(forumId, following, userId, token);
-    await updateForum(forumId, following, token);
+    await updateUser(forumId, member, userId, token);
+    await updateForum(forumId, member, token);
 
-    setFollowing(!following);
+    setMember(!member);
   };
 
   useEffect(() => {
@@ -162,9 +162,9 @@ const Forum = () => {
 
         // Verificar si el usuario es miembro del foro
         if (user && user.result.followedForums.includes(forumId)) {
-          setFollowing(true);
+          setMember(true);
         } else {
-          setFollowing(false);
+          setMember(false);
         }
       } catch (error) {
         console.error(error);
@@ -220,12 +220,12 @@ const Forum = () => {
             fontWeight: "bold",
             width: "75px",
             backgroundColor:
-              user && !following ? stateColors.one : stateColors.zero,
+              user && !member ? stateColors.one : stateColors.zero,
             color: "#ffffff",
           }}
         >
           {user ? (
-            following ? (
+            member ? (
               "Leave"
             ) : (
               "Join"
