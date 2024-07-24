@@ -28,3 +28,11 @@ export const deleteRequest = (id) => API.delete(`/api/requests/${id}`);
 export const approveRequest = (id) => API.delete(`/api/requests/${id}`);
 export const createRequest = (requestData) => API.post('/api/requests/request', requestData);
 
+export const deleteForum = (id) => API.delete(`/api/forums/${id}`);
+export const createForum = (forumData) => API.post(`/api/forums`, forumData);
+export const updateForum = (id, forumData) => API.put(`/api/forums/${id}`, forumData);
+
+export const deleteThread = (id) => API.delete(`/api/threads/${id}`);
+export const createThread = (threadData) => API.post(`/api/threads`, threadData);
+export const updateThread = (id, threadData) => API.put(`/api/threads/${id}`, threadData);
+

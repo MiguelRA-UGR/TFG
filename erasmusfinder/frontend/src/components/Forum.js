@@ -5,114 +5,24 @@ import "../index.css";
 import Avatar from "./Avatar";
 import Thread from "./Thread";
 import { stateColors } from "./utils";
+import ThreadForm from "./ThreadForm";
 
 const Forum = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [forum, setForum] = useState(null);
   const [member, setMember] = useState(false);
-  const [followers, setFollowers] = useState([]);
-  const [threads, setThreads] = useState([]);
-
-  const updateUser = async (forumId, member, userId, token) => {
-    try {
-      const updatedUser = member
-        ? {
-            followedForums: user.result.followedForums.filter(
-              (forum) => forum !== forumId
-            ),
-          }
-        : {
-            followedForums: [...user.result.followedForums, forumId],
-          };
-
-      await axios.put(
-        `http://localhost:4000/api/users/${userId}`,
-        updatedUser,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setUser((prevUser) => ({
-        ...prevUser,
-        result: {
-          ...prevUser.result,
-          followedForums: updatedUser.followedForums,
-        },
-      }));
-    } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-    }
-  };
-
-  const updateForum = async (forumId, member, token) => {
-    try {
-      const resGet = await axios.get(
-        `http://localhost:4000/api/forums/${forumId}`
-      );
-      const dataForum = resGet.data;
-      const newFollowers = member
-        ? dataForum.n_users - 1
-        : dataForum.n_users + 1;
-      const newFollowersList = member
-        ? dataForum.users.filter((userId) => userId !== user.result._id)
-        : [...dataForum.users, user.result._id];
-
-      const resPut = await axios.put(
-        `http://localhost:4000/api/forums/${forumId}`,
-        {
-          n_users: newFollowers,
-          users: newFollowersList,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (!resPut.data) {
-        throw new Error("No se pudo actualizar el foro");
-      }
-
-      setMember(!member);
-      setForum((prevForum) => ({
-        ...prevForum,
-        n_users: newFollowers,
-        users: newFollowersList,
-      }));
-    } catch (error) {
-      console.error("Error al actualizar el foro:", error);
-    }
-  };
-
-  const handleJoinToggle = async () => {
-    const forumId = window.location.pathname.split("/").pop();
-    const token = user ? user.token : null;
-    const userId = user ? user.result._id : null;
-
-    await updateUser(forumId, member, userId, token);
-    await updateForum(forumId, member, token);
-
-    setMember(!member);
-  };
+  const [followers, setFollowers] = useState({});
+  const [threads, setThreads] = useState({});
+  const [clickedNewThread, setClicked] = useState(false);
 
   useEffect(() => {
-    const getForum = async () => {
+    const getForumData = async () => {
       try {
         const forumId = window.location.pathname.split("/").pop();
 
-        // Obtener los datos del foro
         const res = await axios.get(
           `http://localhost:4000/api/forums/${forumId}`
         );
-        if (res.status !== 200) {
-          throw new Error("Error al obtener el foro");
-        }
         const forumData = res.data;
         setForum(forumData);
 
@@ -123,9 +33,6 @@ const Forum = () => {
             const userRes = await axios.get(
               `http://localhost:4000/api/users/${followerId}`
             );
-            if (userRes.status !== 200) {
-              throw new Error("Error al obtener los datos del seguidor");
-            }
             return { [followerId]: userRes.data };
           })
         );
@@ -140,39 +47,105 @@ const Forum = () => {
             const threadRes = await axios.get(
               `http://localhost:4000/api/threads/${threadId}`
             );
-            if (threadRes.status !== 200) {
-              throw new Error("Error al obtener los datos del thread");
-            }
             return { [threadId]: threadRes.data };
           })
         );
 
         const threadsObject = Object.assign({}, ...threadsData);
 
-        const threadsWithAuthors = Object.values(threadsObject).map((thread) => {
-          const author = followersObject[thread.author];
-          return { ...thread, author };
-        });
-  
-        const threadsWithAuthorsObject = threadsWithAuthors.reduce((acc, thread) => {
-          acc[thread._id] = thread;
-          return acc;
-        }, {});
+        const threadsWithAuthors = Object.values(threadsObject).map(
+          (thread) => {
+            const author = followersObject[thread.author];
+            return { ...thread, author };
+          }
+        );
+
+        const threadsWithAuthorsObject = threadsWithAuthors.reduce(
+          (acc, thread) => {
+            acc[thread._id] = thread;
+            return acc;
+          },
+          {}
+        );
         setThreads(threadsWithAuthorsObject);
 
-        // Verificar si el usuario es miembro del foro
-        if (user && user.result.followedForums.includes(forumId)) {
+        // Verifica si el usuario es miembro del foro
+        if (user && user.result && forumData.users.includes(user.result._id)) {
           setMember(true);
         } else {
           setMember(false);
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error al obtener los datos del foro:", error);
       }
     };
 
-    getForum();
+    getForumData();
   }, [user]);
+
+  const handleJoinToggle = async () => {
+    const forumId = window.location.pathname.split("/").pop();
+    const token = user ? user.token : null;
+    const userId = user ? user.result._id : null;
+
+    try {
+      // Actualizar el usuario y el foro
+      const updatedUserForums = member
+        ? user.result.followedForums.filter((f) => f !== forumId)
+        : [...user.result.followedForums, forumId];
+
+      await axios.put(
+        `http://localhost:4000/api/users/${userId}`,
+        { followedForums: updatedUserForums },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const updatedForumUsers = member
+        ? forum.users.filter((u) => u !== userId)
+        : [...forum.users, userId];
+
+      await axios.put(
+        `http://localhost:4000/api/forums/${forumId}`,
+        {
+          n_users: updatedForumUsers.length,
+          users: updatedForumUsers,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Actualizar estado del usuario y el foro
+      setUser((prevUser) => ({
+        ...prevUser,
+        result: {
+          ...prevUser.result,
+          followedForums: updatedUserForums,
+        },
+      }));
+
+      setForum((prevForum) => ({
+        ...prevForum,
+        users: updatedForumUsers,
+      }));
+
+      setMember(!member);
+    } catch (error) {
+      console.error("Error al actualizar la membresía:", error);
+    }
+  };
+
+  const toggleThreadForm = () => {
+    setClicked((prevShow) => !prevShow);
+  };
 
   if (!forum) {
     return (
@@ -187,7 +160,7 @@ const Forum = () => {
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div className="d-flex flex-row">
           <img
-            src={`http://localhost:4000/imgs/forums/${forum.url}`}
+            src={`http://localhost:4000${forum.url}`}
             alt="Forum"
             className="rounded-circle mt-2"
             style={{ width: "50px", height: "50px", marginRight: "10px" }}
@@ -264,7 +237,6 @@ const Forum = () => {
               <h4 style={{ color: stateColors.one, fontWeight: "bold" }}>
                 Members
               </h4>
-
               <div className="row">
                 <div className="col-md-12">
                   <ul className="list-unstyled">
@@ -298,11 +270,14 @@ const Forum = () => {
                   <button
                     type="button"
                     className="btn btn-warning"
+                    onClick={toggleThreadForm}
                     style={{
-                      backgroundColor: stateColors.one,
-                      color: "white",
                       borderRadius: "50%",
                       width: "40px",
+                      color: "white",
+                      backgroundColor: clickedNewThread
+                        ? "red"
+                        : stateColors.one,
                     }}
                   >
                     <svg
@@ -310,32 +285,44 @@ const Forum = () => {
                       width="16"
                       height="16"
                       fill="currentColor"
-                      className="bi bi-feather"
+                      className={`bi ${
+                        clickedNewThread ? "bi-x-lg" : "bi-feather"
+                      }`}
                       viewBox="0 0 16 16"
                     >
-                      <path d="M15.807.531c-.174-.177-.41-.289-.64-.363a3.8 3.8 0 0 0-.833-.15c-.62-.049-1.394 0-2.252.175C10.365.545 8.264 1.415 6.315 3.1S3.147 6.824 2.557 8.523c-.294.847-.44 1.634-.429 2.268.005.316.05.62.154.88q.025.061.056.122A68 68 0 0 0 .08 15.198a.53.53 0 0 0 .157.72.504.504 0 0 0 .705-.16 68 68 0 0 1 2.158-3.26c.285.141.616.195.958.182.513-.02 1.098-.188 1.723-.49 1.25-.605 2.744-1.787 4.303-3.642l1.518-1.55a.53.53 0 0 0 0-.739l-.729-.744 1.311.209a.5.5 0 0 0 .443-.15l.663-.684c.663-.68 1.292-1.325 1.763-1.892.314-.378.585-.752.754-1.107.163-.345.278-.773.112-1.188a.5.5 0 0 0-.112-.172M3.733 11.62C5.385 9.374 7.24 7.215 9.309 5.394l1.21 1.234-1.171 1.196-.027.03c-1.5 1.789-2.891 2.867-3.977 3.393-.544.263-.99.378-1.324.39a1.3 1.3 0 0 1-.287-.018Zm6.769-7.22c1.31-1.028 2.7-1.914 4.172-2.6a7 7 0 0 1-.4.523c-.442.533-1.028 1.134-1.681 1.804l-.51.524zm3.346-3.357C9.594 3.147 6.045 6.8 3.149 10.678c.007-.464.121-1.086.37-1.806.533-1.535 1.65-3.415 3.455-4.976 1.807-1.561 3.746-2.36 5.31-2.68a8 8 0 0 1 1.564-.173" />
+                      {clickedNewThread ? (
+                        <path d="M1.5 1.5a.75.75 0 0 1 1.061 0L8 6.439 13.439 1.5a.75.75 0 0 1 1.061 1.061L9.061 7.5l5.439 5.439a.75.75 0 0 1-1.061 1.061L8 8.561 2.561 14a.75.75 0 0 1-1.061-1.061L6.939 7.5 1.5 2.061A.75.75 0 0 1 1.5 1.5z" />
+                      ) : (
+                        <path d="M15.807.531c-.174-.177-.41-.289-.64-.363a3.8 3.8 0 0 0-.833-.15c-.62-.049-1.394 0-2.252.175C10.365.545 8.264 1.415 6.315 3.1S3.147 6.824 2.557 8.523c-.294.847-.44 1.634-.429 2.268.005.316.05.62.154.88q.025.061.056.122A68 68 0 0 0 .08 15.198a.53.53 0 0 0 .157.72.504.504 0 0 0 .705-.16 68 68 0 0 1 2.158-3.26c.285.141.616.195.958.182.513-.02 1.098-.188 1.723-.49 1.25-.605 2.744-1.787 4.303-3.642l1.518-1.55a.53.53 0 0 0 0-.739l-.729-.744 1.311.209a.5.5 0 0 0 .443-.15l.663-.684c.663-.68 1.292-1.325 1.763-1.892.314-.378.585-.752.754-1.107.163-.345.278-.773.112-1.188a.5.5 0 0 0-.112-.172M3.733 11.62C5.385 9.374 7.24 7.215 9.309 5.394l1.21 1.234-1.171 1.196-.027.03c-1.5 1.789-2.891 2.867-3.977 3.393-.544.263-.99.378-1.324.39a1.3 1.3 0 0 1-.287-.018Zm6.769-7.22c1.31-1.028 2.7-1.914 4.172-2.6a7 7 0 0 1-.4.523c-.442.533-1.028 1.134-1.681 1.804l-.51.524zm3.346-3.357C9.594 3.147 6.045 6.8 3.149 10.678c.007-.464.121-1.086.37-1.806.533-1.535 1.65-3.415 3.455-4.976 1.807-1.561 3.746-2.36 5.31-2.68a8 8 0 0 1 1.564-.173" />
+                      )}
                     </svg>
                   </button>
-
-                  <small style={{ color: stateColors.one, fontWeight: "bold" }}>
+                  <small
+                    style={{
+                      color: stateColors.one,
+                      fontWeight: "bold",
+                      visibility: clickedNewThread ? "hidden" : "visible",
+                    }}
+                  >
                     New Thread
                   </small>
                 </div>
               </div>
 
-              <ul className="list-unstyled">
-                {Object.values(threads).map((thread) => (
-                  <li
-                    className="d-flex align-items-center mb-2 form-control mt-3"
-                    key={thread._id}
-                  >
-                    <Thread
-                      thread={thread}
-                    />
-                  </li>
-                ))}
-              </ul>  
-
+              {clickedNewThread ? (
+                <ThreadForm />
+              ) : (
+                <ul className="list-unstyled">
+                  {Object.values(threads).map((thread) => (
+                    <li
+                      className="d-flex align-items-center mb-2 form-control mt-3"
+                      key={thread._id}
+                    >
+                      <Thread thread={thread} />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>

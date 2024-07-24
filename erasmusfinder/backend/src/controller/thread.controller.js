@@ -14,14 +14,15 @@ threadCtrlr.getThreads = async (req, res) => {
 
 // POST
 threadCtrlr.createThread = async (req, res) => {
+    
     try {
         const { author, forum, url, title, content } = req.body;
         const newThread = new Thread({ author, forum, url, title, content });
         await newThread.save();
 
-        const forumDoc = await Forum.findById(forum);
-        forumDoc.threads.push(newThread._id);
-        await forumDoc.save();
+        const forumThread = await Forum.findById(forum);
+        forumThread.threads.push(newThread._id);
+        await forumThread.save();
 
         res.json({ message: "Thread creado" });
     } catch (error) {

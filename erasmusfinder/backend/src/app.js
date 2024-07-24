@@ -12,19 +12,19 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
-// Ruta para obtener la lista de nombres de archivos de insignias
-const badgesFolderPath = path.join(__dirname, '../public/imgs/badges');
-app.get('/api/badges', (req, res) => {
-  fs.readdir(badgesFolderPath, (err, files) => {
-    if (err) {
-      console.error('Error al leer la carpeta de insignias:', err);
-      res.status(500).send('Error interno del servidor');
-    } else {
-        const badgeNames = files.map(file => path.parse(file).name);
-        res.json(badgeNames);
-    }
-  });
-});
+// // Ruta para obtener la lista de nombres de archivos de insignias
+// const badgesFolderPath = path.join(__dirname, '../public/imgs/badges');
+// app.get('/api/badges', (req, res) => {
+//   fs.readdir(badgesFolderPath, (err, files) => {
+//     if (err) {
+//       console.error('Error al leer la carpeta de insignias:', err);
+//       res.status(500).send('Error interno del servidor');
+//     } else {
+//         const badgeNames = files.map(file => path.parse(file).name);
+//         res.json(badgeNames);
+//     }
+//   });
+// });
 
 // Rutas existentes
 app.get('/', (req, res) =>{

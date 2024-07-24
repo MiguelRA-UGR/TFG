@@ -19,7 +19,7 @@ const Thread = ({thread}) => {
             <p className="card-text">{thread.content}</p>
             {thread.url && (
             <img
-                src={`http://localhost:4000/imgs/threads/${thread.url}`}
+                src={`http://localhost:4000${thread.url}`}
                 alt={thread.title}
                 className="img-fluid"
                 style={{ maxWidth: "100%", height: "auto", marginTop: "10px" }}

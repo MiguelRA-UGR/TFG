@@ -14,18 +14,23 @@ forumCtrlr.getForums = async (req, res) => {
 };
 
 // POST
-forumCtrlr.createForum = async (req, res) => {
+forumCtrlr.createForum = async (req, res) => {    
+    console.log(req.body);
+    
     try {
         const { 
             title,
             destination, 
-            description, 
+            description,
+            creator, 
             url
         } = req.body;
+
         const newForum = new Forum({ 
             title,
             destination,
             description,
+            creator,
             url
         });
         await newForum.save();

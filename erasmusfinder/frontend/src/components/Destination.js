@@ -7,8 +7,9 @@ import Review from "./Review";
 import ReviewForm from "./ReviewForm";
 import PhotoForm from "./PhotoForm";
 import Photo from "./Photo";
-import ForumPreview from "./ForumPreview"
+import ForumPreview from "./ForumPreview";
 import { getColorForScore, stateColors } from "./utils";
+import ForumForm from "./ForumForm";
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -140,7 +141,9 @@ const Destination = () => {
         const destinationId = window.location.pathname.split("/").pop();
 
         // Obtener los datos del destino
-        const res = await axios.get(`http://localhost:4000/api/dests/${destinationId}`);
+        const res = await axios.get(
+          `http://localhost:4000/api/dests/${destinationId}`
+        );
         if (res.status !== 200) {
           throw new Error("Error al obtener el destino");
         }
@@ -154,7 +157,9 @@ const Destination = () => {
 
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
-            const userRes = await axios.get(`http://localhost:4000/api/users/${followerId}`);
+            const userRes = await axios.get(
+              `http://localhost:4000/api/users/${followerId}`
+            );
             if (userRes.status !== 200) {
               throw new Error("Error al obtener los datos del seguidor");
             }
@@ -167,7 +172,9 @@ const Destination = () => {
 
         const reviewsData = await Promise.all(
           reviewsIds.map(async (reviewId) => {
-            const reviewRes = await axios.get(`http://localhost:4000/api/reviews/${reviewId}`);
+            const reviewRes = await axios.get(
+              `http://localhost:4000/api/reviews/${reviewId}`
+            );
             if (reviewRes.status !== 200) {
               throw new Error("Error al obtener los datos de la reseña");
             }
@@ -183,7 +190,9 @@ const Destination = () => {
 
         const photosData = await Promise.all(
           photosIds.map(async (photoId) => {
-            const photosRes = await axios.get(`http://localhost:4000/api/photos/${photoId}`);
+            const photosRes = await axios.get(
+              `http://localhost:4000/api/photos/${photoId}`
+            );
             if (photosRes.status !== 200) {
               throw new Error("Error al obtener los datos de las fotos");
             }
@@ -199,7 +208,9 @@ const Destination = () => {
 
         const forumsData = await Promise.all(
           forumsIds.map(async (forumId) => {
-            const forumsRes = await axios.get(`http://localhost:4000/api/forums/${forumId}`);
+            const forumsRes = await axios.get(
+              `http://localhost:4000/api/forums/${forumId}`
+            );
             if (forumsRes.status !== 200) {
               throw new Error("Error al obtener los datos de los foros");
             }
@@ -226,7 +237,6 @@ const Destination = () => {
 
     getDestination();
   }, [user]);
-
 
   useEffect(() => {
     if (user && reviews.length > 0) {
@@ -320,10 +330,10 @@ const Destination = () => {
           style={{
             fontSize: "20px",
             fontWeight: "bold",
-            width:"75px",
+            width: "75px",
             backgroundColor:
               user && !following ? stateColors.one : stateColors.zero,
-            color: "#ffffff"
+            color: "#ffffff",
           }}
         >
           {user ? (
@@ -535,13 +545,28 @@ const Destination = () => {
               <>
                 <div className="row">
                   <div className="col-md-12">
-                    <ul className="list-unstyled">
-                      {Object.values(forums).map((forum) => (
-                        <li className="d-flex align-items-center mb-2" key={forum._id}>
-                          <ForumPreview forum={forum}/>
-                        </li>
-                      ))}
-                    </ul>
+                    {Object.keys(forums).length > 0 ? (
+                      <ul className="list-unstyled">
+                        {Object.values(forums).map((forum) => (
+                          <li
+                            className="d-flex align-items-center mb-2"
+                            key={forum._id}
+                          >
+                            <ForumPreview forum={forum} />
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="container text-center">
+                        <h4>Wow, it's a bit lonely in here</h4>
+                        <p>Be the first one to create a forum</p>
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png"
+                          alt="Tumbleweed"
+                          style={{ width: "100px" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </>
@@ -564,6 +589,9 @@ const Destination = () => {
                 </div>
               </div>
             )}
+
+            <ForumForm/>
+
           </>
         )}
 
@@ -720,7 +748,10 @@ const Destination = () => {
                 <div className="row justify-content-center">
                   {photos.map((photo) => (
                     <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
-                      <Photo photo={photo} delete={photo.user===user.result._id} />
+                      <Photo
+                        photo={photo}
+                        delete={photo.user === user.result._id}
+                      />
                     </div>
                   ))}
                 </div>
@@ -742,7 +773,8 @@ const Destination = () => {
                     style={{ width: "100px" }}
                   />
                   <h5>
-                    You must follow the destination if you want to access the gallery
+                    You must follow the destination if you want to access the
+                    gallery
                   </h5>
                 </div>
               </div>

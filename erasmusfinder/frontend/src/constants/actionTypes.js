@@ -10,3 +10,5 @@ export const DISLIKE = 'DISLIKE';
 export const CONTACT = 'LIKE';
 export const REVIEW = 'REVIEW';
 export const REQUEST = 'REQUEST';
+export const FORUM = 'FORUM';
+export const THREAD = 'THREAD';
