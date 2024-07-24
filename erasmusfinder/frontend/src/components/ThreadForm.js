@@ -55,9 +55,13 @@ const ThreadForm = () => {
     const file = new File([fileBlob], "photo.png", { type: fileBlob.type });
   
     const forumId = window.location.pathname.split("/").pop();
-  
-    const photoUrl = await uploadPhotoToBack(file);
-  
+    
+    let photoUrl = await uploadPhotoToBack(file);
+    
+    if(!addPhoto){
+      photoUrl=null;
+    }
+
     const updatedThreadData = {
       title,
       content,

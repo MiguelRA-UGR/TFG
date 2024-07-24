@@ -543,6 +543,7 @@ const Destination = () => {
           <>
             {following ? (
               <>
+              
                 <div className="row">
                   <div className="col-md-12">
                     {Object.keys(forums).length > 0 ? (
@@ -568,6 +569,8 @@ const Destination = () => {
                       </div>
                     )}
                   </div>
+
+                  <ForumForm/>
                 </div>
               </>
             ) : (
@@ -589,9 +592,6 @@ const Destination = () => {
                 </div>
               </div>
             )}
-
-            <ForumForm/>
-
           </>
         )}
 

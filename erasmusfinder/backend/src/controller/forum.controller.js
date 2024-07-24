@@ -15,7 +15,6 @@ forumCtrlr.getForums = async (req, res) => {
 
 // POST
 forumCtrlr.createForum = async (req, res) => {    
-    console.log(req.body);
     
     try {
         const { 
