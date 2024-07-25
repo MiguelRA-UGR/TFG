@@ -36,3 +36,7 @@ export const deleteThread = (id) => API.delete(`/api/threads/${id}`);
 export const createThread = (threadData) => API.post(`/api/threads`, threadData);
 export const updateThread = (id, threadData) => API.put(`/api/threads/${id}`, threadData);
 
+export const deleteReply = (id) => API.delete(`/api/replies/${id}`);
+export const createReply = (replyData) => API.post(`/api/replies`, replyData);
+export const updateReply = (id, replyData) => API.put(`/api/replies/${id}`, replyData);
+

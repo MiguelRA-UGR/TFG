@@ -17,8 +17,11 @@ const replySchema = new Schema({
         ref: 'User'
     },
 
-    url: { type:String},
-    title: { type:String},
+    thread: {
+        type: Schema.Types.ObjectId,
+        ref: 'Thread'
+    },
+
     content: { type:String}
 }, {
     timestamps: true

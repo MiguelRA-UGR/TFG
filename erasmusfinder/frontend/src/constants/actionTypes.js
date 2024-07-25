@@ -12,3 +12,4 @@ export const REVIEW = 'REVIEW';
 export const REQUEST = 'REQUEST';
 export const FORUM = 'FORUM';
 export const THREAD = 'THREAD';
+export const REPLY = 'REPLY';

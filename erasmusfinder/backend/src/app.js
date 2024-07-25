@@ -38,6 +38,7 @@ app.use('/api/photos', require('./routes/photos'));
 app.use('/api/requests', require('./routes/requests'));
 app.use('/api/forums', require('./routes/forums'));
 app.use('/api/threads', require('./routes/threads'));
+app.use('/api/replies', require('./routes/replies'));
 
 //Exportar la app para utilizarlo en otras partes del proyecto
 module.exports = app;
