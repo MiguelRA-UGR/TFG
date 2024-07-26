@@ -12,7 +12,7 @@ const Thread = ({ thread }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [replies, setReplies] = useState([]);
-  const [newReply, setNewReply] = useState(""); // Estado para el nuevo mensaje de respuesta
+  const [newReply, setNewReply] = useState("");
   const dispatch = useDispatch();
 
   const isAuthor = user && user.result._id === thread.author._id;
@@ -72,8 +72,8 @@ const Thread = ({ thread }) => {
 
       dispatch(createReply(reply));
 
-      //setReplies([response.data, ...replies]);
       setNewReply("");
+      window.location.reload();
     } catch (error) {
       console.error("Error al enviar la respuesta: ", error);
     }

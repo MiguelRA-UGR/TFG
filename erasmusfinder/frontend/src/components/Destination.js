@@ -330,7 +330,7 @@ const Destination = () => {
           style={{
             fontSize: "20px",
             fontWeight: "bold",
-            width: "75px",
+            width: "90px",
             backgroundColor:
               user && !following ? stateColors.one : stateColors.zero,
             color: "#ffffff",
