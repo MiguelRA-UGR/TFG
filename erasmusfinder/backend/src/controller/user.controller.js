@@ -35,8 +35,6 @@ userCtrlr.logIn = async(req, res) =>{
 userCtrlr.signUp = async(req, res) =>{
     const { email, password, userName} = req.body;
 
-    console.log("Hola");
-
     try {
         const existingUser = await User.findOne({email});
 

@@ -12,6 +12,7 @@ import DestinationSearch from "./DestinationSearch.js";
 
 import "../index.css";
 import MapComponent from "./MapComponent.js";
+import UserSearch from "./UserSearch.js";
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -218,223 +219,230 @@ const Home = () => {
 
   return (
     <div className="container">
-      
-      <DestinationSearch onDestinationSelect={handleDestinationSelect} />
-
-      {(!user || user.result.followedDestinations.length === 0) && (
+      {(user && user.result.admin) ? (
         <>
-          <span className="section-title" style={{ fontSize: "35px" }}>
-            Discover...
-          </span>
+          <UserSearch/>
+        </>
+      ) : (
+        <>
+          <DestinationSearch onDestinationSelect={handleDestinationSelect} />
 
-          <div
-            id="carouselExampleAutoplaying"
-            className="carousel slide d-flex justify-content-center align-items-center"
-            data-bs-ride="carousel"
-          >
-            <div className="carousel-inner">
-              {destinations.map((destination, index) => (
-                <div
-                  key={index}
-                  className={`carousel-item ${index === 0 ? "active" : ""}`}
-                >
-                  <Link to={`/Destination/${destination._id}`}>
-                    <img
-                      src={`http://localhost:4000/imgs/frontpages/${formatedName(
-                        destination.name
-                      )}.png`}
-                      style={{ maxHeight: "700px", objectFit: "cover" }}
-                      alt={destination.name}
-                    />
-                  </Link>
-                  <div
-                    className="carousel-caption d-flex justify-content-center align-items-center"
-                    style={{
-                      position: "absolute",
-                      bottom: "0",
-                      left: "0",
-                      right: "0",
-                      backgroundColor: "rgba(0, 0, 0, 0.6)",
-                    }}
-                  >
-                    <div className="text-center">
-                      <h5
+          {(!user || user.result.followedDestinations.length === 0) && (
+            <>
+              <span className="section-title" style={{ fontSize: "35px" }}>
+                Discover...
+              </span>
+
+              <div
+                id="carouselExampleAutoplaying"
+                className="carousel slide d-flex justify-content-center align-items-center"
+                data-bs-ride="carousel"
+              >
+                <div className="carousel-inner">
+                  {destinations.map((destination, index) => (
+                    <div
+                      key={index}
+                      className={`carousel-item ${index === 0 ? "active" : ""}`}
+                    >
+                      <Link to={`/Destination/${destination._id}`}>
+                        <img
+                          src={`http://localhost:4000/imgs/frontpages/${formatedName(
+                            destination.name
+                          )}.png`}
+                          style={{ maxHeight: "700px", objectFit: "cover" }}
+                          alt={destination.name}
+                        />
+                      </Link>
+                      <div
+                        className="carousel-caption d-flex justify-content-center align-items-center"
                         style={{
-                          fontSize: "25px",
-                          fontFamily: "Cambria, serif",
-                          fontWeight: "bold",
+                          position: "absolute",
+                          bottom: "0",
+                          left: "0",
+                          right: "0",
+                          backgroundColor: "rgba(0, 0, 0, 0.6)",
                         }}
                       >
-                        {destination.name}
-                      </h5>
-                      <p style={{ maxWidth: "60%", margin: "0 auto" }}>
-                        {destination.description}
-                      </p>
+                        <div className="text-center">
+                          <h5
+                            style={{
+                              fontSize: "25px",
+                              fontFamily: "Cambria, serif",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            {destination.name}
+                          </h5>
+                          <p style={{ maxWidth: "60%", margin: "0 auto" }}>
+                            {destination.description}
+                          </p>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <button
-              className="carousel-control-prev"
-              type="button"
-              data-bs-target="#carouselExampleAutoplaying"
-              data-bs-slide="prev"
-            >
-              <span
-                className="carousel-control-prev-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="visually-hidden">Previous</span>
-            </button>
-            <button
-              className="carousel-control-next"
-              type="button"
-              data-bs-target="#carouselExampleAutoplaying"
-              data-bs-slide="next"
-            >
-              <span
-                className="carousel-control-next-icon"
-                aria-hidden="true"
-              ></span>
-              <span className="visually-hidden">Next</span>
-            </button>
-          </div>
-        </>
-      )}
-
-      {!user && (
-        <>
-          <div className="mt-4">
-            <span className="section-title">
-              Interact with people who are looking for the same as you{" "}
-            </span>
-          </div>
-          <div className="row text-center justify-content-center mt-4">
-            {defaultUsers.map((user) => (
-              <div key={user.id} className="col-md-3 mb-4">
-                <div id="custom_card" className="card">
-                  <img
-                    src={require(`../imgs/users/${user.avatar}.png`)}
-                    className="card-img-top"
-                    alt={user.name}
-                    style={{ height: "200px", objectFit: "cover" }}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{user.name}</h5>
-                    <div className="d-flex align-items-center justify-content-center">
-                      <img
-                        src={`https://flagcdn.com/${user.flag}.svg`}
-                        alt={user.country}
-                        style={{
-                          height: "20px",
-                          width: "20px",
-                          borderRadius: "50%",
-                          objectFit: "cover",
-                          marginRight: "5px",
-                        }}
-                      />
-                      <p className="card-text mb-0">{user.country}</p>
-                    </div>
-                    <div
-                      className="btn btn-link mt-2 form-control"
-                      style={{
-                        fontWeight: "bold",
-                        fontSize: `${18 - user.status.length * 0.3}px`,
-                        background: user.status_color,
-                        color: "white",
-                        textDecoration: "none",
-                      }}
-                    >
-                      {user.status}
-                    </div>
-                  </div>
-                </div>
+                <button
+                  className="carousel-control-prev"
+                  type="button"
+                  data-bs-target="#carouselExampleAutoplaying"
+                  data-bs-slide="prev"
+                >
+                  <span
+                    className="carousel-control-prev-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span className="visually-hidden">Previous</span>
+                </button>
+                <button
+                  className="carousel-control-next"
+                  type="button"
+                  data-bs-target="#carouselExampleAutoplaying"
+                  data-bs-slide="next"
+                >
+                  <span
+                    className="carousel-control-next-icon"
+                    aria-hidden="true"
+                  ></span>
+                  <span className="visually-hidden">Next</span>
+                </button>
               </div>
-            ))}
-          </div>
+            </>
+          )}
+
+          {!user && (
+            <>
+              <div className="mt-4">
+                <span className="section-title">
+                  Interact with people who are looking for the same as you{" "}
+                </span>
+              </div>
+              <div className="row text-center justify-content-center mt-4">
+                {defaultUsers.map((user) => (
+                  <div key={user.id} className="col-md-3 mb-4">
+                    <div id="custom_card" className="card">
+                      <img
+                        src={require(`../imgs/users/${user.avatar}.png`)}
+                        className="card-img-top"
+                        alt={user.name}
+                        style={{ height: "200px", objectFit: "cover" }}
+                      />
+                      <div className="card-body">
+                        <h5 className="card-title">{user.name}</h5>
+                        <div className="d-flex align-items-center justify-content-center">
+                          <img
+                            src={`https://flagcdn.com/${user.flag}.svg`}
+                            alt={user.country}
+                            style={{
+                              height: "20px",
+                              width: "20px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                              marginRight: "5px",
+                            }}
+                          />
+                          <p className="card-text mb-0">{user.country}</p>
+                        </div>
+                        <div
+                          className="btn btn-link mt-2 form-control"
+                          style={{
+                            fontWeight: "bold",
+                            fontSize: `${18 - user.status.length * 0.3}px`,
+                            background: user.status_color,
+                            color: "white",
+                            textDecoration: "none",
+                          }}
+                        >
+                          {user.status}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {user && user.result.followedDestinations.length > 0 && (
+            <>
+              <span className="section-title">Followed destinations</span>
+              <img
+                src={"../imgs/icons/push-pin-blue.png"}
+                alt="Push Pin Icon"
+                className="icon"
+                style={{ width: "20px", height: "20px" }}
+              />
+              <Carousel
+                className="mb-3"
+                showDots={false}
+                autoPlay={true}
+                responsive={responsiveDests}
+              >
+                {followeDestination}
+              </Carousel>
+            </>
+          )}
+
+          {user && user.result.followedUsers.length > 0 && (
+            <>
+              <span className="section-title">Contacts</span>
+
+              <Carousel
+                className="mb-3"
+                showDots={false}
+                autoPlay={true}
+                responsive={responsiveDests}
+              >
+                {contact}
+              </Carousel>
+            </>
+          )}
+
+          {user && user.result.reviews.length > 0 && (
+            <>
+              <span className="section-title">Your Reviews</span>
+
+              <Carousel
+                className="mb-3"
+                showDots={false}
+                autoPlay={true}
+                responsive={responsiveReviews}
+              >
+                {review}
+              </Carousel>
+            </>
+          )}
+
+          {!user && (
+            <span className="section-title">
+              Find the destination that better suits you!
+            </span>
+          )}
+
+          <MapComponent pinData={pins}></MapComponent>
+
+          {user && (
+            <div className="mt-3 text-center d-flex flex-column">
+              <span className="section-title mb-2">
+                Do you think there is something our platform could improve? Let
+                us know!
+              </span>
+
+              <Link to={`/RequestForm`}>
+                <button
+                  type="submit"
+                  style={{
+                    fontWeight: "bold",
+                    backgroundColor: "#f5973d",
+                    color: "#ffffff",
+                  }}
+                  className="btn btn-warning"
+                >
+                  Make a Request
+                </button>
+              </Link>
+            </div>
+          )}
         </>
-      )}
-
-      {user && user.result.followedDestinations.length > 0 && (
-        <>
-          <span className="section-title">Followed destinations</span>
-          <img
-            src={"../imgs/icons/push-pin-blue.png"}
-            alt="Push Pin Icon"
-            className="icon"
-            style={{ width: "20px", height: "20px" }}
-          />
-          <Carousel
-            className="mb-3"
-            showDots={false}
-            autoPlay={true}
-            responsive={responsiveDests}
-          >
-            {followeDestination}
-          </Carousel>
-        </>
-      )}
-
-      {user && user.result.followedUsers.length > 0 && (
-        <>
-          <span className="section-title">Contacts</span>
-
-          <Carousel
-            className="mb-3"
-            showDots={false}
-            autoPlay={true}
-            responsive={responsiveDests}
-          >
-            {contact}
-          </Carousel>
-        </>
-      )}
-
-      {user && user.result.reviews.length > 0 && (
-        <>
-          <span className="section-title">Your Reviews</span>
-
-          <Carousel
-            className="mb-3"
-            showDots={false}
-            autoPlay={true}
-            responsive={responsiveReviews}
-          >
-            {review}
-          </Carousel>
-        </>
-      )}
-
-      {!user && (
-        <span className="section-title">
-          Find the destination that better suits you!
-        </span>
-      )}
-
-      <MapComponent className pinData={pins}></MapComponent>
-
-      {user && (
-        <div className="mt-3 text-center d-flex flex-column">
-          <span className="section-title mb-2">
-            Do you think there is something our platform could improve? Let us
-            know!
-          </span>
-          
-          <Link to={`/RequestForm`}>
-            <button
-              type="submit"
-              style={{
-                fontWeight: "bold",
-                backgroundColor: "#f5973d",
-                color: "#ffffff",
-              }}
-              className="btn btn-warning"
-            >
-              Make a Request
-            </button>
-          </Link>
-        </div>
       )}
     </div>
   );
