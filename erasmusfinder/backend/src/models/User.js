@@ -19,6 +19,7 @@ const userSchema = new Schema({
     originCity: { type: String,default:"none" },
     destCity: { type: String,default:"none" },
     destUniversity: { type: String,default:"none" },
+    warningsN:{type:Number,default:0},
     pendingContact: [{
         type: Schema.Types.ObjectId,
         ref: 'User'

@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import User from "./CarouselUser.js";
 import { useNavigate } from "react-router-dom";
 
-
 const RequestForm = () => {
   const [type, setType] = useState(0);
   const [comment, setComment] = useState("");
@@ -23,18 +22,19 @@ const RequestForm = () => {
     const requestData = {
       type,
       comment,
-      ...(type === 1 || type === 2 ? { id } : {}),
-      user: user.result._id 
+      ...(type === 1 ? { id } : {}), // Only include id for type 1
+      user: user.result._id,
     };
+
     try {
       dispatch(createRequest(requestData));
       alert("Your request has been registered in the system");
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      alert("An error occured while processing your request. Try again please");
+      alert(
+        "An error occurred while processing your request. Please try again."
+      );
     }
-    
-    
   };
 
   const handleDestinationSelect = (destination) => {
@@ -62,11 +62,11 @@ const RequestForm = () => {
           >
             <option value={0}>Destination Request</option>
             <option value={1}>Destination Change Request</option>
-            <option value={2}>Forus Request</option>
+            <option value={2}>Report</option>
             <option value={3}>Other</option>
           </select>
         </div>
-        {(type === 1 || type === 2) && (
+        {type === 1 && (
           <div className="mb-3">
             <label htmlFor="destination" className="form-label">
               Destination

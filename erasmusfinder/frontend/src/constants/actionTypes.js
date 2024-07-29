@@ -13,3 +13,7 @@ export const REQUEST = 'REQUEST';
 export const FORUM = 'FORUM';
 export const THREAD = 'THREAD';
 export const REPLY = 'REPLY';
+
+export const USER_DELETE = 'USER_DELETE';
+export const USER_ADMIN = 'USER_ADMIN';
+export const USER_WARNING = 'USER_WARNING';

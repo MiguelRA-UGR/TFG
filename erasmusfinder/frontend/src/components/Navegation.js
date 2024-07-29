@@ -83,9 +83,13 @@ const Navegation = () => {
               fontFamily: "Cambria, serif",
               fontWeight: "bold",
             }}
-          >
+          > 
+
             <span style={{ color: "#000000" }}>Erasmus</span>
             <span style={{ color: stateColors.one }}>Finder</span>
+            {user && user.result.admin && (
+              <span style={{ color: stateColors.two }}>Admin</span>
+            )}
           </Link>
           <button
             className="navbar-toggler"
@@ -106,47 +110,51 @@ const Navegation = () => {
             <ul className="navbar-nav ms-auto">
               {user ? (
                 <>
-                  <li className="nav-item ms-auto">
-                    <Link
-                      className="nav-link d-flex align-items-center"
-                      to="/Profile"
-                  
-                    >
-                      {renderAvatarContent()}
+                  {!user.result.admin && (
+                    <>
+                      <li className="nav-item ms-auto">
+                        <Link
+                          className="nav-link d-flex align-items-center"
+                          to="/Profile"
+                        >
+                          {renderAvatarContent()}
 
-                      <span
-                        className="navlink ms-2 font-weight-bold"
-                        style={{ fontSize: "22px" }}
-                      >
-                        Profile
-                      </span>
-                    </Link>
-                  </li>
+                          <span
+                            className="navlink ms-2 font-weight-bold"
+                            style={{ fontSize: "22px" }}
+                          >
+                            Profile
+                          </span>
+                        </Link>
+                      </li>
 
-                  <li className="nav-item active ms-auto">
-                    <Link
-                      className="nav-link ml-5 d-flex align-items-center"
-                      to="/Notifications"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="35"
-                        height="35"
-                        fill="currentColor"
-                        className="bi bi-envelope-fill"
-                        viewBox="0 0 16 16"
-                      >
-                        <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z" />
-                      </svg>
+                      <li className="nav-item active ms-auto">
+                        <Link
+                          className="nav-link ml-5 d-flex align-items-center"
+                          to="/Notifications"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="35"
+                            height="35"
+                            fill="currentColor"
+                            className="bi bi-envelope-fill"
+                            viewBox="0 0 16 16"
+                          >
+                            <path d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414zM0 4.697v7.104l5.803-3.558zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586zm3.436-.586L16 11.801V4.697z" />
+                          </svg>
 
-                      <span
-                        className="navlink ms-2 font-weight-bold"
-                        style={{ fontSize: "22px" }}
-                      >
-                        Notifications
-                      </span>
-                    </Link>
-                  </li>
+                          <span
+                            className="navlink ms-2 font-weight-bold"
+                            style={{ fontSize: "22px" }}
+                          >
+                            Notifications
+                          </span>
+                        </Link>
+                      </li>
+                    </>
+                  )}
+
                   <li className="nav-item mt-1">
                     <button
                       onClick={logout}

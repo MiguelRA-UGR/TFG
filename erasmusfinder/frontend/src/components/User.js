@@ -9,6 +9,12 @@ import {
   sendContactRequest,
 } from "../actions/usersContact";
 
+import {
+  deleteUser,
+  makeAdmin,
+  warnUser,
+} from "../actions/userAdmin";
+
 const initialState = {
   snd: "",
   rcv: "",
@@ -20,6 +26,9 @@ const User = () => {
   const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const [countryNames, setCountryNames] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const isAdmin = user.result.admin;
 
   const handleFollow = async () => {
     dataContact.snd = user.result._id;
@@ -36,6 +45,21 @@ const User = () => {
     } catch (error) {
       console.error("Error al manejar la solicitud de contacto:", error);
     }
+  };
+
+  const handlePromote = () => {
+    dispatch(makeAdmin(userProfile._id));
+    navigate('/');
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteUser(userProfile._id));
+    navigate('/');
+  };
+
+  const handleWarning = () => {
+    dispatch(warnUser(userProfile._id));
+    navigate('/');
   };
 
   const handleUnfollow = async () => {
@@ -321,7 +345,24 @@ const User = () => {
         </div>
       </div>
 
-      {isFollowing() ? (
+      {isAdmin ? (
+        <>
+          <div className="mt-3">
+              
+              <button className="btn btn-info me-2" onClick={handlePromote}>
+                {userProfile.admin ? "Remove admin" : "Promote to admin"}
+              </button>
+              <button className="btn btn-warning me-2" onClick={handleWarning}>
+                Send warning
+              </button>
+              <button className="btn btn-danger me-2" onClick={handleDelete}>
+                Delete User
+              </button>
+            </div>
+        </>
+      ):(
+        <>
+          {isFollowing() ? (
         <button
           type="button"
           style={{
@@ -365,6 +406,10 @@ const User = () => {
           )}
         </>
       )}
+        </>
+      )}
+
+      
     </div>
   );
 };

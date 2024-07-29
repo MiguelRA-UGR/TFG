@@ -242,5 +242,40 @@ userCtrlr.sendrequest = async (req, res) => {
     }
 };
 
-//Exportar el controlador de usuario
+// Designar como administrador
+userCtrlr.makeAdmin = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        user.admin = !user.admin;
+        await user.save();
+
+        res.json({ message: 'Condición de usuario cambiada correctamente' });
+    } catch (error) {
+        console.error('Error al intentar promover a administrador:', error);
+        res.status(500).json({ message: 'Algo salió mal al intentar hacer administrador al usuario' });
+    }
+}
+
+// Crear una advertencia para un usuario
+userCtrlr.warnUser = async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'Usuario no encontrado' });
+
+        user.warningsN+=1;
+        await user.save();
+
+        res.json({ message: 'Usuario advertido correctamente' });
+    } catch (error) {
+        console.error('Error al advertir al usuario:', error);
+        res.status(500).json({ message: 'Algo salió mal al advertir al usuario' });
+    }
+}
+
 module.exports = userCtrlr;

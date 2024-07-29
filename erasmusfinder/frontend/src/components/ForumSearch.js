@@ -1,33 +1,32 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
+import ForumPreview from "./ForumPreview";
 
-const UserSearch = ({ onUserSelect }) => {
+const ForumSearch = ({ onTopicSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
-  
+  const [forums, setTopics] = useState([]);
+
   useEffect(() => {
-    const getUsers = async () => {
+    const getTopics = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/users");
-        setUsers(res.data);
+        const res = await axios.get("http://localhost:4000/api/forums");
+        setTopics(res.data);
       } catch (error) {
         console.error("Error:", error);
       }
     };
 
-    getUsers();
+    getTopics();
   }, []);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    const filteredUsers = users.filter((user) =>
-      user.userName.toLowerCase().includes(e.target.value.toLowerCase())
+    const filteredForums = forums.filter((forum) =>
+      forum.title.toLowerCase().includes(e.target.value.toLowerCase())
     );
-    setSearchResults(filteredUsers);
+    setSearchResults(filteredForums);
   };
 
   return (
@@ -36,7 +35,7 @@ const UserSearch = ({ onUserSelect }) => {
         <input
           type="search"
           className="form-control"
-          placeholder="Search users"
+          placeholder="Search forum topics"
           value={searchTerm}
           onChange={handleSearchChange}
         />
@@ -62,28 +61,13 @@ const UserSearch = ({ onUserSelect }) => {
             className="dropdown-menu"
             style={{ display: "block", position: "absolute", width: "100%" }}
           >
-            {searchResults.map((userObj) => (
+            {searchResults.map((forumObj) => (
               <li
-                key={userObj._id}
+                key={forumObj._id}
                 className="list-group-item d-flex align-items-center mb-2"
                 style={{ cursor: "pointer" }}
               >
-
-                <Link   
-                  to={user.result._id === userObj._id ? `/Profile` : `/User/${userObj._id}`}
-                  className="nav-link ml-3 d-flex flex-row align-items-center"
-                  key={userObj._id}
-                  >
-                    <Avatar
-                    user={userObj}
-                    outerSize="50px"
-                    innerSize="40px"
-                    flagSize="25px"
-                    />
-
-                    {userObj.userName}
-                </Link>
-                
+                <ForumPreview forum={forumObj}/>
               </li>
             ))}
           </ul>
@@ -93,4 +77,4 @@ const UserSearch = ({ onUserSelect }) => {
   );
 };
 
-export default UserSearch;
+export default ForumSearch;

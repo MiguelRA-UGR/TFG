@@ -13,6 +13,7 @@ import DestinationSearch from "./DestinationSearch.js";
 import "../index.css";
 import MapComponent from "./MapComponent.js";
 import UserSearch from "./UserSearch.js";
+import ForumSearch from "./ForumSearch.js";
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -221,7 +222,22 @@ const Home = () => {
     <div className="container">
       {(user && user.result.admin) ? (
         <>
+          <span className="section-title">
+            Users
+          </span>
           <UserSearch/>
+
+          <span className="section-title">
+            Destinations
+          </span>
+          <DestinationSearch/>
+
+          <span className="section-title">
+            Forums
+          </span>
+          <ForumSearch/>
+
+
         </>
       ) : (
         <>

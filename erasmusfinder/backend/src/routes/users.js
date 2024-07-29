@@ -5,7 +5,7 @@ const {Router} = require('express');
 const router = Router();
 const upload = require('../middleware/upload');
 
-const { createUser, getUsers, getUser, deleteUser, updateUser, updateProfilePicture, logIn, signUp, contact, breakcontact, sendrequest} = require('../controller/user.controller')
+const { createUser, getUsers, getUser, deleteUser, updateUser, updateProfilePicture, logIn, signUp, contact, breakcontact, sendrequest, makeAdmin, warnUser} = require('../controller/user.controller')
 
 router.route('/')
     .get(getUsers)
@@ -24,6 +24,9 @@ router.post('/signup', signUp);
 router.post('/contact', contact);
 router.post('/breakcontact', breakcontact);
 router.post('/sendrequest', sendrequest);
+
+router.put('/makeadmin/:id', makeAdmin);
+router.put('/warnuser/:id', warnUser);
 
 
 //Exportar el router para utilizarlo en otras partes

@@ -16,6 +16,9 @@ export const contact = (formData) => API.post('/api/users/contact', formData);
 export const breakContact = (dataContact) => API.post('/api/users/breakcontact', dataContact);
 export const sendRequest = (dataContact) => API.post('/api/users/sendrequest', dataContact);
 export const createReview = (reviewData) => API.post('/api/reviews/review', reviewData);
+export const deleteUser = (id) => API.delete(`/api/users/${id}`);
+export const makeAdmin = (id) => API.put(`/api/users/makeadmin/${id}`);
+export const warnUser = (id) => API.put(`/api/users/warnuser/${id}`);
 
 export const deleteReview = (id) => API.delete(`/api/reviews/${id}`);
 

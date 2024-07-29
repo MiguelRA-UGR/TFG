@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { stateColors } from "./utils";
 
@@ -9,6 +10,9 @@ const Profile = () => {
   const [privacy, setPrivacyOption] = useState(user.result.privacy);
   const [countries, setCountries] = useState({});
   const [countryNames, setCountryNames] = useState({});
+  const history = useNavigate();
+
+  const isAdmin = user.result.admin;
 
   const [selectedCountry, setSelectedCountry] = useState(
     user.result.nationality
@@ -173,6 +177,10 @@ const fetchCountryFlags = async () => {
       window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
+
+  if(isAdmin){
+    history('/')
+  }
 
   return (
     <div className="container-fluid d-flex flex-column align-items-center mt-4">
