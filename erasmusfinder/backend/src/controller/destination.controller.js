@@ -16,7 +16,8 @@ destinationCtrlr.getDestinations = async (req, res) => {
 destinationCtrlr.createDestination = async (req, res) => {
     try {
         const { 
-            name, 
+            name,
+            iso, 
             description, 
             country,
             coords,
@@ -49,7 +50,8 @@ destinationCtrlr.createDestination = async (req, res) => {
             mean_score,
             users,
             forus,
-            reviews 
+            reviews,
+            iso 
         });
         await newDestination.save();
         res.json({ message: "Destino creado" });

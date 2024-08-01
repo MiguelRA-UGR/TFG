@@ -255,7 +255,9 @@ const Destination = () => {
   }, [reviews, user]);
 
   if (!destination) {
-    return <div>Cargando destino...</div>;
+    return <div class="spinner-border" role="status">
+    <span class="visually-hidden">Loading destination...</span>
+  </div>;
   }
 
   return (
@@ -363,7 +365,7 @@ const Destination = () => {
       <img
         src={`http://localhost:4000/imgs/frontpages/${formatedName(
           destination.name
-        )}2.png`}
+        )}.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}
         alt={destination.name}
       />

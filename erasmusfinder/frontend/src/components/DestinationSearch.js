@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DestinationSearch = ({ onDestinationSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [destinations, setDestinations] = useState([]);
+  const history = useNavigate();
   
   useEffect(() => {
     const getDestinations = async () => {
@@ -31,8 +33,9 @@ const DestinationSearch = ({ onDestinationSelect }) => {
   const handleDestinationSelect = (destination) => {
     setSearchTerm("");
     setSearchResults([]);
-    onDestinationSelect(destination);
+    history(`/Destination/${destination._id}`);
   };
+  
 
   return (
     <div>

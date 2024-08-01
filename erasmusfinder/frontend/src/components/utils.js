@@ -80,3 +80,28 @@ export function timeElapsed(creationDate) {
   if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
   return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
 }
+
+export function extractLatLngFromGoogleMaps(url) {
+  //Se extrae la latitud y longitud con una expresión regular. Lo que sigue a la @ son las coordenadas
+  const regex = /@([\d.-]+),([\d.-]+)/;
+  const matches = url.match(regex);
+
+  if (matches) {
+    return {
+      lat: parseFloat(matches[1]),
+      long: parseFloat(matches[2]),
+    };
+  }else{
+    return {
+      lat: 0,
+      long: 0,
+    };
+  }
+}
+
+export const cleanString = (str) => {
+  return str
+    .toLowerCase()             
+    .replace(/[\s\-]/g, '')    
+    .replace(/[^\w]/g, '');   
+};

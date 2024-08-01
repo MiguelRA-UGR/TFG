@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PhotoCrop from "./PhotoCrop";
 import { useDispatch } from "react-redux";
-import { createForum } from "../actions/forum.js"; // Action to be created
+import { createForum } from "../actions/forum.js";
 import axios from "axios";
 
 const initialState = {

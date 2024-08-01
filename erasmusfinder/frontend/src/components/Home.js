@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { defaultUsers } from "./utils.js";
+import { defaultUsers, stateColors } from "./utils.js";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -14,6 +14,7 @@ import "../index.css";
 import MapComponent from "./MapComponent.js";
 import UserSearch from "./UserSearch.js";
 import ForumSearch from "./ForumSearch.js";
+import DestinationForm from "./DestinationForm.js";
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -63,10 +64,15 @@ const Home = () => {
   const [followedDestinations, setFollowedDestinations] = useState([]);
   const [reviews, setUserReviews] = useState([]);
   const [pins, setPins] = useState([]);
+  const [createDest, setCreateDest] = useState(false);
   const navigate = useNavigate();
 
   const handleDestinationSelect = (destination) => {
     navigate(`/Destination/${destination._id}`);
+  };
+
+  const toggleDestForm = () => {
+    setCreateDest((prev) => !prev);
   };
 
   useEffect(() => {
@@ -228,15 +234,33 @@ const Home = () => {
           <UserSearch/>
 
           <span className="section-title">
-            Destinations
-          </span>
-          <DestinationSearch/>
-
-          <span className="section-title">
             Forums
           </span>
           <ForumSearch/>
 
+          <span className="section-title">
+            Destinations
+          </span>
+          <DestinationSearch/>
+
+          <div className="mb-3 d-flex justify-content-center align-items-center">
+          <button
+            type="button"
+            style={{
+              fontWeight: "bold",
+              backgroundColor: createDest ? stateColors.zero : stateColors.one,
+              color: "#ffffff",
+            }}
+            className={`btn ${createDest ? "btn-secondary" : "btn-warning"}`}
+            onClick={toggleDestForm}
+          >
+            {createDest ? "Close" : "Create Destination"}
+          </button>
+
+          </div>
+
+            {createDest && (<DestinationForm/>)}
+          
 
         </>
       ) : (

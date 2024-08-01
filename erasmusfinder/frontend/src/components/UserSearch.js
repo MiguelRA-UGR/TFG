@@ -80,8 +80,10 @@ const UserSearch = ({ onUserSelect }) => {
                     innerSize="40px"
                     flagSize="25px"
                     />
-
+                    <div className="m-2">
                     {userObj.userName}
+                    </div>
+                    
                 </Link>
                 
               </li>

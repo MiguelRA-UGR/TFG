@@ -3,25 +3,8 @@ import PhotoCrop from "./PhotoCrop";
 import { useDispatch } from "react-redux";
 import { uploadPhoto } from "../actions/photo.js";
 import axios from 'axios';
+import { extractLatLngFromGoogleMaps } from "./utils.js";
 
-
-function extractLatLngFromGoogleMaps(url) {
-  //Se extrae la latitud y longitud con una expresión regular. Lo que sigue a la @ son las coordenada
-  const regex = /@([\d.-]+),([\d.-]+)/;
-  const matches = url.match(regex);
-
-  if (matches) {
-    return {
-      lat: parseFloat(matches[1]),
-      long: parseFloat(matches[2]),
-    };
-  }else{
-    return {
-      lat: 0,
-      long: 0,
-    };
-  }
-}
 const initialState = {
   comment: "",
   url: "",

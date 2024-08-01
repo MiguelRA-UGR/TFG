@@ -17,3 +17,7 @@ export const REPLY = 'REPLY';
 export const USER_DELETE = 'USER_DELETE';
 export const USER_ADMIN = 'USER_ADMIN';
 export const USER_WARNING = 'USER_WARNING';
+
+export const CREATE_DEST = 'CREATE_DEST';
+export const DELETE_DEST = 'DELETE_DEST';
+export const UPDATE_DEST = 'UPDATE_DEST';

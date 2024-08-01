@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
-const PhotoCrop = ({ image, onImageChange, onCropData, cropped }) => {
+const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, aspectRatio = 1 }) => {
   const cropperRef = useRef(null);
 
   const onChange = (e) => {
@@ -36,9 +36,9 @@ const PhotoCrop = ({ image, onImageChange, onCropData, cropped }) => {
       <br />
       <Cropper
         ref={cropperRef}
-        style={{ height: 200, width: "100%" }}
+        style={{ height, width: "100%" }}
         zoomTo={0.2}
-        initialAspectRatio={1}
+        initialAspectRatio={aspectRatio}
         preview=".img-preview"
         src={image}
         viewMode={1}
@@ -49,7 +49,7 @@ const PhotoCrop = ({ image, onImageChange, onCropData, cropped }) => {
         autoCropArea={1}
         checkOrientation={false}
         guides={true}
-        aspectRatio={1}
+        aspectRatio={aspectRatio}
       />
       <div>
         <div className="box" style={{ width: "50%", float: "right" }}>
