@@ -20,11 +20,17 @@ const DestinationForm = () => {
   const [climateWinter, setClimateWinter] = useState("");
   const [climateSummer, setClimateSummer] = useState("");
   const [costOfLiving, setCostOfLiving] = useState("");
-  const [languages, setLanguages] = useState("");
+  const [languages, setLanguages] = useState([]);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
   const [population, setPopulation] = useState("");
   const [surface, setSurface] = useState("");
   const [countries, setCountries] = useState({});
   const [countryNames, setCountryNames] = useState({});
+  const [allLanguages, setAllLanguages] = useState([]);
+
+  const [universityName, setUniversityName] = useState("");
+  const [universityUrl, setUniversityUrl] = useState("");
+  const [universities, setUniversities] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -34,7 +40,6 @@ const DestinationForm = () => {
         const response = await axios.get("https://flagcdn.com/en/codes.json");
         const data = response.data;
 
-        // Eliminar estados de USA
         const filteredData = Object.entries(data)
           .filter(([key]) => !key.includes("us-"))
           .reduce((acc, [key, value]) => {
@@ -49,7 +54,28 @@ const DestinationForm = () => {
       }
     };
 
+    const fetchLanguages = async () => {
+      try {
+        const response = await axios.get("https://restcountries.com/v3.1/all");
+        const countriesData = response.data;
+        const languageSet = new Set();
+
+        countriesData.forEach((country) => {
+          if (country.languages) {
+            Object.values(country.languages).forEach((language) => {
+              languageSet.add(language);
+            });
+          }
+        });
+
+        setAllLanguages([...languageSet]);
+      } catch (error) {
+        console.error("Error al obtener los lenguajes:", error);
+      }
+    };
+
     fetchCountryFlags();
+    fetchLanguages();
   }, []);
 
   const uploadPhotoToBack = async (file) => {
@@ -58,7 +84,7 @@ const DestinationForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/dests/upload-dest-photo",formData,
+        "http://localhost:4000/api/dests/upload-dest-photo", formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -88,6 +114,31 @@ const DestinationForm = () => {
 
     const isoCode = Object.entries(countries).find(([key, value]) => value === selectedCountry)?.[0] || "";
     setIso(isoCode);
+  };
+
+  const handleAddUniversity = (e) => {
+    e.preventDefault();
+    if (universityName && universityUrl) {
+      setUniversities([...universities, { name: universityName, url: universityUrl }]);
+      setUniversityName("");
+      setUniversityUrl("");
+    }
+  };
+
+  const handleRemoveUniversity = (index) => {
+    setUniversities(universities.filter((_, i) => i !== index));
+  };
+
+  const handleAddLanguage = (e) => {
+    e.preventDefault();
+    if (selectedLanguage && !languages.includes(selectedLanguage)) {
+      setLanguages([...languages, selectedLanguage]);
+      setSelectedLanguage("");
+    }
+  };
+
+  const handleRemoveLanguage = (index) => {
+    setLanguages(languages.filter((_, i) => i !== index));
   };
 
   const handleCreate = async (e) => {
@@ -121,9 +172,10 @@ const DestinationForm = () => {
         summer: climateSummer,
       },
       cost_life: costOfLiving,
-      languages,
+      languages: languages.join(", "),
       population,
       surface,
+      universities,
     };
 
     try {
@@ -141,15 +193,77 @@ const DestinationForm = () => {
       setClimateWinter("");
       setClimateSummer("");
       setCostOfLiving("");
-      setLanguages("");
+      setLanguages([]);
       setPopulation("");
       setSurface("");
+      setUniversities([]);
 
       window.location.reload();
     } catch (error) {
       console.error("Error creating destination:", error);
     }
   };
+
+  const climateOptions = [
+    "Cold and Dry",
+    "Cold and Wet",
+    "Mild and Dry",
+    "Mild and Wet",
+    "Very Cold",
+    "Very Cold and Snowy",
+    "Cold with Frequent Snow",
+    "Mild with Light Rain",
+    "Cold with Occasional Snow",
+    "Very Cold with Heavy Snow",
+    "Chilly and Dry",
+    "Chilly and Wet",
+    "Freezing and Windy",
+    "Cold and Foggy",
+    "Bitterly Cold",
+    "Cool and Dry",
+    "Cool and Wet",
+    "Cold with Icy Conditions",
+    "Freezing Rain",
+    "Extreme Cold",
+    "Cold and Icy",
+    "Hot and Dry",
+    "Hot and Humid",
+    "Warm and Dry",
+    "Warm and Humid",
+    "Very Hot",
+    "Very Hot and Dry",
+    "Hot with Frequent Thunderstorms",
+    "Warm with Light Rain",
+    "Hot and Sunny",
+    "Warm with Occasional Thunderstorms",
+    "Hot and Windy",
+    "Warm and Pleasant",
+    "Extremely Hot",
+    "Hot with High Humidity",
+    "Warm with High UV Index",
+    "Very Warm and Dry",
+    "Warm with Light Showers",
+    "Hot and Muggy",
+    "Warm and Breezy",
+    "Hot with Intense Heatwaves",
+    "Warm with Variable Conditions",
+  ];
+
+  const climateTypeOptions = [
+    "Mediterranean",
+    "Continental",
+    "Oceanic",
+    "Arid",
+    "Tropical",
+  ];
+
+  const costOfLivingOptions = [
+    "Very Low",
+    "Low",
+    "Moderate",
+    "High",
+    "Very High",
+  ];
 
   return (
     <div>
@@ -235,66 +349,122 @@ const DestinationForm = () => {
               <label htmlFor="climateGeneral" className="form-label">
                 General Climate
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
                 id="climateGeneral"
+                className="form-control"
                 value={climateGeneral}
                 onChange={(e) => setClimateGeneral(e.target.value)}
-              />
+              >
+                <option value="">Select a climate type</option>
+                {climateTypeOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-3">
               <label htmlFor="climateWinter" className="form-label">
                 Winter Climate
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
                 id="climateWinter"
+                className="form-control"
                 value={climateWinter}
                 onChange={(e) => setClimateWinter(e.target.value)}
-              />
+              >
+                <option value="">Select the winter climate</option>
+                {climateOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-3">
               <label htmlFor="climateSummer" className="form-label">
                 Summer Climate
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
                 id="climateSummer"
+                className="form-control"
                 value={climateSummer}
                 onChange={(e) => setClimateSummer(e.target.value)}
-              />
+              >
+                <option value="">Select the summer climate</option>
+                {climateOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-3">
               <label htmlFor="costOfLiving" className="form-label">
                 Cost of Living
               </label>
-              <input
-                type="text"
-                className="form-control"
+              <select
                 id="costOfLiving"
+                className="form-control"
                 value={costOfLiving}
                 onChange={(e) => setCostOfLiving(e.target.value)}
-              />
+              >
+                <option value="">Select cost of living</option>
+                {costOfLivingOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mb-3">
               <label htmlFor="languages" className="form-label">
                 Languages
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="languages"
-                value={languages}
-                onChange={(e) => setLanguages(e.target.value)}
-              />
+              <div className="d-flex">
+                <select
+                  id="languages"
+                  className="form-control me-2"
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                >
+                  <option value="">Select a language</option>
+                  {allLanguages.map((language) => (
+                    <option key={language} value={language}>
+                      {language}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={handleAddLanguage}
+                >
+                  Add
+                </button>
+              </div>
             </div>
+
+            <ul className="list-group mb-3">
+              {languages.map((language, index) => (
+                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>{language}</strong>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleRemoveLanguage(index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
 
             <div className="mb-3">
               <label htmlFor="population" className="form-label">
@@ -321,6 +491,57 @@ const DestinationForm = () => {
                 onChange={(e) => setSurface(e.target.value)}
               />
             </div>
+
+            <div className="mb-3">
+              <label htmlFor="universityName" className="form-label">
+                University Name
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="universityName"
+                value={universityName}
+                onChange={(e) => setUniversityName(e.target.value)}
+              />
+            </div>
+
+            <div className="mb-3">
+              <label htmlFor="universityUrl" className="form-label">
+                University URL
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="universityUrl"
+                value={universityUrl}
+                onChange={(e) => setUniversityUrl(e.target.value)}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-secondary mb-3"
+              onClick={handleAddUniversity}
+            >
+              Add University
+            </button>
+
+            <ul className="list-group mb-3">
+              {universities.map((uni, index) => (
+                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
+                  <div>
+                    <strong>{uni.name}</strong>: {uni.url}
+                  </div>
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleRemoveUniversity(index)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <label htmlFor="frontpage" className="form-label">

@@ -28,8 +28,7 @@ const destinationSchema = new Schema({
     universities: [{
         _id: ObjectId,
         name: String,
-        url: String,
-        logo: String
+        url: String
     }],
     forus: [{
         _id: ObjectId,

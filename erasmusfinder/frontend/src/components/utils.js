@@ -101,7 +101,20 @@ export function extractLatLngFromGoogleMaps(url) {
 
 export const cleanString = (str) => {
   return str
-    .toLowerCase()             
-    .replace(/[\s\-]/g, '')    
-    .replace(/[^\w]/g, '');   
+    .toLowerCase()                      
+    .replace(/[\s\-]/g, '')              
+    .normalize('NFD')                    
+    .replace(/[\u0300-\u036f]/g, '')     
+    .replace(/[^\wáéíóúüñ]/g, '');        
 };
+
+export const formatedNumber = (number) => {
+  if (isNaN(number)) {
+    throw new Error("Input must be a valid number");
+  }
+
+  const numberString = number.toString();
+
+  return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
