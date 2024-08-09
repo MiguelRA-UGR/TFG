@@ -52,7 +52,7 @@ const ContactRequest = ({ user, userRequest }) => {
           <div className="d-flex justify-content-center h-100">
           <Link to={`/User/${userRequest._id}`} className="nav-link ml-3" >
            
-          <Avatar user={userRequest}
+          <Avatar userId={userRequest._id}
             outerSize="60px"
             innerSize="50px"
             flagSize="20px">

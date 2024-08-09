@@ -12,6 +12,7 @@ const Reply = ({ reply }) => {
   const dispatch = useDispatch();
 
   const isAuthor = user && user.result._id === author._id;
+  const isAdmin = user.result.admin;
 
   const handleDelete = async () => {
     try {
@@ -33,7 +34,7 @@ const Reply = ({ reply }) => {
     >
       <div className="d-flex ">
         <Avatar
-          user={author}
+          userId={author._id}
           outerSize="45px"
           innerSize="35px"
           flagSize="0px"
@@ -43,7 +44,7 @@ const Reply = ({ reply }) => {
           {author.userName}
         </p>
 
-        {isAuthor && isHovered && (
+        {(isAdmin || (isAuthor && isHovered)) && (
           <button
             className="btn btn-danger d-flex align-items-center justify-content-center"
             style={{

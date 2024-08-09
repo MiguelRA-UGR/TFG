@@ -16,6 +16,7 @@ const Thread = ({ thread }) => {
   const dispatch = useDispatch();
 
   const isAuthor = user && user.result._id === thread.author._id;
+  const isAdmin = user.result.admin;
 
   useEffect(() => {
     const fetchReplies = async () => {
@@ -88,14 +89,14 @@ const Thread = ({ thread }) => {
       <div className="card-header d-flex align-items-center justify-content-between">
         <div className="d-flex flex-row align-items-center">
           <Avatar
-            user={thread.author}
+            userId={thread.author._id}
             outerSize="50px"
             innerSize="40px"
             flagSize="0px"
           />
           <h5 style={{ marginLeft: "10px" }}>{thread.title}</h5>
         </div>
-        {isAuthor && isHovered && (
+        {(isAdmin || (isAuthor && isHovered)) && (
           <button
             className="btn btn-danger d-flex align-items-center justify-content-center"
             style={{
@@ -132,7 +133,7 @@ const Thread = ({ thread }) => {
         )}
 
         {replies.length > 0 && (
-          <div className="mt-3">
+          <div className="mt-3 mb-2">
             <h6 className="m-2">Replies:</h6>
             {[...replies].reverse().map((reply) => (
               <div
@@ -145,32 +146,34 @@ const Thread = ({ thread }) => {
           </div>
         )}
 
-        <div className="mb-3 mt-3 input-group">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Reply..."
-            value={newReply}
-            onChange={handleReplyChange}
-          />
-          <button
-            className="btn"
-            style={{ color: "white", backgroundColor: stateColors.three }}
-            type="button"
-            onClick={handleReplySubmit}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-send-fill"
-              viewBox="0 0 16 16"
+        {!isAdmin && (
+          <div className="mb-3 mt-3 input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Reply..."
+              value={newReply}
+              onChange={handleReplyChange}
+            />
+            <button
+              className="btn"
+              style={{ color: "white", backgroundColor: stateColors.three }}
+              type="button"
+              onClick={handleReplySubmit}
             >
-              <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
-            </svg>
-          </button>
-        </div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                className="bi bi-send-fill"
+                viewBox="0 0 16 16"
+              >
+                <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z" />
+              </svg>
+            </button>
+          </div>
+        )}
 
         <span style={{ color: stateColors.zero, fontWeight: "bold" }}>
           {timeElapsed(new Date(thread.createdAt))}

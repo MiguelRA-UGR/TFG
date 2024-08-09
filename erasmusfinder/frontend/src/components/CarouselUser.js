@@ -18,7 +18,7 @@ export default function User(user) {
         }}
       >
 
-        <Avatar user={user}
+        <Avatar userId={user._id}
           outerSize="60px"
           innerSize="50px"
           flagSize="20px">

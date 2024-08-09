@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Avatar from "./Avatar";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { like,dislike,deletePhoto } from "../actions/photo.js";
+import { like, dislike, deletePhoto } from "../actions/photo.js";
 
 const initialState = {
   photoId: "",
@@ -16,7 +16,8 @@ const Photo = ({ photo, delete: deletable }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const dispatch = useDispatch();
 
-  const loggedUserId = user.result._id; 
+  const loggedUserId = user.result._id;
+  const isAdmin = user.result.admin;
 
   const googleMapsLink = `https://www.google.com/maps?q=${photo.ubication.lat},${photo.ubication.long}`;
 
@@ -34,9 +35,11 @@ const Photo = ({ photo, delete: deletable }) => {
   };
 
   const handleLike = async () => {
+    if (isAdmin) return;
+
     likeData.photoId = photo._id;
     likeData.userId = user.result._id;
-  
+
     try {
       let result;
       if (isLiked) {
@@ -45,9 +48,9 @@ const Photo = ({ photo, delete: deletable }) => {
         result = await dispatch(like(likeData));
       }
       setIsLiked(!isLiked);
-      setLikes(result.nLikes)
+      setLikes(result.nLikes);
     } catch (error) {
-      console.error('Error al intenter dar like/dislike:', error);
+      console.error('Error al intentar dar like/dislike:', error);
     }
   };
 
@@ -96,17 +99,17 @@ const Photo = ({ photo, delete: deletable }) => {
             </div>
           ) : (
             <Avatar
-              user={photo.author}
+              userId={photo.author._id}
               outerSize="40px"
               innerSize="30px"
               flagSize="1px"
             />
           )}
-           <div className="d-flex flex-row ms-2 align-items-center">
+          <div className="d-flex flex-row ms-2 align-items-center">
             <span>{photo.anonymous ? 'Anonymous' : photo.author.userName}</span>
 
-            <div className="d-flex flex-column text-center" style={{ cursor: 'pointer' ,marginLeft:'150px'}} onClick={handleLike}>
-              {isLiked ? (
+            <div className="d-flex flex-column text-center" style={{ cursor: isAdmin ? 'default' : 'pointer', marginLeft: '150px' }} onClick={handleLike}>
+            {isLiked ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" className="bi bi-suit-heart-fill" viewBox="0 0 16 16">
                   <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
                 </svg>
@@ -115,8 +118,7 @@ const Photo = ({ photo, delete: deletable }) => {
                   <path d="m8 6.236-.894-1.789c-.222-.443-.607-1.08-1.152-1.595C5.418 2.345 4.776 2 4 2 2.324 2 1 3.326 1 4.92c0 1.211.554 2.066 1.868 3.37.337.334.721.695 1.146 1.093C5.122 10.423 6.5 11.717 8 13.447c1.5-1.73 2.878-3.024 3.986-4.064.425-.398.81-.76 1.146-1.093C14.446 6.986 15 6.131 15 4.92 15 3.326 13.676 2 12 2c-.777 0-1.418.345-1.954.852-.545.515-.93 1.152-1.152 1.595zm.392 8.292a.513.513 0 0 1-.784 0c-1.601-1.902-3.05-3.262-4.243-4.381C1.3 8.208 0 6.989 0 4.92 0 2.755 1.79 1 4 1c1.6 0 2.719 1.05 3.404 2.008.26.365.458.716.596.992a7.6 7.6 0 0 1 .596-.992C9.281 2.049 10.4 1 12 1c2.21 0 4 1.755 4 3.92 0 2.069-1.3 3.288-3.365 5.227-1.193 1.12-2.642 2.48-4.243 4.38z"/>
                 </svg>
               )}
-
-              <small style={{color:"red"}}>{likes}</small>
+              <small style={{ color: "red" }}>{likes}</small>
             </div>
           </div>
         </div>
@@ -138,33 +140,33 @@ const Photo = ({ photo, delete: deletable }) => {
                 <span>{photo.ubication.name}</span>
               </Link>
             </div>
-            
-            {deletable ? (
+
+            {(deletable || isAdmin) ? (
               <button
-              className="btn btn-danger d-flex align-items-center justify-content-center"
-              style={{
-                position: "absolute",
-                bottom: "10px",
-                right: "10px",
-                width: "40px",
-                height: "40px",
-                padding: "0",
-              }}
-              onClick={handleDelete}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="25"
-                height="25"
-                fill="currentColor"
-                className="bi bi-trash"
-                viewBox="0 0 16 16"
+                className="btn btn-danger d-flex align-items-center justify-content-center"
+                style={{
+                  position: "absolute",
+                  bottom: "10px",
+                  right: "10px",
+                  width: "40px",
+                  height: "40px",
+                  padding: "0",
+                }}
+                onClick={handleDelete}
               >
-                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
-                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
-              </svg>
-            </button>
-            ):(
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="25"
+                  height="25"
+                  fill="currentColor"
+                  className="bi bi-trash"
+                  viewBox="0 0 16 16"
+                >
+                  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                  <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                </svg>
+              </button>
+            ) : (
               <span className="text-muted" style={{ fontSize: "10px" }}>
                 {new Date(photo.createdAt).toLocaleDateString()}
               </span>

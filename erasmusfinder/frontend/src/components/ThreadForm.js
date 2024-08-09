@@ -80,7 +80,7 @@ const ThreadForm = () => {
       setAddPhoto(false);
       setCropped(false);
   
-      //window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.error("Error al crear el hilo: ", error);
     }

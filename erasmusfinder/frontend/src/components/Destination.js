@@ -800,7 +800,7 @@ const Destination = () => {
                         key={follower._id}
                       >
                         <Avatar
-                          user={follower}
+                          userId={follower._id}
                           outerSize="60px"
                           innerSize="50px"
                           flagSize="20px"
@@ -877,7 +877,8 @@ const Destination = () => {
                   )}
 
                   <div className="row">
-                    <span className="section-title text-center">
+                    {(reviews.length > 0 && !hasReviewed) && (
+                      <span className="section-title text-center">
                       What people think about {""}
                       <span
                         style={{ color: stateColors.one, fontWeight: "bold" }}
@@ -886,7 +887,8 @@ const Destination = () => {
                       </span>
                       :
                     </span>
-
+                    )}
+                  
                     {reviews
                       .filter(
                         (review) =>
@@ -914,10 +916,7 @@ const Destination = () => {
                     />
                   </div>
                   <div className="row text-center justify-content-center">
-                    <ReviewForm
-                      user_id={user.result._id}
-                      destination_id={destination._id}
-                    />
+                    {!isAdmin && (<ReviewForm user_id={user.result._id} destination_id={destination._id}/>)}
                   </div>
                 </div>
               )
@@ -944,11 +943,13 @@ const Destination = () => {
         )}
 
         {activeTab === "gallery" && (
-          <div className="container">
+          <div className="container justify-content-center">
             {following || isAdmin ? (
               <>
-                <div className="row justify-content-center">
-                  {photos.map((photo) => (
+                <div className="row justify-content-center mb-3">
+                  {photos.length>0 ? (
+                    <>
+                      {photos.map((photo) => (
                     <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
                       <Photo
                         photo={photo}
@@ -956,9 +957,19 @@ const Destination = () => {
                       />
                     </div>
                   ))}
+                  </>):(<>
+                    <h4 className="text-center">It seems like this destination hasn't any photos posted yet</h4>
+                    <img
+                      src="https://cdn-icons-png.freepik.com/256/1466/1466623.png"
+                      alt="Lonely file"
+                      style={{ width: "200px" }}
+                    />
+                  </>)}
+                  
+                  
                 </div>
 
-                <div className="row justify-content-center text-center mt-3">
+                <div className="row justify-content-center text-center ">
                   {!isAdmin && <PhotoForm />}
                 </div>
               </>

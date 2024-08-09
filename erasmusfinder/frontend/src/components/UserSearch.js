@@ -75,7 +75,7 @@ const UserSearch = ({ onUserSelect }) => {
                   key={userObj._id}
                   >
                     <Avatar
-                    user={userObj}
+                    userId={userObj._id}
                     outerSize="50px"
                     innerSize="40px"
                     flagSize="25px"

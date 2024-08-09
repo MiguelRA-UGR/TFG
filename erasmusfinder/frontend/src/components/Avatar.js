@@ -1,21 +1,46 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
+import axios from "axios";
+import { stateColors } from "./utils";
 
-const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
+const Avatar = ({ userId, outerSize, innerSize, flagSize }) => {
+  const [user, setUser] = useState(null);
   const [userToken] = useState(JSON.parse(localStorage.getItem('profile')));
-  const color =
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
+        setUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+    };
+
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId]);
+
+  if (!user) {
+    return <div class="spinner-border" role="status">
+    <span class="visually-hidden">Getting Avatar...</span>
+  </div>;
+  }
+
+  const color = 
     user.state === 0
-      ? "#969696"
+      ? stateColors.zero
       : user.state === 1
-      ? "#f5973d" // Naranja
+      ? stateColors.one
       : user.state === 2
-      ? "#6691c3" // Azul
+      ? stateColors.two
       : user.state === 3
-      ? "#61bdb8" // Aguamarina
-      : "#969696"; // Gris
-  
-    const outerStyles = {
+      ? stateColors.three
+      : "#ffffff";
+
+  const outerStyles = {
     backgroundColor: color,
     width: outerSize,
     height: outerSize,
@@ -45,15 +70,14 @@ const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
   };
 
   return (
-    
     <div className="d-flex justify-content-center h-100">
       <Link
-        to={userToken.result._id === user._id ? `/Profile` : `/User/${user._id}`}
+        to={userToken.result._id === userId? `/Profile` : `/User/${userId}`}
         className="nav-link ml-3"
-        key={user._id}
-        >
+        key={userId}
+      >
         <div className="image_outer_container" style={outerStyles}>
-          <div className="flag_icon" style={{ zIndex: 1}}>
+          <div className="flag_icon" style={{ zIndex: 1 }}>
             <img
               src={`https://flagcdn.com/${user.badge}.svg`}
               alt="User's Flag"
@@ -63,7 +87,7 @@ const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
           <div className="image_inner_container">
             {user.photo ? (
               <img
-                src={`http://localhost:4000/imgs/users/${user._id}.png`}
+                src={`http://localhost:4000/imgs/users/${userId}.png`}
                 alt={user.userName}
                 className="rounded-circle"
                 style={innerStyles}
@@ -84,13 +108,7 @@ const Avatar = ({ user, outerSize, innerSize, flagSize}) => {
 };
 
 Avatar.propTypes = {
-  user: PropTypes.shape({
-    state: PropTypes.number.isRequired,
-    badge: PropTypes.string.isRequired,
-    photo: PropTypes.bool.isRequired,
-    _id: PropTypes.string.isRequired,
-    userName: PropTypes.string.isRequired,
-  }).isRequired,
+  userId: PropTypes.string.isRequired,
   outerSize: PropTypes.string.isRequired,
   innerSize: PropTypes.string.isRequired,
   flagSize: PropTypes.string.isRequired,
