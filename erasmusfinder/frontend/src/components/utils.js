@@ -109,12 +109,69 @@ export const cleanString = (str) => {
 };
 
 export const formatedNumber = (number) => {
-  if (isNaN(number)) {
-    throw new Error("Input must be a valid number");
-  }
-
   const numberString = number.toString();
 
   return numberString.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
+
+export const climateOptions = [
+  "Cold and Dry",
+  "Cold and Wet",
+  "Mild and Dry",
+  "Mild and Wet",
+  "Very Cold",
+  "Very Cold and Snowy",
+  "Cold with Frequent Snow",
+  "Mild with Light Rain",
+  "Cold with Occasional Snow",
+  "Very Cold with Heavy Snow",
+  "Chilly and Dry",
+  "Chilly and Wet",
+  "Freezing and Windy",
+  "Cold and Foggy",
+  "Bitterly Cold",
+  "Cool and Dry",
+  "Cool and Wet",
+  "Cold with Icy Conditions",
+  "Freezing Rain",
+  "Extreme Cold",
+  "Cold and Icy",
+  "Hot and Dry",
+  "Hot and Humid",
+  "Warm and Dry",
+  "Warm and Humid",
+  "Very Hot",
+  "Very Hot and Dry",
+  "Hot with Frequent Thunderstorms",
+  "Warm with Light Rain",
+  "Hot and Sunny",
+  "Warm with Occasional Thunderstorms",
+  "Hot and Windy",
+  "Warm and Pleasant",
+  "Extremely Hot",
+  "Hot with High Humidity",
+  "Warm with High UV Index",
+  "Very Warm and Dry",
+  "Warm with Light Showers",
+  "Hot and Muggy",
+  "Warm and Breezy",
+  "Hot with Intense Heatwaves",
+  "Warm with Variable Conditions",
+];
+
+export const climateTypeOptions = [
+  "Mediterranean",
+  "Continental",
+  "Oceanic",
+  "Arid",
+  "Tropical",
+];
+
+export const costOfLivingOptions = [
+  "Very Low",
+  "Low",
+  "Moderate",
+  "High",
+  "Very High",
+];

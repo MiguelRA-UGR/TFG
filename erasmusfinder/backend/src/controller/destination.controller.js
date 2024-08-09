@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const destinationCtrlr = {};
 const Destination = require('../models/Destination');
+const Photo = require('../models/Photo');
+const Forum = require('../models/Forum');
 
 // GET
 destinationCtrlr.getDestinations = async (req, res) => {

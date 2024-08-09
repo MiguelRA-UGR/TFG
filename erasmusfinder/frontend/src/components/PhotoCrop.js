@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { stateColors } from "./utils";
 
 const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, aspectRatio = 1 }) => {
   const cropperRef = useRef(null);
@@ -69,6 +70,10 @@ const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, as
             className="btn btn-info"
             onClick={getCropData}
             disabled={cropped}
+            style={{
+              backgroundColor: stateColors.three,
+              color: "#ffffff"
+            }}
           >
             {cropped ? "Cropped" : "Crop Image"}
           </button>

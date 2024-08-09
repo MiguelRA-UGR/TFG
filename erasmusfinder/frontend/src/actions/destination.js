@@ -13,10 +13,12 @@ export const createDestination = (destinationData) => async(dispatch) =>{
 
 }
 
-export const updateDestination = (destinationData) => async(dispatch) =>{
+export const updateDestination = (destinationId, destinationData) => async(dispatch) =>{
     
+    console.log(destinationData);
+
     try {
-        const { data } = await api.updateDestination(destinationData);
+        const { data } = await api.updateDestination(destinationId, destinationData);
         dispatch({type: UPDATE_DEST, data});
 
     } catch (error) {

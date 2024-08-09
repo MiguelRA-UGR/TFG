@@ -1,36 +1,44 @@
 import React, { useState, useEffect } from "react";
 import PhotoCrop from "./PhotoCrop";
 import { useDispatch } from "react-redux";
-import { createDestination } from "../actions/destination";
+import { createDestination, updateDestination } from "../actions/destination";
 import axios from "axios";
-import { cleanString, extractLatLngFromGoogleMaps } from "./utils";
+import {
+  cleanString,
+  extractLatLngFromGoogleMaps,
+  costOfLivingOptions,
+  climateOptions,
+  climateTypeOptions,
+  stateColors
+} from "./utils";
 
-const DestinationForm = () => {
+const DestinationForm = ({ destination = null }) => {
   const [image, setImage] = useState(null);
   const [cropData, setCropData] = useState("#");
   const [cropped, setCropped] = useState(false);
 
-  const [name, setName] = useState("");
-  const [iso, setIso] = useState("");
-  const [description, setDescription] = useState("");
-  const [country, setCountry] = useState("");
-  const [googleMapsUrl, setGoogleMapsUrl] = useState("");
-  const [photoUrl, setPhotoUrl] = useState("");
-  const [climateGeneral, setClimateGeneral] = useState("");
-  const [climateWinter, setClimateWinter] = useState("");
-  const [climateSummer, setClimateSummer] = useState("");
-  const [costOfLiving, setCostOfLiving] = useState("");
-  const [languages, setLanguages] = useState([]);
+  const [name, setName] = useState(destination?.name || "");
+  const [iso, setIso] = useState(destination?.iso || "");
+  const [description, setDescription] = useState(destination?.description || "");
+  const [country, setCountry] = useState(destination?.country || "");
+  const [googleMapsUrl, setGoogleMapsUrl] = useState(destination?.coords ? `https://maps.google.com/?q=${destination.coords.lat},${destination.coords.long}` : "");
+  const [photoUrl, setPhotoUrl] = useState(destination?.photoUrl || "");
+  const [climateGeneral, setClimateGeneral] = useState(destination?.clima?.general || "");
+  const [climateWinter, setClimateWinter] = useState(destination?.clima?.winter || "");
+  const [climateSummer, setClimateSummer] = useState(destination?.clima?.summer || "");
+  const [costOfLiving, setCostOfLiving] = useState(destination?.cost_life || "");
+  const [languages, setLanguages] = useState(destination?.languages || []);
   const [selectedLanguage, setSelectedLanguage] = useState("");
-  const [population, setPopulation] = useState("");
-  const [surface, setSurface] = useState("");
+  const [population, setPopulation] = useState(destination?.population || "");
+  const [surface, setSurface] = useState(destination?.surface || "");
+  const [universities, setUniversities] = useState(destination?.universities || []);
+
   const [countries, setCountries] = useState({});
   const [countryNames, setCountryNames] = useState({});
   const [allLanguages, setAllLanguages] = useState([]);
 
   const [universityName, setUniversityName] = useState("");
   const [universityUrl, setUniversityUrl] = useState("");
-  const [universities, setUniversities] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -141,7 +149,7 @@ const DestinationForm = () => {
     setLanguages(languages.filter((_, i) => i !== index));
   };
 
-  const handleCreate = async (e) => {
+  const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
 
     if (cropped) {
@@ -179,7 +187,12 @@ const DestinationForm = () => {
     };
 
     try {
-      dispatch(createDestination(destinationData));
+      if (destination) {
+        dispatch(updateDestination(destination._id, destinationData));
+      } else {
+        dispatch(createDestination(destinationData));
+      }
+
       setImage(null);
       setCropData("#");
       setCropped(false);
@@ -200,75 +213,14 @@ const DestinationForm = () => {
 
       window.location.reload();
     } catch (error) {
-      console.error("Error creating destination:", error);
+      console.error("Error al crear o actualizar el destino:", error);
     }
   };
 
-  const climateOptions = [
-    "Cold and Dry",
-    "Cold and Wet",
-    "Mild and Dry",
-    "Mild and Wet",
-    "Very Cold",
-    "Very Cold and Snowy",
-    "Cold with Frequent Snow",
-    "Mild with Light Rain",
-    "Cold with Occasional Snow",
-    "Very Cold with Heavy Snow",
-    "Chilly and Dry",
-    "Chilly and Wet",
-    "Freezing and Windy",
-    "Cold and Foggy",
-    "Bitterly Cold",
-    "Cool and Dry",
-    "Cool and Wet",
-    "Cold with Icy Conditions",
-    "Freezing Rain",
-    "Extreme Cold",
-    "Cold and Icy",
-    "Hot and Dry",
-    "Hot and Humid",
-    "Warm and Dry",
-    "Warm and Humid",
-    "Very Hot",
-    "Very Hot and Dry",
-    "Hot with Frequent Thunderstorms",
-    "Warm with Light Rain",
-    "Hot and Sunny",
-    "Warm with Occasional Thunderstorms",
-    "Hot and Windy",
-    "Warm and Pleasant",
-    "Extremely Hot",
-    "Hot with High Humidity",
-    "Warm with High UV Index",
-    "Very Warm and Dry",
-    "Warm with Light Showers",
-    "Hot and Muggy",
-    "Warm and Breezy",
-    "Hot with Intense Heatwaves",
-    "Warm with Variable Conditions",
-  ];
-
-  const climateTypeOptions = [
-    "Mediterranean",
-    "Continental",
-    "Oceanic",
-    "Arid",
-    "Tropical",
-  ];
-
-  const costOfLivingOptions = [
-    "Very Low",
-    "Low",
-    "Moderate",
-    "High",
-    "Very High",
-  ];
-
   return (
     <div>
-      <form className="form-control text-center" onSubmit={handleCreate}>
-        <h4>Create a new destination</h4>
+      <form className="form-control text-center" onSubmit={handleCreateOrUpdate}>
+        <h4>{destination ? "Edit Destination" : "Create a new destination"}</h4>
         <div className="row">
           <div className="col-md-12 text-center">
             <div className="mb-3">
@@ -276,280 +228,277 @@ const DestinationForm = () => {
                 Name
               </label>
               <input
+                id="name"
                 type="text"
                 className="form-control"
-                id="name"
+                placeholder="Destination name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
               />
             </div>
-
+            <div className="mb-3">
+              <label htmlFor="description" className="form-label">
+                Description
+              </label>
+              <textarea
+                id="description"
+                className="form-control"
+                placeholder="Description of the destination"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                required
+              ></textarea>
+            </div>
             <div className="mb-3">
               <label htmlFor="country" className="form-label">
                 Country
               </label>
               <select
                 id="country"
-                className="form-control"
+                className="form-select"
                 value={country}
                 onChange={handleCountryChange}
                 required
               >
                 <option value="">Select a country</option>
-                {Object.entries(countryNames).map(([code, name]) => (
-                  <option key={code} value={name}>
+                {Object.values(countryNames).map((name, index) => (
+                  <option key={index} value={name}>
                     {name}
                   </option>
                 ))}
               </select>
             </div>
-
-            <div className="mb-3">
-              <label htmlFor="iso" className="form-label">
-                ISO Code
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="iso"
-                value={iso}
-                readOnly
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="description" className="form-label">
-                Description
-              </label>
-              <textarea
-                className="form-control"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                required
-              />
-            </div>
-
             <div className="mb-3">
               <label htmlFor="googleMapsUrl" className="form-label">
                 Google Maps URL
               </label>
               <input
-                type="text"
-                className="form-control"
                 id="googleMapsUrl"
+                type="url"
+                className="form-control"
+                placeholder="Google Maps URL"
                 value={googleMapsUrl}
                 onChange={(e) => setGoogleMapsUrl(e.target.value)}
                 required
               />
             </div>
-
+            <div className="mb-3">
+              <label htmlFor="population" className="form-label">
+                Population
+              </label>
+              <input
+                id="population"
+                type="text"
+                className="form-control"
+                placeholder="Population"
+                value={population}
+                onChange={(e) => setPopulation(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label htmlFor="surface" className="form-label">
+                Surface (in km²)
+              </label>
+              <input
+                id="surface"
+                type="text"
+                className="form-control"
+                placeholder="Surface"
+                value={surface}
+                onChange={(e) => setSurface(e.target.value)}
+                required
+              />
+            </div>
+            
             <div className="mb-3">
               <label htmlFor="climateGeneral" className="form-label">
                 General Climate
               </label>
               <select
                 id="climateGeneral"
-                className="form-control"
+                className="form-select"
                 value={climateGeneral}
                 onChange={(e) => setClimateGeneral(e.target.value)}
+                required
               >
-                <option value="">Select a climate type</option>
-                {climateTypeOptions.map((option) => (
-                  <option key={option} value={option}>
+                <option value="">Select general climate</option>
+                {climateTypeOptions.map((option, index) => (
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-
             <div className="mb-3">
               <label htmlFor="climateWinter" className="form-label">
                 Winter Climate
               </label>
               <select
                 id="climateWinter"
-                className="form-control"
+                className="form-select"
                 value={climateWinter}
                 onChange={(e) => setClimateWinter(e.target.value)}
+                required
               >
-                <option value="">Select the winter climate</option>
-                {climateOptions.map((option) => (
-                  <option key={option} value={option}>
+                <option value="">Select winter climate</option>
+                {climateOptions.map((option, index) => (
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-
             <div className="mb-3">
               <label htmlFor="climateSummer" className="form-label">
                 Summer Climate
               </label>
               <select
                 id="climateSummer"
-                className="form-control"
+                className="form-select"
                 value={climateSummer}
                 onChange={(e) => setClimateSummer(e.target.value)}
+                required
               >
-                <option value="">Select the summer climate</option>
-                {climateOptions.map((option) => (
-                  <option key={option} value={option}>
+                <option value="">Select summer climate</option>
+                {climateOptions.map((option, index) => (
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-
             <div className="mb-3">
               <label htmlFor="costOfLiving" className="form-label">
                 Cost of Living
               </label>
               <select
                 id="costOfLiving"
-                className="form-control"
+                className="form-select"
                 value={costOfLiving}
                 onChange={(e) => setCostOfLiving(e.target.value)}
+                required
               >
                 <option value="">Select cost of living</option>
-                {costOfLivingOptions.map((option) => (
-                  <option key={option} value={option}>
+                {costOfLivingOptions.map((option, index) => (
+                  <option key={index} value={option}>
                     {option}
                   </option>
                 ))}
               </select>
             </div>
-
             <div className="mb-3">
               <label htmlFor="languages" className="form-label">
                 Languages
               </label>
-              <div className="d-flex">
+              <div>
                 <select
                   id="languages"
-                  className="form-control me-2"
+                  className="form-select d-inline-block w-75"
                   value={selectedLanguage}
                   onChange={(e) => setSelectedLanguage(e.target.value)}
                 >
                   <option value="">Select a language</option>
-                  {allLanguages.map((language) => (
-                    <option key={language} value={language}>
-                      {language}
+                  {allLanguages.map((lang, index) => (
+                    <option key={index} value={lang}>
+                      {lang}
                     </option>
                   ))}
                 </select>
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-warning ml-2"
                   onClick={handleAddLanguage}
+                  style={{
+                    backgroundColor: stateColors.one,
+                    color: "#ffffff"
+                  }}
                 >
                   Add
                 </button>
               </div>
-            </div>
-
-            <ul className="list-group mb-3">
-              {languages.map((language, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{language}</strong>
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleRemoveLanguage(index)}
+              <ul className="list-group mt-2">
+                {languages.map((lang, index) => (
+                  <li
+                    key={index}
+                    className="list-group-item d-flex justify-content-between align-items-center"
                   >
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-
-            <div className="mb-3">
-              <label htmlFor="population" className="form-label">
-                Population
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                id="population"
-                value={population}
-                onChange={(e) => setPopulation(e.target.value)}
-              />
+                    {lang}
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleRemoveLanguage(index)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-
             <div className="mb-3">
-              <label htmlFor="surface" className="form-label">
-                Surface
+              <label htmlFor="universities" className="form-label">
+                Universities
               </label>
-              <input
-                type="number"
-                className="form-control"
-                id="surface"
-                value={surface}
-                onChange={(e) => setSurface(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="universityName" className="form-label">
-                University Name
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="universityName"
-                value={universityName}
-                onChange={(e) => setUniversityName(e.target.value)}
-              />
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="universityUrl" className="form-label">
-                University URL
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="universityUrl"
-                value={universityUrl}
-                onChange={(e) => setUniversityUrl(e.target.value)}
-              />
-            </div>
-
-            <button
-              type="button"
-              className="btn btn-secondary mb-3"
-              onClick={handleAddUniversity}
-            >
-              Add University
-            </button>
-
-            <ul className="list-group mb-3">
-              {universities.map((uni, index) => (
-                <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
-                  <div>
-                    <strong>{uni.name}</strong>: {uni.url}
-                  </div>
-                  <button
-                    type="button"
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleRemoveUniversity(index)}
+              <div className="input-group mb-2">
+                <input
+                  id="universityName"
+                  type="text"
+                  className="form-control"
+                  placeholder="University Name"
+                  value={universityName}
+                  onChange={(e) => setUniversityName(e.target.value)}
+                />
+                <input
+                  id="universityUrl"
+                  type="url"
+                  className="form-control"
+                  placeholder="University URL"
+                  value={universityUrl}
+                  onChange={(e) => setUniversityUrl(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={handleAddUniversity}
+                  style={{
+                    backgroundColor: stateColors.one,
+                    color: "#ffffff"
+                  }}
+                >
+                  Add
+                </button>
+              </div>
+              <ul className="list-group">
+                {universities.map((university, index) => (
+                  <li
+                    key={index}
+                    className="list-group-item d-flex justify-content-between align-items-center"
                   >
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    <a
+                      href={university.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {university.name}
+                    </a>
+                    <button
+                      type="button"
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleRemoveUniversity(index)}
+                    >
+                      Remove
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          <label htmlFor="frontpage" className="form-label">
-            Frontpage
-          </label>
-
-          <div className="col-md-12 mb-3 d-flex justify-content-center">
-            <PhotoCrop
+            <div className="mb-3">
+              <label htmlFor="photo" className="form-label">
+                Frontpage
+              </label>
+              <PhotoCrop
               image={image}
               onImageChange={handleImageChange}
               onCropData={handleCropData}
@@ -557,20 +506,21 @@ const DestinationForm = () => {
               height={400}
               aspectRatio={2}
             />
-          </div>
-
-          <div className="col-md-12 text-center">
-            <button
+            </div>
+            <div className="mb-3">
+              <button
               type="submit"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning"
             >
-              Create Destination
+              {destination ? "Save Changes" : "Create Destination"}
             </button>
+
+            </div>
           </div>
         </div>
       </form>
