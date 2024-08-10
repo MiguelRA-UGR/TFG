@@ -17,13 +17,28 @@ const Forum = () => {
   const [followers, setFollowers] = useState({});
   const [threads, setThreads] = useState({});
   const [clickedNewThread, setClicked] = useState(false);
-  const isAdmin = user.result.admin;
+  const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  var isAdmin = false;
+
+  if(user){
+    isAdmin = user.result.admin
+  }
+
+  const userNameCallBack = (name) => {
+    console.log(name);
+    setUserName(name);
+  };
+
   const handleDeleteForum = () => {
-    dispatch(deleteForum(forum._id));
-    navigate("/");
+    const confirmed = window.confirm("Are you sure you want to delete this forum forever?");
+    
+    if (confirmed) {
+      dispatch(deleteForum(forum._id));
+      navigate("/");
+    }
   };
 
   useEffect(() => {
@@ -190,12 +205,19 @@ const Forum = () => {
             </span>
 
             <div style={{ display: "inline-flex", alignItems: "center" }}>
-              <small style={{ marginRight: "5px" }}>created by</small>
+              <span className="section-title text-center m-1">
+                created by {""}
+                <span style={{ color: stateColors.one, fontWeight: "bold" }}>
+                  {userName}
+                </span>
+              </span>
+
               <Avatar
                 userId={forum.creator}
                 outerSize="35px"
                 innerSize="25px"
                 flagSize="0px"
+                userName={userNameCallBack}
               />
             </div>
           </div>

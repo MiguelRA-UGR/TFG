@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { stateColors } from "./utils";
 
-const Avatar = ({ userId, outerSize, innerSize, flagSize }) => {
+const Avatar = ({ userId, outerSize, innerSize, flagSize, userName }) => {
   const [user, setUser] = useState(null);
   const [userToken] = useState(JSON.parse(localStorage.getItem('profile')));
 
@@ -13,6 +13,9 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize }) => {
       try {
         const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
         setUser(response.data);
+        if (userName) {
+          userName(response.data.userName);
+        }
       } catch (error) {
         console.error("Error fetching user:", error);
       }
@@ -21,12 +24,14 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize }) => {
     if (userId) {
       fetchUser();
     }
-  }, [userId]);
+  }, [userId, userName]);
 
   if (!user) {
-    return <div class="spinner-border" role="status">
-    <span class="visually-hidden">Getting Avatar...</span>
-  </div>;
+    return (
+      <div className="spinner-border" role="status">
+        <span className="visually-hidden">Getting Avatar...</span>
+      </div>
+    );
   }
 
   const color = 
@@ -70,10 +75,10 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize }) => {
   };
 
   return (
-    <div className="d-flex justify-content-center h-100">
+    <div className="d-flex flex-column align-items-center">
       <Link
-        to={userToken.result._id === userId? `/Profile` : `/User/${userId}`}
-        className="nav-link ml-3"
+        to={userToken.result._id === userId ? `/Profile` : `/User/${userId}`}
+        className="nav-link"
         key={userId}
       >
         <div className="image_outer_container" style={outerStyles}>
@@ -112,6 +117,7 @@ Avatar.propTypes = {
   outerSize: PropTypes.string.isRequired,
   innerSize: PropTypes.string.isRequired,
   flagSize: PropTypes.string.isRequired,
+  userName: PropTypes.func,
 };
 
 export default Avatar;

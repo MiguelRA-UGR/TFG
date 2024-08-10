@@ -10,7 +10,7 @@ import { createReply } from "../actions/reply.js";
 
 const Thread = ({ thread }) => {
   const [isHovered, setIsHovered] = useState(false);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
+  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const [replies, setReplies] = useState([]);
   const [newReply, setNewReply] = useState("");
   const dispatch = useDispatch();
@@ -45,12 +45,16 @@ const Thread = ({ thread }) => {
     fetchReplies();
   }, [thread.replies]);
 
-  const handleDelete = async () => {
-    try {
-      dispatch(deleteThread(thread._id));
-      window.location.reload();
-    } catch (error) {
-      console.error("Error al eliminar el thread: ", error);
+  const handleDelete = () => {
+    const confirmed = window.confirm("Are you sure you want to delete this thread?");
+    
+    if (confirmed) {
+      try {
+        dispatch(deleteThread(thread._id));
+        window.location.reload();
+      } catch (error) {
+        console.error("Error al eliminar el thread: ", error);
+      }
     }
   };
 

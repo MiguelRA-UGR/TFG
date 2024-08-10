@@ -53,8 +53,12 @@ const User = () => {
   };
 
   const handleDelete = () => {
-    dispatch(deleteUser(userProfile._id));
-    navigate('/');
+    const confirmed = window.confirm("Are you sure you want to delete this user forever?");
+    
+    if (confirmed) {
+      dispatch(deleteUser(userProfile._id));
+      navigate('/');
+    }
   };
 
   const handleWarning = () => {
@@ -139,6 +143,7 @@ const User = () => {
 
   return (
     <div className="container-fluid d-flex flex-column align-items-center mt-4">
+
       <div className="row justify-content-center">
         <div className="col-md-6 position-relative" style={{ width: "300px" }}>
           <div className="d-flex flex-column align-items-center justify-content-center rounded-circle position-relative">

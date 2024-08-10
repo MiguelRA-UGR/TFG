@@ -2,14 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { stateColors } from "./utils";
+import CountryPicker from "./CountryPicker";
 
 const Profile = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const [isEditing, setIsEditing] = useState(false);
   const [newProfilePicture, setNewProfilePicture] = useState(null);
   const [privacy, setPrivacyOption] = useState(user.result.privacy);
-  const [countries, setCountries] = useState({});
-  const [countryNames, setCountryNames] = useState({});
   const history = useNavigate();
 
   const isAdmin = user.result.admin;
@@ -17,6 +16,8 @@ const Profile = () => {
   const [selectedCountry, setSelectedCountry] = useState(
     user.result.nationality
   );
+  const [countryName, setSelectedCountryName] = useState(user.result.nationality);
+
   const [editedUser, setEditedUser] = useState({
     userName: "",
     state: 0,
@@ -43,24 +44,29 @@ const Profile = () => {
     setIsEditing(true);
   };
 
-  const handleCountryChange = (e) => {
-    const { value } = e.target;
-    setSelectedCountry(value);
-
-    console.log(value);
-
-    setEditedUser({ ...editedUser, nationality: value, badge: value });
+  const handleCountryChange = ({ code, name }) => {
+    setSelectedCountry(code);
+    setSelectedCountryName(name);
+  
+    console.log(code);
+  
+    setEditedUser({
+      ...editedUser,
+      nationality: code,
+      badge: code,
+    });
   };
+  
 
   const handleStateChange = (e) => {
     const newState = parseInt(e.target.value);
     setEditedUser({ ...editedUser, state: newState });
   };
-  
+
   const handlePrivacyOptionChange = (value) => {
     setPrivacyOption(value);
     setEditedUser({ ...editedUser, privacy: value });
-};
+  };
 
   const handleChangeInput = (e) => {
     const { name, value } = e.target;
@@ -71,86 +77,61 @@ const Profile = () => {
     setIsEditing(false);
 
     if (newProfilePicture) {
-        updateProfilePicture();
+      updateProfilePicture();
     }
     updateUserData();
-};
+  };
 
-const updateProfilePicture = () => {
+  const updateProfilePicture = () => {
     const formData = new FormData();
     formData.append("profilePicture", newProfilePicture);
 
     console.log("New profile picture:", newProfilePicture);
 
     axios
-        .put(`http://localhost:4000/api/users/${user.result._id}/profile-picture`, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
-        .then((response) => {
-          window.location.reload();
-        })
-        .catch((error) => {
-          console.error("Error updating profile picture:", error);
-        });
-};
-
-const updateUserData = () => {
-  axios
-      .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
+      .put(
+        `http://localhost:4000/api/users/${user.result._id}/profile-picture`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((response) => {
-          setUser({...user, result: {...user.result, ...editedUser}});
-          setEditedUser({
-              userName: "",
-              state: 0,
-              privacy: 0,
-              instagram: "",
-              twitter: "",
-              facebook: "",
-              linkedin: "",
-              description: "",
-              nationality: "",
-              originCity: "",
-              destCity: "",
-              destUniversity: "",
-              badge: "",
-          });
-          window.location.reload();
+        window.location.reload();
       })
       .catch((error) => {
-          console.error("Error updating user data:", error);
+        console.error("Error updating profile picture:", error);
       });
-};
+  };
 
-//Obtener banderas de la API flagcdn
-const fetchCountryFlags = async () => {
-  try {
-    const response = await axios.get("https://flagcdn.com/en/codes.json");
-    const data = response.data;
-
-    // Eliminar estados de USA
-    const filteredData = Object.entries(data)
-      .filter(([key, value]) => !key.includes("us-"))
-      .reduce((acc, [key, value]) => {
-        acc[key] = value;
-        return acc;
-      }, {});
-
-    const countryCodes = Object.keys(filteredData);
-
-    setCountries(countryCodes);
-    setCountryNames(filteredData);
-  } catch (error) {
-    console.error("Error al obtener las banderas de los países:", error);
-  }
-};
-
-
-  useEffect(() => {
-    fetchCountryFlags();
-  }, []);
-  
+  const updateUserData = () => {
+    axios
+      .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
+      .then((response) => {
+        setUser({ ...user, result: { ...user.result, ...editedUser } });
+        setEditedUser({
+          userName: "",
+          state: 0,
+          privacy: 0,
+          instagram: "",
+          twitter: "",
+          facebook: "",
+          linkedin: "",
+          description: "",
+          nationality: "",
+          originCity: "",
+          destCity: "",
+          destUniversity: "",
+          badge: "",
+        });
+        window.location.reload();
+      })
+      .catch((error) => {
+        console.error("Error updating user data:", error);
+      });
+  };
 
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
@@ -178,8 +159,8 @@ const fetchCountryFlags = async () => {
     };
   }, []);
 
-  if(isAdmin){
-    history('/')
+  if (isAdmin) {
+    history("/");
   }
 
   return (
@@ -194,7 +175,6 @@ const fetchCountryFlags = async () => {
               width="120px"
               height="120px"
             />
-          
           ) : (
             <div
               className="text-center rounded-circle d-flex align-items-center justify-content-center"
@@ -244,14 +224,17 @@ const fetchCountryFlags = async () => {
 
           <p className="text-secondary mt-2 mb-3">{user.result.email}</p>
 
-
           {isEditing ? (
             <>
-
               <h6> State</h6>
 
               <div className="input-group mb-3">
-                <select className="form-select" id="state" value={editedUser.state} onChange={handleStateChange}>
+                <select
+                  className="form-select"
+                  id="state"
+                  value={editedUser.state}
+                  onChange={handleStateChange}
+                >
                   <option
                     style={{
                       backgroundColor: stateColors.zero,
@@ -325,7 +308,6 @@ const fetchCountryFlags = async () => {
                 : "Just having a look"}
             </span>
           )}
-
         </div>
         <div className="row align-items-center mt-3">
           <div className="col">
@@ -430,13 +412,16 @@ const fetchCountryFlags = async () => {
           <h5>Description:</h5>
           {isEditing ? (
             <textarea
-            className="form-control"
+              className="form-control"
               name="description"
               value={editedUser.description}
               onChange={handleChange}
-            /> 
+            />
           ) : (
-            <p className="form-control" style={{ height: "200px", width:"100%", maxWidth:"700px" }}>
+            <p
+              className="form-control"
+              style={{ height: "200px", width: "100%", maxWidth: "700px" }}
+            >
               {user.result.description}
             </p>
           )}
@@ -447,30 +432,24 @@ const fetchCountryFlags = async () => {
           <div className="mb-3 d-flex flex-column align-items-center justify-content-center">
             <h6 style={{ width: "200px" }}>Country</h6>
             {isEditing ? (
-              <select
-                className="form-select"
-                name="nationality"
-                value={selectedCountry}
-                onChange={handleCountryChange}
-              >
-                {countries.map((country) => (
-                  <option key={country} value={country}>
-                    {countryNames[country]}
-                  </option>
-                ))}
-              </select>
+              <CountryPicker onCountrySelect={handleCountryChange} />
             ) : (
               <div className="d-flex align-items-center">
-                <img
+                {selectedCountry && (
+                  <img
                     className="mb-3 me-1"
                     src={`https://flagcdn.com/${selectedCountry}.svg`}
                     alt={`${selectedCountry} flag`}
-                    style={{ width: '20px',height: '20px', objectFit: "cover", borderRadius: "50%"}}
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                    }}
                   />
-                <p>{countryNames[selectedCountry]}</p>
-                  
+                )}
+                <p>{countryName}</p>
               </div>
-
             )}
           </div>
 
@@ -479,7 +458,13 @@ const fetchCountryFlags = async () => {
 
             {isEditing ? (
               <>
-                <input type="text" className="form-control mt-1" name="originCity" value={editedUser.originCity} onChange={handleChangeInput}/>
+                <input
+                  type="text"
+                  className="form-control mt-1"
+                  name="originCity"
+                  value={editedUser.originCity}
+                  onChange={handleChangeInput}
+                />
               </>
             ) : (
               <p>{user.result.originCity}</p>
@@ -491,7 +476,13 @@ const fetchCountryFlags = async () => {
               <h6 style={{ width: "200px" }}>Destination</h6>
               {isEditing ? (
                 <>
-                  <input type="text" className="form-control" name="destCity" value={editedUser.destCity} onChange={handleChangeInput}/>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="destCity"
+                    value={editedUser.destCity}
+                    onChange={handleChangeInput}
+                  />
                 </>
               ) : (
                 <p>{user.result.destCity}</p>
@@ -501,60 +492,69 @@ const fetchCountryFlags = async () => {
         </div>
 
         <div className="col-md-6">
-        <div className="mb-4">
-        <h6>Privacy options</h6>
-          {isEditing ? (
-            <div className="input-group mb-3 justify-content-center" style={{fontSize:"13px"}}>
-              <div className="form-check form-check-inline mt-2">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="privacy"
-                  value="0"
-                  checked={privacy === 0}
-                  onChange={() => handlePrivacyOptionChange(0)}
-                />
-                <label className="form-check-label">Public Profile</label>
+          <div className="mb-4">
+            <h6>Privacy options</h6>
+            {isEditing ? (
+              <div
+                className="input-group mb-3 justify-content-center"
+                style={{ fontSize: "13px" }}
+              >
+                <div className="form-check form-check-inline mt-2">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="privacy"
+                    value="0"
+                    checked={privacy === 0}
+                    onChange={() => handlePrivacyOptionChange(0)}
+                  />
+                  <label className="form-check-label">Public Profile</label>
+                </div>
+                <div className="form-check form-check-inline mt-2">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="privacy"
+                    value="1"
+                    checked={privacy === 1}
+                    onChange={() => handlePrivacyOptionChange(1)}
+                  />
+                  <label className="form-check-label">Hide Contact Data</label>
+                </div>
+                <div className="form-check form-check-inline mt-2">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="privacy"
+                    value="2"
+                    checked={privacy === 2}
+                    onChange={() => handlePrivacyOptionChange(2)}
+                  />
+                  <label className="form-check-label">Private Profile</label>
+                </div>
               </div>
-              <div className="form-check form-check-inline mt-2">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="privacy"
-                  value="1"
-                  checked={privacy === 1}
-                  onChange={() => handlePrivacyOptionChange(1)}
-                />
-                <label className="form-check-label">Hide Contact Data</label>
-              </div>
-              <div className="form-check form-check-inline mt-2">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="privacy"
-                  value="2"
-                  checked={privacy === 2}
-                  onChange={() => handlePrivacyOptionChange(2)}
-                />
-                <label className="form-check-label">Private Profile</label>
-              </div>
-            </div>
-          ) : (
-            <p>
-              {user.result.privacy === 0
-                ? "Public Profile"
-                : user.result.privacy === 1
-                ? "Hide Contact Data"
-                : "Private Profile"}
-            </p>
-          )}
-        </div>
+            ) : (
+              <p>
+                {user.result.privacy === 0
+                  ? "Public Profile"
+                  : user.result.privacy === 1
+                  ? "Hide Contact Data"
+                  : "Private Profile"}
+              </p>
+            )}
+          </div>
 
           <div className="mb-4">
             <h6>Occupation</h6>
             {isEditing ? (
               <>
-                <input type="text" className="form-control mt-1" name="originCity" value={editedUser.occupation} onChange={handleChangeInput}/>
+                <input
+                  type="text"
+                  className="form-control mt-1"
+                  name="originCity"
+                  value={editedUser.occupation}
+                  onChange={handleChangeInput}
+                />
               </>
             ) : (
               <p>{user.result.occupation}</p>

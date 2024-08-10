@@ -11,6 +11,7 @@ import {
   climateTypeOptions,
   stateColors
 } from "./utils";
+import CountryPicker from "./CountryPicker";
 
 const DestinationForm = ({ destination = null }) => {
   const [image, setImage] = useState(null);
@@ -33,8 +34,6 @@ const DestinationForm = ({ destination = null }) => {
   const [surface, setSurface] = useState(destination?.surface || "");
   const [universities, setUniversities] = useState(destination?.universities || []);
 
-  const [countries, setCountries] = useState({});
-  const [countryNames, setCountryNames] = useState({});
   const [allLanguages, setAllLanguages] = useState([]);
 
   const [universityName, setUniversityName] = useState("");
@@ -43,25 +42,6 @@ const DestinationForm = ({ destination = null }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const fetchCountryFlags = async () => {
-      try {
-        const response = await axios.get("https://flagcdn.com/en/codes.json");
-        const data = response.data;
-
-        const filteredData = Object.entries(data)
-          .filter(([key]) => !key.includes("us-"))
-          .reduce((acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-          }, {});
-
-        setCountries(filteredData);
-        setCountryNames(filteredData);
-      } catch (error) {
-        console.error("Error al obtener las banderas de los países:", error);
-      }
-    };
-
     const fetchLanguages = async () => {
       try {
         const response = await axios.get("https://restcountries.com/v3.1/all");
@@ -82,7 +62,6 @@ const DestinationForm = ({ destination = null }) => {
       }
     };
 
-    fetchCountryFlags();
     fetchLanguages();
   }, []);
 
@@ -116,12 +95,9 @@ const DestinationForm = ({ destination = null }) => {
     setCropped(true);
   };
 
-  const handleCountryChange = (e) => {
-    const selectedCountry = e.target.value;
-    setCountry(selectedCountry);
-
-    const isoCode = Object.entries(countries).find(([key, value]) => value === selectedCountry)?.[0] || "";
-    setIso(isoCode);
+  const handleCountryChange = ({ code, name }) => {
+    setCountry(name);
+    setIso(code);
   };
 
   const handleAddUniversity = (e) => {
@@ -254,21 +230,9 @@ const DestinationForm = ({ destination = null }) => {
               <label htmlFor="country" className="form-label">
                 Country
               </label>
-              <select
-                id="country"
-                className="form-select"
-                value={country}
-                onChange={handleCountryChange}
-                required
-              >
-                <option value="">Select a country</option>
-                {Object.values(countryNames).map((name, index) => (
-                  <option key={index} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
+              <CountryPicker onCountrySelect={handleCountryChange} />
             </div>
+
             <div className="mb-3">
               <label htmlFor="googleMapsUrl" className="form-label">
                 Google Maps URL

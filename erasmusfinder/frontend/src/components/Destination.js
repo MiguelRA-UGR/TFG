@@ -32,19 +32,26 @@ const Destination = () => {
   const [photos, setPhotos] = useState([]);
   const [forums, setForums] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
-  const [currentDestination, setCurrentDestination] = useState(destination);
-  const isAdmin = user.result.admin;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  var isAdmin = false;
+
+  if(user){
+    isAdmin = user.result.admin;
+  }
 
   const handleDeleteDestination = () => {
-    dispatch(deleteDestination(destination._id));
-    navigate('/');
-  }
+    const confirmed = window.confirm("Are you sure you want to delete this destination forever?");
+    
+    if (confirmed) {
+      dispatch(deleteDestination(destination._id));
+      navigate('/');
+    }
+  };
+  
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
-    setCurrentDestination(destination);
   };
 
   //Fnución para actualizar los destinos seguidos dentro del usuario
