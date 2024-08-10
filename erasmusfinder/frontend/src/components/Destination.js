@@ -575,7 +575,7 @@ const Destination = () => {
                         </svg>
                         Surface
                       </h4>
-                      <p>{destination.surface} km2</p>
+                      <p>{destination.surface} km<sup>2</sup></p>
                     </div>
 
                     <div className="col-md-6">

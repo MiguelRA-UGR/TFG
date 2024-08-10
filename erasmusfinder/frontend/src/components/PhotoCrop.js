@@ -1,10 +1,11 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 import { stateColors } from "./utils";
 
 const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, aspectRatio = 1 }) => {
   const cropperRef = useRef(null);
+  const [hasImage, setHasImage] = useState(!!image);
 
   const onChange = (e) => {
     e.preventDefault();
@@ -17,6 +18,7 @@ const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, as
     const reader = new FileReader();
     reader.onload = () => {
       onImageChange(reader.result);
+      setHasImage(true);
     };
     if (files && files.length > 0) {
       reader.readAsDataURL(files[0]);
@@ -69,7 +71,7 @@ const PhotoCrop = ({ image, onImageChange, onCropData, cropped, height = 200, as
             type="button"
             className="btn btn-info"
             onClick={getCropData}
-            disabled={cropped}
+            disabled={!hasImage || cropped}
             style={{
               backgroundColor: stateColors.three,
               color: "#ffffff"
