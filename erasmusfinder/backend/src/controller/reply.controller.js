@@ -1,6 +1,8 @@
 const replyCtrlr = {};
 const Reply = require('../models/Reply');
 const Thread = require('../models/Thread');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
 
 // GET
 replyCtrlr.getReplies = async (req, res) => {
@@ -14,9 +16,9 @@ replyCtrlr.getReplies = async (req, res) => {
 
 // POST
 replyCtrlr.createReply = async (req, res) => {
-    
     try {
         const { author, thread, content } = req.body;
+
         const newReply = new Reply({ author, thread, content });
         await newReply.save();
 
@@ -24,7 +26,39 @@ replyCtrlr.createReply = async (req, res) => {
         threadReply.replies.push(newReply._id);
         await threadReply.save();
 
-        res.json({ message: "Respuesta creada" });
+        const threadDetails = await Thread.findById(thread).populate('author').populate('forum').populate('title');
+        const threadAuthor = threadDetails.author;
+        const threadName = threadDetails.title;
+        const forum = threadDetails.forum;
+
+        const forumName = forum.title;
+
+        const existingNotificationCount = await Notification.countDocuments({
+            user: threadAuthor._id,
+            forum: forum,
+            type: 2
+        });
+
+        const exists = existingNotificationCount > 0;
+
+
+        if (!exists) {
+            const newNotification = new Notification({
+                user: threadAuthor._id,
+                text: `A new reply has been posted in your thread "${threadName}" in the forum "${forumName}".`,
+                type: 2,
+                forum: forum._id
+            });
+
+            await newNotification.save();
+
+            const user = await User.findById(threadAuthor._id);
+
+            user.notifications.push(newNotification._id);
+            await user.save();
+        }
+
+        res.json({ message: "Reply created" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

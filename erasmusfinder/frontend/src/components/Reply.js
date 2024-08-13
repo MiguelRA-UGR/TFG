@@ -23,8 +23,6 @@ const Reply = ({ reply }) => {
     }
   };
 
-  console.log(isAuthor)
-
   return (
     <div
       onMouseEnter={() => setIsHovered(true)}

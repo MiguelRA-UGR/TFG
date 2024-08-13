@@ -47,3 +47,7 @@ export const deleteReply = (id) => API.delete(`/api/replies/${id}`);
 export const createReply = (replyData) => API.post(`/api/replies`, replyData);
 export const updateReply = (id, replyData) => API.put(`/api/replies/${id}`, replyData);
 
+export const deleteNotification = (id) => API.delete(`/api/notifications/${id}`);
+export const deleteNotificationsByUser = (userId) => API.delete(`/api/notifications/user/${userId}`);
+export const deleteAllNotifications = () => API.delete('/api/notifications');
+

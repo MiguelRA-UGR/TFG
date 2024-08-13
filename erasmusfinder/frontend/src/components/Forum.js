@@ -28,7 +28,6 @@ const Forum = () => {
   }
 
   const userNameCallBack = (name) => {
-    console.log(name);
     setUserName(name);
   };
 
@@ -76,26 +75,11 @@ const Forum = () => {
             return { [threadId]: threadRes.data };
           })
         );
-
+    
         const threadsObject = Object.assign({}, ...threadsData);
-
-        const threadsWithAuthors = Object.values(threadsObject).map(
-          (thread) => {
-            const author = followersObject[thread.author];
-            return { ...thread, author };
-          }
-        );
-
-        const threadsWithAuthorsObject = threadsWithAuthors.reduce(
-          (acc, thread) => {
-            acc[thread._id] = thread;
-            return acc;
-          },
-          {}
-        );
-        setThreads(threadsWithAuthorsObject);
-
-        // Verifica si el usuario es miembro del foro
+  
+        setThreads(threadsObject);
+    
         if (user && user.result && forumData.users.includes(user.result._id)) {
           setMember(true);
         } else {

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { stateColors } from "./utils";
@@ -110,14 +109,6 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize, userName }) => {
       </Link>
     </div>
   );
-};
-
-Avatar.propTypes = {
-  userId: PropTypes.string.isRequired,
-  outerSize: PropTypes.string.isRequired,
-  innerSize: PropTypes.string.isRequired,
-  flagSize: PropTypes.string.isRequired,
-  userName: PropTypes.func,
 };
 
 export default Avatar;

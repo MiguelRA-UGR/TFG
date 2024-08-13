@@ -21,3 +21,5 @@ export const USER_WARNING = 'USER_WARNING';
 export const CREATE_DEST = 'CREATE_DEST';
 export const DELETE_DEST = 'DELETE_DEST';
 export const UPDATE_DEST = 'UPDATE_DEST';
+
+export const NOTIFICATION = 'NOTIFICATION';

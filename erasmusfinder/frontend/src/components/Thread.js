@@ -15,7 +15,7 @@ const Thread = ({ thread }) => {
   const [newReply, setNewReply] = useState("");
   const dispatch = useDispatch();
 
-  const isAuthor = user && user.result._id === thread.author._id;
+  const isAuthor = user && (user.result._id == thread.author);
   const isAdmin = user.result.admin;
 
   useEffect(() => {
@@ -93,7 +93,7 @@ const Thread = ({ thread }) => {
       <div className="card-header d-flex align-items-center justify-content-between">
         <div className="d-flex flex-row align-items-center">
           <Avatar
-            userId={thread.author._id}
+            userId={thread.author}
             outerSize="50px"
             innerSize="40px"
             flagSize="0px"

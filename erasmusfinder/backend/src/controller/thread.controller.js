@@ -1,6 +1,8 @@
 const threadCtrlr = {};
 const Thread = require('../models/Thread');
 const Forum = require('../models/Forum');
+const Notification = require('../models/Notification');
+const User = require('../models/User');
 
 // GET
 threadCtrlr.getThreads = async (req, res) => {
@@ -14,9 +16,9 @@ threadCtrlr.getThreads = async (req, res) => {
 
 // POST
 threadCtrlr.createThread = async (req, res) => {
-    
     try {
         const { author, forum, url, title, content } = req.body;
+        
         const newThread = new Thread({ author, forum, url, title, content });
         await newThread.save();
 
@@ -24,11 +26,41 @@ threadCtrlr.createThread = async (req, res) => {
         forumThread.threads.push(newThread._id);
         await forumThread.save();
 
-        res.json({ message: "Thread creado" });
+        const forumName = forumThread.title; 
+        const forumUsers = forumThread.users;
+
+        const notificationPromises = forumUsers.map(async (userId) => {
+            const existingNotificationCount = await Notification.countDocuments({
+                user: userId,
+                forum: forum,
+                type: 1
+            });
+
+            if (existingNotificationCount === 0) {
+                const newNotification = new Notification({
+                    user: userId,
+                    text: `A new thread has been posted in "${forumName}".`,
+                    type: 1,
+                    forum: forum
+                });
+
+                await newNotification.save();
+
+                const user = await User.findById(userId);
+
+                user.notifications.push(newNotification._id);
+                await user.save();
+            }
+        });
+
+        await Promise.all(notificationPromises);
+
+        res.json({ message: "Thread created" });
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // GET
 threadCtrlr.getThread = async (req, res) => {
@@ -84,38 +116,5 @@ threadCtrlr.updateThread = async (req, res) => {
     }
 };
 
-// PUT VOTE
-threadCtrlr.voteThread = async (req, res) => {
-    try {
-        const thread = await Thread.findById(req.params.id);
-        if (!thread.votes.includes(req.user._id)) {
-            thread.votes.push(req.user._id);
-            await thread.save();
-        }
-
-        //Informar al autor
-
-        res.json({ message: "Thread votado" });
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
-
-// PUT UNVOTE
-threadCtrlr.unvoteThread = async (req, res) => {
-    try {
-        const thread = await Thread.findById(req.params.id);
-        if (thread.votes.includes(req.user._id)) {
-            thread.votes.pull(req.user._id);
-            await thread.save();
-        }
-
-        //Informar al autor
-
-        res.json({ message: "Thread eliminado" });
-    } catch (error) {
-        res.status(400).json({ message: error.message });
-    }
-};
 
 module.exports = threadCtrlr;
