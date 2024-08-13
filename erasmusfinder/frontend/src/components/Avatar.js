@@ -3,14 +3,23 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { stateColors } from "./utils";
 
-const Avatar = ({ userId, outerSize, innerSize, flagSize, userName }) => {
+const Avatar = ({
+  userId,
+  outerSize,
+  innerSize,
+  flagSize,
+  userName,
+  disabled = false,
+}) => {
   const [user, setUser] = useState(null);
-  const [userToken] = useState(JSON.parse(localStorage.getItem('profile')));
+  const [userToken] = useState(JSON.parse(localStorage.getItem("profile")));
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:4000/api/users/${userId}`);
+        const response = await axios.get(
+          `http://localhost:4000/api/users/${userId}`
+        );
         setUser(response.data);
         if (userName) {
           userName(response.data.userName);
@@ -33,7 +42,7 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize, userName }) => {
     );
   }
 
-  const color = 
+  const color =
     user.state === 0
       ? stateColors.zero
       : user.state === 1
@@ -73,41 +82,49 @@ const Avatar = ({ userId, outerSize, innerSize, flagSize, userName }) => {
     backgroundColor: color,
   };
 
-  return (
+  const content = (
     <div className="d-flex flex-column align-items-center">
-      <Link
-        to={userToken.result._id === userId ? `/Profile` : `/User/${userId}`}
-        className="nav-link"
-        key={userId}
-      >
-        <div className="image_outer_container" style={outerStyles}>
-          <div className="flag_icon" style={{ zIndex: 1 }}>
-            <img
-              src={`https://flagcdn.com/${user.badge}.svg`}
-              alt="User's Flag"
-              style={flagStyles}
-            />
-          </div>
-          <div className="image_inner_container">
-            {user.photo ? (
-              <img
-                src={`http://localhost:4000/imgs/users/${userId}.png`}
-                alt={user.userName}
-                className="rounded-circle"
-                style={innerStyles}
-              />
-            ) : (
-              <div
-                className="text-center rounded-circle d-flex align-items-center justify-content-center"
-                style={placeholderStyles}
-              >
-                {user.userName.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </div>
+      <div className="image_outer_container" style={outerStyles}>
+        <div className="flag_icon" style={{ zIndex: 1 }}>
+          <img
+            src={`https://flagcdn.com/${user.badge}.svg`}
+            alt="User's Flag"
+            style={flagStyles}
+          />
         </div>
-      </Link>
+        <div className="image_inner_container">
+          {user.photo ? (
+            <img
+              src={`http://localhost:4000/imgs/users/${userId}.png`}
+              alt={user.userName}
+              className="rounded-circle"
+              style={innerStyles}
+            />
+          ) : (
+            <div
+              className="text-center rounded-circle d-flex align-items-center justify-content-center"
+              style={placeholderStyles}
+            >
+              {user.userName.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
+  );
+
+  if (disabled) {
+    return <div className="text-center">{content}</div>;
+  }
+
+  return (
+    <Link
+      to={userToken.result._id === userId ? `/Profile` : `/User/${userId}`}
+      className="nav-link"
+      key={userId}
+    >
+      {content}
+    </Link>
   );
 };
 

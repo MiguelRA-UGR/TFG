@@ -10,12 +10,12 @@ import User from "./components/User";
 import Notifications from "./components/Notifications";
 import Footer from "./components/Footer";
 import RequestForm from "./components/RequestForm";
-import Forum from "./components/Forum"
+import Forum from "./components/Forum";
 
 function App() {
   return (
-    <div className="">
-      <div className="container p-2" style={{ position: "relative" }}>
+    <div className="app-container">
+      <div className="content">
         <Navegation />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -28,7 +28,7 @@ function App() {
           <Route path="/Forum/:id" element={<Forum />} />
         </Routes>
       </div>
-      
+      <Footer />
     </div>
   );
 }

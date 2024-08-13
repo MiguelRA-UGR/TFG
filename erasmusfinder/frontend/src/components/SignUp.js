@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from 'react-router-dom'
-import { signup, login } from '../actions/auth'
-import { useDispatch } from 'react-redux';
+import { useNavigate } from "react-router-dom";
+import { signup, login } from "../actions/auth";
+import { useDispatch } from "react-redux";
 
 const initialState = {
   userName: "",
@@ -15,26 +15,30 @@ export const SignUp = () => {
   const [formData, setFormData] = useState(initialState);
   const [showPassword, setShowPassword] = useState(false);
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const handlerSignUp = (e) => {
+  const handlerSignUp = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
 
-    if(signUp){
+    if (signUp) {
       if (formData.password === formData.confirmPassword) {
-        console.log(formData);
+        const response = await dispatch(signup(formData, history));
+        
+        if (response && response.error) {
+          setErrorMessage(response.error);
+        }
       } else {
         setPasswordsMatch(false);
       }
-
-      dispatch(signup(formData, history));
-
-    }else{
-      dispatch(login(formData, history));
+    } else {
+      const response = await dispatch(login(formData, history));
+      if (response && response.error) {
+        setErrorMessage(response.error);
+      }
     }
-
-    
   };
 
   const handleFormChange = (e) => {
@@ -147,9 +151,7 @@ export const SignUp = () => {
           {signUp && (
             <>
               <div className="form-group mb-3">
-                <label htmlFor="exampleInputPassword2">
-                  Confirm Password
-                </label>
+                <label htmlFor="exampleInputPassword2">Confirm Password</label>
                 <div className="input-group">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -195,26 +197,32 @@ export const SignUp = () => {
                   </button>
                 </div>
                 {!passwordsMatch && (
-                <div style={{ color: "red", display: "inline-block" }}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="12"
-                    height="12"
-                    fill="currentColor"
-                    className="bi bi-exclamation-circle"
-                    viewBox="0 0 16 16"
-                    style={{ marginRight: "5px" }}
-                  >
-                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
-                    <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
-                  </svg>
-                  <p style={{ color: "red", display: "inline-block" }}>
-                    Passwords don't match
-                  </p>
-                </div>
-              )}
+                  <div style={{ color: "red", display: "inline-block" }}>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="12"
+                      height="12"
+                      fill="currentColor"
+                      className="bi bi-exclamation-circle"
+                      viewBox="0 0 16 16"
+                      style={{ marginRight: "5px" }}
+                    >
+                      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                      <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z" />
+                    </svg>
+                    <p style={{ color: "red", display: "inline-block" }}>
+                      Passwords don't match
+                    </p>
+                  </div>
+                )}
               </div>
             </>
+          )}
+
+          {errorMessage && (
+            <div className="alert alert-danger" role="alert">
+              {errorMessage}
+            </div>
           )}
 
           <div className="form-check"></div>
@@ -235,7 +243,9 @@ export const SignUp = () => {
             className="text-center mt-3"
             style={{ fontFamily: "Cambria, serif" }}
           >
-            {signUp ? "Do you have an account?" : "You don't have an account yet?"}{" "}
+            {signUp
+              ? "Do you have an account?"
+              : "You don't have an account yet?"}{" "}
             <a
               href=""
               style={{ color: "#f5973d", fontWeight: "bold" }}

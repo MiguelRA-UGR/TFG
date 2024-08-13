@@ -29,14 +29,12 @@ const DestinationSearch = ({ onDestinationSelect }) => {
     setSearchResults(filteredDestinations);
   };
 
-
   const handleDestinationSelect = (destination) => {
     setSearchTerm("");
     setSearchResults([]);
-    history(`/Destination/${destination._id}`);
+    onDestinationSelect(destination);
   };
   
-
   return (
     <div>
       <div className="input-group mb-3">

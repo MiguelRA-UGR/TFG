@@ -1,3 +1,4 @@
+
 #custom_card {
   transition: transform 0.3s ease;
 }
@@ -44,4 +45,27 @@
 .img-preview {
   overflow: hidden;
 }
+
+@keyframes tumbleweed {
+  0% {
+    transform: translate(0px, 0px) rotate(0deg);
+  }
+  25% {
+    transform: translate(20px, -10px) rotate(90deg);
+  }
+  50% {
+    transform: translate(0px, 0px) rotate(180deg);
+  }
+  75% {
+    transform: translate(-20px, 10px) rotate(270deg);
+  }
+  100% {
+    transform: translate(0px, 0px) rotate(360deg);
+  }
+}
+
+.tumbleweed {
+  animation: tumbleweed linear 2s infinite;
+}
+
 

@@ -16,13 +16,14 @@ requestCtrlr.getRequests = async (req, res) => {
 // POST
 requestCtrlr.createRequest = async (req, res) => {
     try {
-        const { user, type, comment, destination} = req.body;
+        const { user, type, comment, destination, reported} = req.body;
 
         const newRequest = new Request({ 
             user, 
             comment, 
             type, 
-            destination
+            destination,
+            reported
         });
 
         await newRequest.save();
@@ -71,8 +72,6 @@ requestCtrlr.approveRequest = async (req, res) => {
         if (!request) {
             return res.status(404).json({ message: "Petición no encontrada" });
         }
-
-        //Informar al usuario
 
         await Request.findByIdAndDelete(req.params.id);
 

@@ -2,7 +2,7 @@ import { REQUEST } from '../constants/actionTypes';
 import  * as api from '../api/index'
 
 export const createRequest = (formData) => async(dispatch) =>{
-    
+    console.log(formData);
     try {
         const { data } = await api.createRequest(formData);
 

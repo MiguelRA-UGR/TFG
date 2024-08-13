@@ -15,6 +15,7 @@ import MapComponent from "./MapComponent.js";
 import UserSearch from "./UserSearch.js";
 import ForumSearch from "./ForumSearch.js";
 import DestinationForm from "./DestinationForm.js";
+import RequestDisplay from "./RequestDisplay.js";
 
 //Objetos para configurar el carrusel
 const responsiveDests = {
@@ -69,6 +70,10 @@ const Home = () => {
 
   const handleDestinationSelect = (destination) => {
     navigate(`/Destination/${destination._id}`);
+  };
+
+  const handleUserSelect = (user) => {
+    navigate(`/User/${user._id}`);
   };
 
   const toggleDestForm = () => {
@@ -224,44 +229,40 @@ const Home = () => {
     }
   });
 
+  
   return (
     <div className="container">
-      {(user && user.result.admin) ? (
+      {user && user.result.admin ? (
         <>
-          <span className="section-title">
-            Users
-          </span>
-          <UserSearch/>
+          <span className="section-title">Users</span>
+          <UserSearch onUserSelect={handleUserSelect}/>
 
-          <span className="section-title">
-            Forums
-          </span>
-          <ForumSearch/>
+          <span className="section-title">Forums</span>
+          <ForumSearch />
 
-          <span className="section-title">
-            Destinations
-          </span>
-          <DestinationSearch/>
+          <span className="section-title">Destinations</span>
+          <DestinationSearch onDestinationSelect={handleDestinationSelect}/>
 
           <div className="mb-3 d-flex justify-content-center align-items-center">
-          <button
-            type="button"
-            style={{
-              fontWeight: "bold",
-              backgroundColor: createDest ? stateColors.zero : stateColors.one,
-              color: "#ffffff",
-            }}
-            className={`btn ${createDest ? "btn-secondary" : "btn-warning"}`}
-            onClick={toggleDestForm}
-          >
-            {createDest ? "Close" : "Create Destination"}
-          </button>
-
+            <button
+              type="button"
+              style={{
+                fontWeight: "bold",
+                backgroundColor: createDest
+                  ? stateColors.zero
+                  : stateColors.one,
+                color: "#ffffff",
+              }}
+              className={`btn ${createDest ? "btn-secondary" : "btn-warning"}`}
+              onClick={toggleDestForm}
+            >
+              {createDest ? "Close" : "Create Destination"}
+            </button>
           </div>
 
-            {createDest && (<DestinationForm/>)}
-          
+          {createDest && <DestinationForm />}
 
+          <RequestDisplay/>
         </>
       ) : (
         <>

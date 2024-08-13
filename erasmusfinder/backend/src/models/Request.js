@@ -6,6 +6,7 @@ const photoSchema = new Schema({
     comment: { type:String, required:true},
 
     destination: {type: Schema.Types.ObjectId, ref: 'Destination', required: false},
+    reported: {type: Schema.Types.ObjectId, ref: 'User', required: false}
 }, {
     timestamps: true
 });

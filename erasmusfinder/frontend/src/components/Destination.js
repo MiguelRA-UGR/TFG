@@ -19,6 +19,7 @@ import DestinationForm from "./DestinationForm";
 import { deleteDestination } from "../actions/destination";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Tumbleweed from "./Tumbleweed";
 
 const Destination = () => {
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
@@ -401,10 +402,10 @@ const Destination = () => {
               <>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
+                  width="16"
+                  height="16"
                   fill="currentColor"
-                  className="bi bi-lock-fill"
+                  class="bi bi-lock-fill"
                   viewBox="0 0 16 16"
                 >
                   <path d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2m3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2" />
@@ -512,7 +513,7 @@ const Destination = () => {
               </>
             ) : (
               <div className="row">
-                <p className="" style={{ width:"100%", margin: "0 auto" }}>
+                <p className="" style={{ width: "100%", margin: "0 auto" }}>
                   {destination.description}
                 </p>
 
@@ -575,7 +576,9 @@ const Destination = () => {
                         </svg>
                         Surface
                       </h4>
-                      <p>{destination.surface} km<sup>2</sup></p>
+                      <p>
+                        {destination.surface} km<sup>2</sup>
+                      </p>
                     </div>
 
                     <div className="col-md-6">
@@ -761,11 +764,7 @@ const Destination = () => {
                       <div className="container text-center">
                         <h4>Wow, it's a bit lonely in here</h4>
                         {!isAdmin && <p>Be the first one to create a forum</p>}
-                        <img
-                          src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png"
-                          alt="Tumbleweed"
-                          style={{ width: "100px" }}
-                        />
+                        <Tumbleweed/>
                       </div>
                     )}
                   </div>
@@ -884,18 +883,18 @@ const Destination = () => {
                   )}
 
                   <div className="row">
-                    {(reviews.length > 0 && !hasReviewed) && (
+                    {reviews.length > 0 && !hasReviewed && (
                       <span className="section-title text-center">
-                      What people think about {""}
-                      <span
-                        style={{ color: stateColors.one, fontWeight: "bold" }}
-                      >
-                        {destination.name}
+                        What people think about {""}
+                        <span
+                          style={{ color: stateColors.one, fontWeight: "bold" }}
+                        >
+                          {destination.name}
+                        </span>
+                        :
                       </span>
-                      :
-                    </span>
                     )}
-                  
+
                     {reviews
                       .filter(
                         (review) =>
@@ -923,7 +922,12 @@ const Destination = () => {
                     />
                   </div>
                   <div className="row text-center justify-content-center">
-                    {!isAdmin && (<ReviewForm user_id={user.result._id} destination_id={destination._id}/>)}
+                    {!isAdmin && (
+                      <ReviewForm
+                        user_id={user.result._id}
+                        destination_id={destination._id}
+                      />
+                    )}
                   </div>
                 </div>
               )
@@ -954,26 +958,33 @@ const Destination = () => {
             {following || isAdmin ? (
               <>
                 <div className="row justify-content-center mb-3">
-                  {photos.length>0 ? (
+                  {photos.length > 0 ? (
                     <>
                       {photos.map((photo) => (
-                    <div className="col-12 col-md-6 col-lg-4" key={photo._id}>
-                      <Photo
-                        photo={photo}
-                        delete={photo.user === user.result._id}
+                        <div
+                          className="col-12 col-md-6 col-lg-4"
+                          key={photo._id}
+                        >
+                          <Photo
+                            photo={photo}
+                            delete={photo.user === user.result._id}
+                          />
+                        </div>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <h4 className="text-center">
+                        It seems like this destination hasn't any photos posted
+                        yet
+                      </h4>
+                      <img
+                        src="https://cdn-icons-png.freepik.com/256/1466/1466623.png"
+                        alt="Lonely file"
+                        style={{ width: "200px" }}
                       />
-                    </div>
-                  ))}
-                  </>):(<>
-                    <h4 className="text-center">It seems like this destination hasn't any photos posted yet</h4>
-                    <img
-                      src="https://cdn-icons-png.freepik.com/256/1466/1466623.png"
-                      alt="Lonely file"
-                      style={{ width: "200px" }}
-                    />
-                  </>)}
-                  
-                  
+                    </>
+                  )}
                 </div>
 
                 <div className="row justify-content-center text-center ">

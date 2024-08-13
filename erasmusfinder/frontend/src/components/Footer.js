@@ -5,10 +5,11 @@ const Footer = () => {
     <div
       className="mt-3"
       style={{
-        textAlign: "center",
         color: "#83877a",
         fontSize: "15px",
         borderTop: "1px solid #e7e7e7",
+        padding: "10px",
+        marginTop: "auto",
       }}
     >
       ErasmusFinder 2024: ErasmusFinder is an independent platform dedicated to

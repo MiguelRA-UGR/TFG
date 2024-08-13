@@ -7,9 +7,11 @@ export const login = (formData, history) => async(dispatch)=>{
 
         dispatch({type: AUTH, data});
 
-       history('/'); 
+        history('/'); 
     } catch (error) {
-        console.log(error);
+        const errorMessage = error.response?.data?.message;
+
+        return { error: errorMessage };
     }
 
 }

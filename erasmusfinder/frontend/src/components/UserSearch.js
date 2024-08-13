@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Avatar from "./Avatar";
-import { Link } from "react-router-dom";
 
 const UserSearch = ({ onUserSelect }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [users, setUsers] = useState([]);
-  const [user] = useState(JSON.parse(localStorage.getItem("profile")));
-  
+
   useEffect(() => {
     const getUsers = async () => {
       try {
@@ -30,6 +28,12 @@ const UserSearch = ({ onUserSelect }) => {
     setSearchResults(filteredUsers);
   };
 
+  const handleUserClick = (user) => {
+    onUserSelect(user);
+    setSearchTerm("");
+    setSearchResults([]);
+  };
+
   return (
     <div>
       <div className="input-group mb-3">
@@ -40,10 +44,7 @@ const UserSearch = ({ onUserSelect }) => {
           value={searchTerm}
           onChange={handleSearchChange}
         />
-        <button
-          className="btn btn-outline-dark"
-          type="button"
-        >
+        <button className="btn btn-outline-dark" type="button">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="16"
@@ -67,25 +68,18 @@ const UserSearch = ({ onUserSelect }) => {
                 key={userObj._id}
                 className="list-group-item d-flex align-items-center mb-2"
                 style={{ cursor: "pointer" }}
+                onClick={() => handleUserClick(userObj)}
               >
-
-                <Link   
-                  to={user.result._id === userObj._id ? `/Profile` : `/User/${userObj._id}`}
-                  className="nav-link ml-3 d-flex flex-row align-items-center"
-                  key={userObj._id}
-                  >
-                    <Avatar
-                    userId={userObj._id}
-                    outerSize="50px"
-                    innerSize="40px"
-                    flagSize="25px"
-                    />
-                    <div className="m-2">
-                    {userObj.userName}
-                    </div>
-                    
-                </Link>
-                
+                <Avatar
+                  userId={userObj._id}
+                  outerSize="50px"
+                  innerSize="40px"
+                  flagSize="25px"
+                  disabled="true"
+                />
+                <div className="m-2">
+                  {userObj.userName}
+                </div>
               </li>
             ))}
           </ul>

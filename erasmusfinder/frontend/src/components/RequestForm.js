@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import DestinationSearch from "./DestinationSearch.js";
+import UserSearch from "./UserSearch.js";
 import { createRequest } from "../actions/request.js";
 import { useDispatch } from "react-redux";
-import User from "./CarouselUser.js";
 import { useNavigate } from "react-router-dom";
 
 const RequestForm = () => {
@@ -10,20 +10,20 @@ const RequestForm = () => {
   const [comment, setComment] = useState("");
   const [destination, setDestination] = useState("");
   const [user] = useState(JSON.parse(localStorage.getItem("profile")));
-  const [selectedDestination, setSelectedDestination] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const id = destination._id;
-
     const requestData = {
       type,
       comment,
-      ...(type === 1 ? { id } : {}), // Only include id for type 1
       user: user.result._id,
+      ...(type === 1 && selectedDestination ? { destination: selectedDestination._id } : {}),
+      ...(type === 2 && selectedUser ? { reported: selectedUser._id } : {}),
     };
 
     try {
@@ -42,9 +42,13 @@ const RequestForm = () => {
     setSelectedDestination(destination);
   };
 
+  const handleUserSelect = (user) => {
+    setSelectedUser(user);
+  };
+
   const handleDestinationChange = (event) => {
     setDestination(event.target.value);
-    setSelectedDestination("");
+    setSelectedDestination(null);
   };
 
   return (
@@ -75,12 +79,29 @@ const RequestForm = () => {
               <input
                 type="text"
                 className="form-control"
-                value={destination.name}
+                value={selectedDestination.name}
                 onChange={handleDestinationChange}
+                readOnly
               />
             ) : (
               <DestinationSearch
                 onDestinationSelect={handleDestinationSelect}
+              />
+            )}
+          </div>
+        )}
+        {type === 2 && (
+          <div className="mb-3">
+            <label htmlFor="user" className="form-label">
+              User
+            </label>
+            <UserSearch onUserSelect={handleUserSelect} />
+            {selectedUser && (
+              <input
+                type="text"
+                className="form-control mt-2"
+                value={selectedUser.userName}
+                readOnly
               />
             )}
           </div>
