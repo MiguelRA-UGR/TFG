@@ -57,7 +57,7 @@ const Photo = ({ photo, delete: deletable }) => {
 
   return (
     <div
-      className="card"
+      className="card m-1"
       style={{ width: "300px", height: "auto", position: "relative" }}
     >
       <div className="card-body d-flex flex-column">

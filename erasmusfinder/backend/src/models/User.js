@@ -6,7 +6,7 @@ const userSchema = new Schema({
     photo: { type: Boolean, default: false },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    nationality: { type: String },
+    nationality: { type: String, default:"es" },
     occupation: { type: String },
     badge: { type: String, default: "newbie" },
     state: { type: Number ,default:0},

@@ -37,19 +37,20 @@ const Destination = () => {
   const navigate = useNavigate();
   var isAdmin = false;
 
-  if(user){
+  if (user) {
     isAdmin = user.result.admin;
   }
 
   const handleDeleteDestination = () => {
-    const confirmed = window.confirm("Are you sure you want to delete this destination forever?");
-    
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this destination forever?"
+    );
+
     if (confirmed) {
       dispatch(deleteDestination(destination._id));
-      navigate('/');
+      navigate("/");
     }
   };
-  
 
   const handleEditClick = () => {
     setIsEditing(!isEditing);
@@ -299,11 +300,13 @@ const Destination = () => {
             src={`https://flagcdn.com/${destination.iso}.svg`}
             alt={destination.country}
             style={{
-              height: "50px",
-              width: "50px",
+              height: "60px",
+              width: "100px",
               marginRight: "15px",
-              borderRadius: "50%",
+              borderRadius: "10px",
               objectFit: "cover",
+              border: "4px solid",
+              borderColor: "#f4f4f4",
             }}
           />
 
@@ -764,7 +767,7 @@ const Destination = () => {
                       <div className="container text-center">
                         <h4>Wow, it's a bit lonely in here</h4>
                         {!isAdmin && <p>Be the first one to create a forum</p>}
-                        <Tumbleweed/>
+                        <Tumbleweed />
                       </div>
                     )}
                   </div>
@@ -846,7 +849,7 @@ const Destination = () => {
                 <>
                   {hasReviewed ? (
                     <>
-                      <div className="row mb-4 align-items-center text-center justify-content-center">
+                      <div className="row mb-4 align-items-center justify-content-center">
                         <span className="section-title">Your Review:</span>
                       </div>
 
@@ -915,11 +918,7 @@ const Destination = () => {
                     <h4>Wow, it's a bit lonely in here</h4>
                     {!isAdmin && <p>Be the first to review this destination</p>}
 
-                    <img
-                      src="https://cdn-icons-png.flaticon.com/512/1171/1171279.png"
-                      alt="Tumbleweed"
-                      style={{ width: "100px" }}
-                    />
+                    <Tumbleweed/>
                   </div>
                   <div className="row text-center justify-content-center">
                     {!isAdmin && (
@@ -961,10 +960,7 @@ const Destination = () => {
                   {photos.length > 0 ? (
                     <>
                       {photos.map((photo) => (
-                        <div
-                          className="col-12 col-md-6 col-lg-4"
-                          key={photo._id}
-                        >
+                        <div className="col-12 col-md-4" key={photo._id}>
                           <Photo
                             photo={photo}
                             delete={photo.user === user.result._id}
