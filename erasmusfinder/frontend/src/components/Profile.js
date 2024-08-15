@@ -85,9 +85,9 @@ const Profile = () => {
   const updateProfilePicture = () => {
     const formData = new FormData();
     formData.append("profilePicture", newProfilePicture);
-
+  
     console.log("New profile picture:", newProfilePicture);
-
+  
     axios
       .put(
         `http://localhost:4000/api/users/${user.result._id}/profile-picture`,
@@ -99,12 +99,29 @@ const Profile = () => {
         }
       )
       .then((response) => {
+        setUser((prevUser) => ({
+          ...prevUser,
+          result: {
+            ...prevUser.result,
+            photo: true,
+          },
+        }));
+  
+        localStorage.setItem("profile", JSON.stringify({
+          ...user,
+          result: {
+            ...user.result,
+            photo: true,
+          },
+        }));
+  
         window.location.reload();
       })
       .catch((error) => {
         console.error("Error updating profile picture:", error);
       });
   };
+  
 
   const updateUserData = () => {
     axios
@@ -551,7 +568,7 @@ const Profile = () => {
                 <input
                   type="text"
                   className="form-control mt-1"
-                  name="originCity"
+                  name="occupation"
                   value={editedUser.occupation}
                   onChange={handleChangeInput}
                 />

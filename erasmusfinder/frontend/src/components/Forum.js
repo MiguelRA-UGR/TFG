@@ -7,7 +7,7 @@ import Thread from "./Thread";
 import { stateColors } from "./utils";
 import ThreadForm from "./ThreadForm";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { deleteForum } from "../actions/forum";
 
 const Forum = () => {
@@ -23,8 +23,8 @@ const Forum = () => {
 
   var isAdmin = false;
 
-  if(user){
-    isAdmin = user.result.admin
+  if (user) {
+    isAdmin = user.result.admin;
   }
 
   const userNameCallBack = (name) => {
@@ -32,8 +32,10 @@ const Forum = () => {
   };
 
   const handleDeleteForum = () => {
-    const confirmed = window.confirm("Are you sure you want to delete this forum forever?");
-    
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this forum forever?"
+    );
+
     if (confirmed) {
       dispatch(deleteForum(forum._id));
       navigate("/");
@@ -75,11 +77,11 @@ const Forum = () => {
             return { [threadId]: threadRes.data };
           })
         );
-    
+
         const threadsObject = Object.assign({}, ...threadsData);
-  
+
         setThreads(threadsObject);
-    
+
         if (user && user.result && forumData.users.includes(user.result._id)) {
           setMember(true);
         } else {
@@ -167,6 +169,30 @@ const Forum = () => {
 
   return (
     <div className="form-control">
+      <Link
+        to={`/Destination/${forum.destination}`}
+        style={{ textDecoration: "none", color: stateColors.one }}
+      > 
+        <div className="d-flex">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          className="bi bi-arrow-bar-left mt-1"
+          viewBox="0 0 16 16"
+          style={{marginRight:"3px"}}
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.5 15a.5.5 0 0 1-.5-.5v-13a.5.5 0 0 1 1 0v13a.5.5 0 0 1-.5.5M10 8a.5.5 0 0 1-.5.5H3.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L3.707 7.5H9.5a.5.5 0 0 1 .5.5"
+          />
+        </svg>
+        <p> Back to destination</p>
+        </div>
+        
+      </Link>
+
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div className="d-flex flex-row">
           <img
@@ -179,7 +205,7 @@ const Forum = () => {
             <span
               className="mb-1"
               style={{
-                fontSize: "40px",
+                fontSize: "25px",
                 fontFamily: "Cambria, serif",
                 fontWeight: "bold",
                 marginBottom: "-15px",
@@ -371,14 +397,16 @@ const Forum = () => {
                   <ThreadForm />
                 ) : (
                   <ul className="list-unstyled">
-                    {Object.values(threads).map((thread) => (
-                      <li
-                        className="d-flex align-items-center mb-2 form-control mt-3"
-                        key={thread._id}
-                      >
-                        <Thread thread={thread} />
-                      </li>
-                    ))}
+                    {Object.values(threads)
+                      .reverse()
+                      .map((thread) => (
+                        <li
+                          className="d-flex align-items-center mb-2 form-control mt-3"
+                          key={thread._id}
+                        >
+                          <Thread thread={thread} />
+                        </li>
+                      ))}
                   </ul>
                 )}
               </div>

@@ -309,8 +309,8 @@ const User = () => {
               <div className="d-flex justify-content-center">
                 <img
                   className="mb-1 me-1"
-                  src={`https://flagcdn.com/${userProfile.badge}.svg`}
-                  alt={`${countryNames[userProfile.badge]} flag`}
+                  src={`https://flagcdn.com/${userProfile.nationality}.svg`}
+                  alt={`${countryNames[userProfile.nationality]} flag`}
                   style={{
                     width: "20px",
                     height: "20px",
@@ -318,7 +318,7 @@ const User = () => {
                     borderRadius: "50%",
                   }}
                 />
-                <p>{countryNames[userProfile.badge]}</p>
+                <p>{countryNames[userProfile.nationality]}</p>
               </div>
 
               {userProfile.occupation !== "" && (
@@ -358,7 +358,7 @@ const User = () => {
                 {userProfile.admin ? "Remove admin" : "Promote to admin"}
               </button>
               <button className="btn btn-warning me-2" onClick={handleWarning}>
-                Send warning
+                Send warning - Warnings: {userProfile.warningsN}
               </button>
               <button className="btn btn-danger me-2" onClick={handleDelete}>
                 Delete User

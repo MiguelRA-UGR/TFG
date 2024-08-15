@@ -350,7 +350,11 @@ const Destination = () => {
           <span
             style={{ fontSize: "30px", color: "#ffffff", fontWeight: "bold" }}
           >
-            {destination.mean_score === -1 ? "-" : destination.mean_score}
+            {destination.mean_score === -1
+              ? "-"
+              : destination.mean_score % 1 === 0
+              ? destination.mean_score
+              : destination.mean_score.toFixed(1)}
           </span>
         </div>
 
@@ -885,7 +889,7 @@ const Destination = () => {
                     </div>
                   )}
 
-                  <div className="row">
+                  <div className="row justify-content-center">
                     {reviews.length > 0 && !hasReviewed && (
                       <span className="section-title text-center">
                         What people think about {""}
@@ -918,7 +922,7 @@ const Destination = () => {
                     <h4>Wow, it's a bit lonely in here</h4>
                     {!isAdmin && <p>Be the first to review this destination</p>}
 
-                    <Tumbleweed/>
+                    <Tumbleweed />
                   </div>
                   <div className="row text-center justify-content-center">
                     {!isAdmin && (
@@ -953,14 +957,17 @@ const Destination = () => {
         )}
 
         {activeTab === "gallery" && (
-          <div className="container justify-content-center">
+          <div className="container p-0">
             {following || isAdmin ? (
               <>
-                <div className="row justify-content-center mb-3">
+                <div className="row mb-3 align-items-center">
                   {photos.length > 0 ? (
                     <>
                       {photos.map((photo) => (
-                        <div className="col-12 col-md-4" key={photo._id}>
+                        <div
+                          className="col-12 col-lg-4 col-md-6 mb-3"
+                          key={photo._id}
+                        >
                           <Photo
                             photo={photo}
                             delete={photo.user === user.result._id}
@@ -969,7 +976,7 @@ const Destination = () => {
                       ))}
                     </>
                   ) : (
-                    <>
+                    <div className="d-flex flex-column align-items-center">
                       <h4 className="text-center">
                         It seems like this destination hasn't any photos posted
                         yet
@@ -979,7 +986,7 @@ const Destination = () => {
                         alt="Lonely file"
                         style={{ width: "200px" }}
                       />
-                    </>
+                    </div>
                   )}
                 </div>
 

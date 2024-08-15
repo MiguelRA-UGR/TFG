@@ -15,11 +15,11 @@ userCtrlr.logIn = async(req, res) =>{
     try{
         const existingUser = await User.findOne({email});
 
-        if(!existingUser) return res.status(404).json({message: "El usuario no existe"})
+        if(!existingUser) return res.status(404).json({message: "The user does not exist"})
 
         const correctPassword = await bcrypt.compare(password, existingUser.password);
 
-        if(!correctPassword) return res.status(400).json({message: "La contraseña o el usuario no son correctos"})
+        if(!correctPassword) return res.status(400).json({message: "Incorrect password or user name"})
 
         //JWT para mantener al usuario conectado durante una hora
         const token = jwt.sign({email: existingUser.email, id: existingUser._id}, 'test', {expiresIn : "1h" })
@@ -38,7 +38,7 @@ userCtrlr.signUp = async(req, res) =>{
     try {
         const existingUser = await User.findOne({email});
 
-        if(existingUser) return res.status(400).json({message: "Ya existe una cuenta con este correo"});
+        if(existingUser) return res.status(400).json({message: "There is already an account with this email address"});
 
         //Hashear la contraseña
         const hashedPassword = await bcrypt.hash(password,12);

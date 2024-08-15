@@ -58,12 +58,12 @@ const Photo = ({ photo, delete: deletable }) => {
   return (
     <div
       className="card m-1"
-      style={{ width: "300px", height: "auto", position: "relative" }}
+      style={{ width: "260px", height: "auto", position: "relative" }}
     >
       <div className="card-body d-flex flex-column">
         <div
           className="image-container mb-3"
-          style={{ width: "275px", height: "275px" }}
+          style={{ width: "230px", height: "230px" }}
         >
           <img
             className="card-img-top"
@@ -109,7 +109,7 @@ const Photo = ({ photo, delete: deletable }) => {
           <div className="d-flex flex-row ms-2 align-items-center">
             <span>{photo.anonymous ? 'Anonymous' : photo.author.userName}</span>
 
-            <div className="d-flex flex-column text-center" style={{ cursor: isAdmin ? 'default' : 'pointer', marginLeft: '150px' }} onClick={handleLike}>
+            <div className="d-flex flex-column text-center" style={{ cursor: isAdmin ? 'default' : 'pointer', marginLeft: '100px' }} onClick={handleLike}>
             {isLiked ? (
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="red" className="bi bi-suit-heart-fill" viewBox="0 0 16 16">
                   <path d="M4 1c2.21 0 4 1.755 4 3.92C8 2.755 9.79 1 12 1s4 1.755 4 3.92c0 3.263-3.234 4.414-7.608 9.608a.513.513 0 0 1-.784 0C3.234 9.334 0 8.183 0 4.92 0 2.755 1.79 1 4 1"/>
@@ -124,7 +124,7 @@ const Photo = ({ photo, delete: deletable }) => {
           </div>
         </div>
 
-        <p className="card-text mb-2" style={{ fontSize: "15px" }}>
+        <p className="card-text mb-2" style={{ fontSize: "15px", height:"90px" }}>
           {photo.comment}
         </p>
 

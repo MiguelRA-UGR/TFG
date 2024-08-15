@@ -154,7 +154,7 @@ const Notifications = () => {
         <div className="col-md-4 text-center">
           <h3>Warnings</h3>
 
-          {user.warningsN > 1 ? (
+          {user.warningsN >= 1 ? (
             <div
               style={{
                 backgroundColor: "#eccd6a",

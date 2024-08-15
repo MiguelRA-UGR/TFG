@@ -14,10 +14,15 @@ const Thread = ({ thread }) => {
   const [user] = useState(JSON.parse(localStorage.getItem("profile")));
   const [replies, setReplies] = useState([]);
   const [newReply, setNewReply] = useState("");
+  const [userName, setUserName] = useState("");
   const dispatch = useDispatch();
 
-  const isAuthor = user && (user.result._id == thread.author);
+  const isAuthor = user && user.result._id == thread.author;
   const isAdmin = user.result.admin;
+
+  const userNameCallBack = (name) => {
+    setUserName(name);
+  };
 
   useEffect(() => {
     const fetchReplies = async () => {
@@ -47,8 +52,10 @@ const Thread = ({ thread }) => {
   }, [thread.replies]);
 
   const handleDelete = () => {
-    const confirmed = window.confirm("Are you sure you want to delete this thread?");
-    
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this thread?"
+    );
+
     if (confirmed) {
       try {
         dispatch(deleteThread(thread._id));
@@ -98,11 +105,24 @@ const Thread = ({ thread }) => {
             outerSize="50px"
             innerSize="40px"
             flagSize="0px"
+            userName={userNameCallBack}
           />
-          <h5 style={{ marginLeft: "10px" }}>{thread.title}</h5>
+          <div style={{ marginLeft: "10px" }}>
+            <h5>{thread.title}</h5>
+            posted by {""}
+            <span
+              style={{
+                marginLeft: "",
+                color: stateColors.one,
+                fontWeight: "bold",
+              }}
+            >
+              {userName}
+            </span>
+          </div>
         </div>
         {(isAdmin || (isAuthor && isHovered)) && (
-          <DeleteButton handleDelete={handleDelete}/>
+          <DeleteButton handleDelete={handleDelete} />
         )}
       </div>
       <div className="card-body">

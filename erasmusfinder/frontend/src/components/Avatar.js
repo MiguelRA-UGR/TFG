@@ -87,7 +87,7 @@ const Avatar = ({
       <div className="image_outer_container" style={outerStyles}>
         <div className="flag_icon" style={{ zIndex: 1 }}>
           <img
-            src={`https://flagcdn.com/${user.badge}.svg`}
+            src={`https://flagcdn.com/${user.nationality}.svg`}
             alt="User's Flag"
             style={flagStyles}
           />
