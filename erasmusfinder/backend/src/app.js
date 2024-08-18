@@ -10,7 +10,7 @@ app.set('port', process.env.PORT || 4000);
 //Middlewares
 app.use(cors(
     {
-        origin: ["https://deploy-ern-1whq.vercel.app"],
+        origin: ["https://tfg-miguelra-ugrs-projects.vercel.app/"],
         methods: ["POST","GET"],
         credentials: true
     }
