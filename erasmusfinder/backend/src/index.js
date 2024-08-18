@@ -12,7 +12,13 @@ const app = express();
 app.set('port', process.env.PORT || 4000);
 
 // Middlewares
-app.use(cors());
+app.use(cors(
+    {
+        origin: [""],
+        methods: ["POST", "GET", "PUT", "DELETE"],
+        credentials: true
+    }
+));
 app.use(express.json());
 app.use(express.static('public'));
 
