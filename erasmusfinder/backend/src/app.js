@@ -8,7 +8,13 @@ const app = express();
 app.set('port', process.env.PORT || 4000);
 
 //Middlewares
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["https://deploy-ern-1whq.vercel.app"],
+        methods: ["POST","GET"],
+        credentials: true
+    }
+));
 app.use(express.json());
 app.use(express.static('public'));
 
