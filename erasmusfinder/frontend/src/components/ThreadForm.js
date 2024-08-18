@@ -32,7 +32,7 @@ const ThreadForm = () => {
   
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/threads/upload-thread-photo",
+        `${process.env.REACT_APP_API_URL}/api/threads/upload-thread-photo`,
         formData,
         {
           headers: {

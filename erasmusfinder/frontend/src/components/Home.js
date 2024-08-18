@@ -89,7 +89,7 @@ const Home = () => {
         const reviewsData = await Promise.all(
           reviewIds.map(async (reviewId) => {
             const res = await fetch(
-              `http://localhost:4000/api/reviews/${reviewId}`
+              `${process.env.REACT_APP_API_URL}/api/reviews/${reviewId}`
             );
             if (!res.ok) {
               throw new Error("Error al obtener las reseñas");
@@ -109,7 +109,7 @@ const Home = () => {
   useEffect(() => {
     const getDestinations = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/dests", {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/dests`, {
           method: "GET",
         });
         if (!res.ok) {
@@ -130,7 +130,7 @@ const Home = () => {
   useEffect(() => {
     const getContacts = async () => {
       try {
-        const res = await fetch("http://localhost:4000/api/users", {
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
           method: "GET",
         });
         if (!res.ok) {
@@ -287,7 +287,7 @@ const Home = () => {
                     >
                       <Link to={`/Destination/${destination._id}`}>
                         <img
-                          src={`http://localhost:4000/imgs/frontpages/${formatedName(
+                          src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${formatedName(
                             destination.name
                           )}.png`}
                           style={{ maxHeight: "700px", objectFit: "cover" }}

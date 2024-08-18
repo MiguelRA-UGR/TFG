@@ -51,7 +51,7 @@ const Request = ({ request }) => {
     if (request.destination) {
       const fetchDestination = async () => {
         try {
-          const response = await axios.get(`http://localhost:4000/api/dests/${request.destination}`);
+          const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/dests/${request.destination}`);
           setDestination(response.data);
         } catch (error) {
           console.error("Error fetching destination:", error);

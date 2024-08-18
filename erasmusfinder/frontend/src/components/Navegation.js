@@ -15,7 +15,7 @@ const Navegation = () => {
     if (user.result.photo) {
       return (
         <img
-          src={`http://localhost:4000/imgs/users/${user.result._id}.png`}
+          src={`${process.env.REACT_APP_API_URL}/imgs/users/${user.result._id}.png`}
           alt={user.result.userName}
           style={{ width: "35px", height: "35px" }}
           className="avatar rounded-circle"

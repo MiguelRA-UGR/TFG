@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API = axios.create({ baseURL: 'https://backenddeployment-phi.vercel.app' });
+const API = axios.create({ baseURL: process.env.API_CONNECTION });
 
 API.interceptors.request.use((req) => {
   if (localStorage.getItem('profile')) {

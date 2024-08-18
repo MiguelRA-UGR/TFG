@@ -18,7 +18,7 @@ const Avatar = ({
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/users/${userId}`
+          `${process.env.REACT_APP_API_URL}/api/users/${userId}`
         );
         setUser(response.data);
         if (userName) {
@@ -95,7 +95,7 @@ const Avatar = ({
         <div className="image_inner_container">
           {user.photo ? (
             <img
-              src={`http://localhost:4000/imgs/users/${userId}.png`}
+              src={`${process.env.REACT_APP_API_URL}/imgs/users/${userId}.png`}
               alt={user.userName}
               className="rounded-circle"
               style={innerStyles}

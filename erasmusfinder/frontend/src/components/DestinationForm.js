@@ -71,7 +71,7 @@ const DestinationForm = ({ destination = null }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/dests/upload-dest-photo", formData,
+        `${process.env.REACT_APP_API_URL}/api/dests/upload-dest-photo`, formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",

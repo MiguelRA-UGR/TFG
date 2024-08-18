@@ -10,7 +10,7 @@ const UserSearch = ({ onUserSelect }) => {
   useEffect(() => {
     const getUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/users");
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`);
         setUsers(res.data);
       } catch (error) {
         console.error("Error:", error);

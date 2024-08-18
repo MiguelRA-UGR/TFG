@@ -73,7 +73,7 @@ const Destination = () => {
           };
 
       await axios.put(
-        `http://localhost:4000/api/users/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/${userId}`,
         updatedUser,
         {
           headers: {
@@ -99,7 +99,7 @@ const Destination = () => {
   const updateDestination = async (destinationId, following, token) => {
     try {
       const resGet = await axios.get(
-        `http://localhost:4000/api/dests/${destinationId}`
+        `${process.env.REACT_APP_API_URL}/api/dests/${destinationId}`
       );
       const dataDest = resGet.data;
       const newFollowers = following
@@ -110,7 +110,7 @@ const Destination = () => {
         : [...dataDest.users, user.result._id];
 
       const resPut = await axios.put(
-        `http://localhost:4000/api/dests/${destinationId}`,
+        `${process.env.REACT_APP_API_URL}/api/dests/${destinationId}`,
         {
           n_users: newFollowers,
           users: newFollowersList,
@@ -171,7 +171,7 @@ const Destination = () => {
 
         // Obtener los datos del destino
         const res = await axios.get(
-          `http://localhost:4000/api/dests/${destinationId}`
+          `${process.env.REACT_APP_API_URL}/api/dests/${destinationId}`
         );
         if (res.status !== 200) {
           throw new Error("Error al obtener el destino");
@@ -187,7 +187,7 @@ const Destination = () => {
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
             const userRes = await axios.get(
-              `http://localhost:4000/api/users/${followerId}`
+              `${process.env.REACT_APP_API_URL}/api/users/${followerId}`
             );
             if (userRes.status !== 200) {
               throw new Error("Error al obtener los datos del seguidor");
@@ -202,7 +202,7 @@ const Destination = () => {
         const reviewsData = await Promise.all(
           reviewsIds.map(async (reviewId) => {
             const reviewRes = await axios.get(
-              `http://localhost:4000/api/reviews/${reviewId}`
+              `${process.env.REACT_APP_API_URL}/api/reviews/${reviewId}`
             );
             if (reviewRes.status !== 200) {
               throw new Error("Error al obtener los datos de la reseña");
@@ -220,7 +220,7 @@ const Destination = () => {
         const photosData = await Promise.all(
           photosIds.map(async (photoId) => {
             const photosRes = await axios.get(
-              `http://localhost:4000/api/photos/${photoId}`
+              `${process.env.REACT_APP_API_URL}/api/photos/${photoId}`
             );
             if (photosRes.status !== 200) {
               throw new Error("Error al obtener los datos de las fotos");
@@ -238,7 +238,7 @@ const Destination = () => {
         const forumsData = await Promise.all(
           forumsIds.map(async (forumId) => {
             const forumsRes = await axios.get(
-              `http://localhost:4000/api/forums/${forumId}`
+              `${process.env.REACT_APP_API_URL}/api/forums/${forumId}`
             );
             if (forumsRes.status !== 200) {
               throw new Error("Error al obtener los datos de los foros");
@@ -425,7 +425,7 @@ const Destination = () => {
       </div>
 
       <img
-        src={`http://localhost:4000/imgs/frontpages/${cleanString(
+        src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${cleanString(
           destination.name
         )}.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}

@@ -21,7 +21,7 @@ const Notifications = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/users/${user.result._id}`
+          `${process.env.REACT_APP_API_URL}/api/users/${user.result._id}`
         );
         setUser(response.data);
         setUserId(response.data?._id);
@@ -40,7 +40,7 @@ const Notifications = () => {
           const incomingContactsData = await Promise.all(
             user.incomingContactRequest.map(async (requestId) => {
               const response = await axios.get(
-                `http://localhost:4000/api/users/${requestId}`
+                `${process.env.REACT_APP_API_URL}/api/users/${requestId}`
               );
               return {
                 ...response.data,
@@ -65,7 +65,7 @@ const Notifications = () => {
           const notificationsData = await Promise.all(
             user.notifications.map(async (notificationId) => {
               const response = await axios.get(
-                `http://localhost:4000/api/notifications/${notificationId}`
+                `${process.env.REACT_APP_API_URL}/api/notifications/${notificationId}`
               );
               return response.data;
             })

@@ -90,7 +90,7 @@ const Profile = () => {
   
     axios
       .put(
-        `http://localhost:4000/api/users/${user.result._id}/profile-picture`,
+        `${process.env.REACT_APP_API_URL}/api/users/${user.result._id}/profile-picture`,
         formData,
         {
           headers: {
@@ -125,7 +125,7 @@ const Profile = () => {
 
   const updateUserData = () => {
     axios
-      .put(`http://localhost:4000/api/users/${user.result._id}`, editedUser)
+      .put(`${process.env.REACT_APP_API_URL}/api/users/${user.result._id}`, editedUser)
       .then((response) => {
         setUser({ ...user, result: { ...user.result, ...editedUser } });
         setEditedUser({
@@ -186,7 +186,7 @@ const Profile = () => {
         <div className="d-flex flex-column align-items-center justify-content-center rounded-circle">
           {user.result.photo ? (
             <img
-              src={`http://localhost:4000/imgs/users/${user.result._id}.png`}
+              src={`${process.env.REACT_APP_API_URL}/imgs/users/${user.result._id}.png`}
               alt={user.result.userName}
               className="rounded-circle"
               width="120px"

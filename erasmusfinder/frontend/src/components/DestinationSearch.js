@@ -11,7 +11,7 @@ const DestinationSearch = ({ onDestinationSelect }) => {
   useEffect(() => {
     const getDestinations = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/dests");
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/dests`);
         setDestinations(res.data);
       } catch (error) {
         console.error("Error:", error);

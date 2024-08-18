@@ -11,7 +11,7 @@ const ForumSearch = ({ onTopicSelect }) => {
   useEffect(() => {
     const getTopics = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/api/forums");
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/forums`);
         setTopics(res.data);
       } catch (error) {
         console.error("Error:", error);

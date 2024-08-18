@@ -48,7 +48,7 @@ const Forum = () => {
         const forumId = window.location.pathname.split("/").pop();
 
         const res = await axios.get(
-          `http://localhost:4000/api/forums/${forumId}`
+          `${process.env.REACT_APP_API_URL}/api/forums/${forumId}`
         );
         const forumData = res.data;
         setForum(forumData);
@@ -58,7 +58,7 @@ const Forum = () => {
         const followersData = await Promise.all(
           followerIds.map(async (followerId) => {
             const userRes = await axios.get(
-              `http://localhost:4000/api/users/${followerId}`
+              `${process.env.REACT_APP_API_URL}/api/users/${followerId}`
             );
             return { [followerId]: userRes.data };
           })
@@ -72,7 +72,7 @@ const Forum = () => {
         const threadsData = await Promise.all(
           threadIds.map(async (threadId) => {
             const threadRes = await axios.get(
-              `http://localhost:4000/api/threads/${threadId}`
+              `${process.env.REACT_APP_API_URL}/api/threads/${threadId}`
             );
             return { [threadId]: threadRes.data };
           })
@@ -107,7 +107,7 @@ const Forum = () => {
         : [...user.result.followedForums, forumId];
 
       await axios.put(
-        `http://localhost:4000/api/users/${userId}`,
+        `${process.env.REACT_APP_API_URL}/api/users/${userId}`,
         { followedForums: updatedUserForums },
         {
           headers: {
@@ -122,7 +122,7 @@ const Forum = () => {
         : [...forum.users, userId];
 
       await axios.put(
-        `http://localhost:4000/api/forums/${forumId}`,
+        `${process.env.REACT_APP_API_URL}/api/forums/${forumId}`,
         {
           n_users: updatedForumUsers.length,
           users: updatedForumUsers,
@@ -196,7 +196,7 @@ const Forum = () => {
       <div className="d-flex justify-content-between align-items-center mb-2">
         <div className="d-flex flex-row">
           <img
-            src={`http://localhost:4000${forum.url}`}
+            src={`${process.env.REACT_APP_API_URL}${forum.url}`}
             alt="Forum"
             className="rounded-circle mt-2"
             style={{ width: "50px", height: "50px", marginRight: "10px" }}

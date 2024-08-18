@@ -29,7 +29,7 @@ const ForumForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/api/forums/upload-forum-photo",
+        `${process.env.REACT_APP_API_URL}/api/forums/upload-forum-photo`,
         formData,
         {
           headers: {

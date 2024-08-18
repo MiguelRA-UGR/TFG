@@ -12,7 +12,7 @@ const ForumPreview = ({ forum }) => {
         <div className="card-header d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
             <img 
-              src={`http://localhost:4000${forum.url}`}
+              src={`${process.env.REACT_APP_API_URL}${forum.url}`}
               alt="Forum" 
               className="rounded-circle mr-3" 
               style={{ width: "40px", height: "40px", marginRight: "10px" }} 

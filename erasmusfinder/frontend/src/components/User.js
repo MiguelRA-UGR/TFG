@@ -110,7 +110,7 @@ const User = () => {
 
       try {
         const response = await axios.get(
-          `http://localhost:4000/api/users/${userId}`
+          `${process.env.REACT_APP_API_URL}/api/users/${userId}`
         );
 
         setUserProf(response.data);
@@ -149,7 +149,7 @@ const User = () => {
           <div className="d-flex flex-column align-items-center justify-content-center rounded-circle position-relative">
             {userProfile.photo && (
               <img
-                src={`http://localhost:4000/imgs/users/${userProfile._id}.png`}
+                src={`${process.env.REACT_APP_API_URL}/imgs/users/${userProfile._id}.png`}
                 alt={userProfile.userName}
                 className="rounded-circle"
                 width="120px"

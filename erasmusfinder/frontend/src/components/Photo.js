@@ -67,7 +67,7 @@ const Photo = ({ photo, delete: deletable }) => {
         >
           <img
             className="card-img-top"
-            src={`http://localhost:4000${photo.url}`}
+            src={`${process.env.REACT_APP_API_URL}${photo.url}`}
             style={{
               objectFit: "cover",
               width: "100%",

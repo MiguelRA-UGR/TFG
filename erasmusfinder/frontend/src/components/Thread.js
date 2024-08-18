@@ -30,12 +30,12 @@ const Thread = ({ thread }) => {
         const repliesData = await Promise.all(
           thread.replies.map(async (replyId) => {
             const replyRes = await axios.get(
-              `http://localhost:4000/api/replies/${replyId}`
+              `${process.env.REACT_APP_API_URL}/api/replies/${replyId}`
             );
             const reply = replyRes.data;
 
             const authorRes = await axios.get(
-              `http://localhost:4000/api/users/${reply.author}`
+              `${process.env.REACT_APP_API_URL}/api/users/${reply.author}`
             );
             reply.author = authorRes.data;
 
@@ -129,7 +129,7 @@ const Thread = ({ thread }) => {
         <p className="card-text">{thread.content}</p>
         {thread.url && (
           <img
-            src={`http://localhost:4000${thread.url}`}
+            src={`${process.env.REACT_APP_API_URL}${thread.url}`}
             alt={thread.title}
             className="img-fluid"
             style={{ minWidth: "100%", height: "auto", marginTop: "10px" }}

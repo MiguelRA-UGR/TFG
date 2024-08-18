@@ -23,7 +23,7 @@ export default function CarouselCard(dest) {
         <img
           className=""
           style={{ height: "100px", objectFit: "cover" }}
-          src={`http://localhost:4000/imgs/frontpages/${cleanString(
+          src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${cleanString(
             dest.name
           )}.png`}
           alt="Destination image"
