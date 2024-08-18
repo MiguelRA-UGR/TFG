@@ -4,7 +4,7 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
-require('./database'); // Asegúrate de que este archivo existe y establece la conexión a la base de datos
+require('./database');
 
 // Crear la aplicación Express
 const app = express();
@@ -47,5 +47,4 @@ async function main() {
     }
 }
 
-// Ejecutar la función principal para iniciar el servidor
 main();
