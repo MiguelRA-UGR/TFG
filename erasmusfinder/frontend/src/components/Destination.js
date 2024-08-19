@@ -425,7 +425,7 @@ const Destination = () => {
       </div>
 
       <img
-        src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${cleanString(
+        src={`${process.env.REACT_APP_API_URL}/public/imgs/frontpages/${cleanString(
           destination.name
         )}.png`}
         style={{ height: "400px", width: "100%", objectFit: "cover" }}
