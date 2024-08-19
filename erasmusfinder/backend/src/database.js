@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 
 //Cadena de conexión - Operador ternario para utilizar MONGODB_URI u otra cadena alternativa en caso de no encontrarla
 const URI = process.env.MONGODB_URI
-            ? process.env.MONGODB_URI   
-            : 'mongodb://localhost/dbtest'
 
 mongoose.connect(URI);
 
