@@ -20,7 +20,7 @@ app.use(cors(
     }
 ));
 app.use(express.json());
-app.use(express.static('public'));
+app.use('/imgs', express.static(path.join(__dirname, 'public/imgs')));
 
 // Rutas existentes
 app.get('/', (req, res) => {
