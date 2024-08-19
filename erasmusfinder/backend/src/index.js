@@ -14,7 +14,7 @@ app.set('port', process.env.PORT || 4000);
 // Middlewares
 app.use(cors(
     {
-        origin: ["https://frontenddeployment-miguelra-ugrs-projects.vercel.app"],
+        origin: [""],
         methods: ["POST", "GET", "PUT", "DELETE"],
         credentials: true
     }
