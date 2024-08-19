@@ -14,7 +14,7 @@ app.set('port', process.env.PORT || 4000);
 // Middlewares
 app.use(cors(
     {
-        origin: [""],
+        origin: ['http://localhost:3000'],
         methods: ["POST", "GET", "PUT", "DELETE"],
         credentials: true
     }
