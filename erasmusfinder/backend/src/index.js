@@ -13,11 +13,11 @@ app.set('port', process.env.PORT || 4000);
 
 // Middlewares
 app.use(cors(
-    // {
-    //     origin: ["https://frontenddeployment-miguelra-ugrs-projects.vercel.app"],
-    //     methods: ["POST", "GET", "PUT", "DELETE"],
-    //     credentials: true
-    // }
+    {
+        origin: ["https://frontenddeployment-miguelra-ugrs-projects.vercel.app"],
+        methods: ["POST", "GET", "PUT", "DELETE"],
+        credentials: true
+    }
 ));
 app.use(express.json());
 app.use(express.static('public'));
