@@ -187,7 +187,7 @@ const DestinationForm = ({ destination = null }) => {
       setSurface("");
       setUniversities([]);
 
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.error("Error al crear o actualizar el destino:", error);
     }

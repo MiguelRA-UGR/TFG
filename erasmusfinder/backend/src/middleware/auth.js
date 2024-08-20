@@ -1,19 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-const auth = async()=>{
+const auth = async (req, res, next) => {
     try {
-        const token = req.headers.Authorization.split("")[1];
-        const customAuth = token.lenght < 500;
+        const token = req.headers.authorization.split(" ")[1];
+        const customAuth = token.length < 500;
 
         let decodedData;
 
-        if(token && isCustomAuth){
+        if (token && customAuth) {
             decodedData = jwt.verify(token, 'test');
 
-            req._id = decodedData?.indexOf;
-        }else{
-            //GoogleAuth
-
+            req.userId = decodedData?.id;
+        } else {
+            // Google OAuth
             decodedData = jwt.decode(token);
 
             req.userId = decodedData?.sub;
@@ -23,6 +22,7 @@ const auth = async()=>{
 
     } catch (error) {
         console.log(error);
+        res.status(401).json({ message: "Authentication failed" });
     }
 }
 

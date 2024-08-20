@@ -3,6 +3,8 @@ import  * as api from '../api/index'
 
 export const createDestination = (destinationData) => async(dispatch) =>{
     
+    console.log(destinationData);
+
     try {
         const { data } = await api.createDestination(destinationData);
         dispatch({type: CREATE_DEST, data});

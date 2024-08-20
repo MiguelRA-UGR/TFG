@@ -16,6 +16,8 @@ destinationCtrlr.getDestinations = async (req, res) => {
 
 // POST
 destinationCtrlr.createDestination = async (req, res) => {
+    console.log(req.body);
+    
     try {
         const { 
             name,

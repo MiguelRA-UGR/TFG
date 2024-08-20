@@ -26,6 +26,16 @@ const Avatar = ({
         }
       } catch (error) {
         console.error("Error fetching user:", error);
+        setUser({
+          userName: "Usuario eliminado",
+          state: 0,
+          photo: null,
+          nationality: "us",
+          deleted: true,
+        });
+        if (userName) {
+          userName("Usuario eliminado");
+        }
       }
     };
 
@@ -82,6 +92,8 @@ const Avatar = ({
     backgroundColor: color,
   };
 
+  const defaultImage = "https://via.placeholder.com/150";
+
   const content = (
     <div className="d-flex flex-column align-items-center">
       <div className="image_outer_container" style={outerStyles}>
@@ -93,7 +105,14 @@ const Avatar = ({
           />
         </div>
         <div className="image_inner_container">
-          {user.photo ? (
+          {user.deleted ? (
+            <img
+              src={defaultImage}
+              alt="Placeholder"
+              className="rounded-circle"
+              style={innerStyles}
+            />
+          ) : user.photo ? (
             <img
               src={`${process.env.REACT_APP_API_URL}/imgs/users/${userId}.png`}
               alt={user.userName}
@@ -113,7 +132,7 @@ const Avatar = ({
     </div>
   );
 
-  if (disabled) {
+  if (disabled || user.deleted) {
     return <div className="text-center">{content}</div>;
   }
 

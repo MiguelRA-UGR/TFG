@@ -285,8 +285,10 @@ const Destination = () => {
 
   if (!destination) {
     return (
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Loading destination...</span>
+      <div className="d-flex justify-content-center" style={{height: "100vh"}}>
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">Loading destination...</span>
+        </div>
       </div>
     );
   }

@@ -29,7 +29,7 @@ const RequestForm = () => {
     try {
       dispatch(createRequest(requestData));
       alert("Your request has been registered in the system");
-      navigate("/");
+      //navigate("/");
     } catch (error) {
       alert(
         "An error occurred while processing your request. Please try again."

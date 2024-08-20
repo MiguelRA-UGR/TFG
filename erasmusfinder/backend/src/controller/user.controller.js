@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const upload = require('../middleware/upload');
 const Review = require('../models/Review');
+const Photo = require('../models/Photo');
 
 //LOGIN
 userCtrlr.logIn = async(req, res) =>{

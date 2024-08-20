@@ -14,7 +14,7 @@ app.set('port', process.env.PORT || 4000);
 // Middlewares
 app.use(cors(
     {
-        origin: ['https://frontenddeployment-miguelra-ugrs-projects.vercel.app'],
+        origin: ['http://localhost:3000'],
         methods: ["POST", "GET", "PUT", "DELETE"],
         credentials: true
     }
@@ -44,13 +44,8 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar el servidor
-async function main() {
-    try {
-        await app.listen(app.get('port'));
-        console.log('Ejecutando servidor en el puerto', app.get('port'));
-    } catch (err) {
-        console.error('Error al iniciar el servidor:', err);
-    }
-}
+const server = app.listen(app.get('port'), () => {
+    console.log('Ejecutando servidor en el puerto', app.get('port'));
+});
 
-main();
+module.exports = { app, server };
