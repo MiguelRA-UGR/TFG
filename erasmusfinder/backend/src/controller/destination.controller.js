@@ -3,6 +3,8 @@ const destinationCtrlr = {};
 const Destination = require('../models/Destination');
 const Photo = require('../models/Photo');
 const Forum = require('../models/Forum');
+const Review = require('../models/Review');
+const Thread = require('../models/Thread');
 
 // GET
 destinationCtrlr.getDestinations = async (req, res) => {
@@ -16,8 +18,6 @@ destinationCtrlr.getDestinations = async (req, res) => {
 
 // POST
 destinationCtrlr.createDestination = async (req, res) => {
-    console.log(req.body);
-    
     try {
         const { 
             name,
@@ -85,6 +85,7 @@ destinationCtrlr.deleteDestination = async (req, res) => {
         // Eliminar las fotos y reseñas asociadas al destino
         await Photo.deleteMany({ destination: req.params.id });
         await Review.deleteMany({ destination: req.params.id });
+        await Thread.deleteMany({ destination: req.params.id });
 
         res.json({ message: "Destino eliminado" });
     } catch (error) {
@@ -95,47 +96,23 @@ destinationCtrlr.deleteDestination = async (req, res) => {
 // PUT
 destinationCtrlr.updateDestination = async (req, res) => {
     try {
-        const { 
-            name,
-            iso, 
-            description, 
-            country,
-            coords,
-            population,
-            cost_life,
-            surface,
-            clima,
-            languages,
-            universities,
-            n_users,
-            n_forus,
-            mean_score,
-            users,
-            forus,
-            reviews 
-        } = req.body;
+        const updates = req.body;
 
-        await Destination.findByIdAndUpdate(req.params.id, { 
-            name,
-            iso,
-            description, 
-            country,
-            coords,
-            population,
-            cost_life,
-            surface,
-            clima,
-            languages,
-            universities,
-            n_users,
-            n_forus,
-            mean_score,
-            users,
-            forus,
-            reviews 
+        const updateFields = {};
+
+        Object.keys(updates).forEach(key => {
+            if (updates[key] !== undefined) {
+                updateFields[key] = updates[key];
+            }
         });
 
-        res.json({ message: "Destino actualizado" });
+        const updatedDestination = await Destination.findByIdAndUpdate(req.params.id, updateFields, { new: true });
+
+        if (!updatedDestination) {
+            return res.status(404).json({ message: "Destino no encontrado" });
+        }
+
+        res.json({ message: "Destino actualizado"});
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

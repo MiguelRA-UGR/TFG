@@ -1,15 +1,12 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const User = require("../src/models/User");
-const { app, server } = require("../src/index");
+const app = require('../src/index');
 const bcrypt = require("bcrypt");
 
 beforeAll(async () => {
   const uri = "mongodb://localhost:27017/testdb";
-  await mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
+  await mongoose.connect(uri);
 });
 
 afterEach(async () => {
@@ -18,7 +15,6 @@ afterEach(async () => {
 
 afterAll(async () => {
   await mongoose.connection.close();
-  server.close();
 });
 
 describe("Tests de Usuario", () => {
@@ -139,9 +135,9 @@ describe("Tests de Usuario", () => {
   });
 
   // Test de romper contacto
-  test('should break a contact between users', async () => {
-    const sender = await User.create({ email: 'sender@example.com', password: 'password', userName: 'sender', followedUsers: [], followingUsers: [] });
-    const receiver = await User.create({ email: 'receiver@example.com', password: 'password', userName: 'receiver', followedUsers: [], followingUsers: [] });
+  test('Romper un contacto entre usuarios', async () => {
+    const sender = await User.create({ email: 'sender@example.com', password: 'password', userName: 'sender'});
+    const receiver = await User.create({ email: 'receiver@example.com', password: 'password', userName: 'receiver'});
 
     sender.followedUsers.push(receiver._id);
     sender.followingUsers.push(receiver._id);
@@ -166,8 +162,8 @@ describe("Tests de Usuario", () => {
 
   // Test de enviar solicitud de contacto
   test('Enviar una solicitud de contacto', async () => {
-    const sender = await User.create({ email: 'sender@example.com', password: 'password', userName: 'sender', pendingContact: [] });
-    const receiver = await User.create({ email: 'receiver@example.com', password: 'password', userName: 'receiver', incomingContactRequest: [] });
+    const sender = await User.create({ email: 'sender@example.com', password: 'password', userName: 'sender'});
+    const receiver = await User.create({ email: 'receiver@example.com', password: 'password', userName: 'receiver'});
 
     const response = await request(app)
       .post('/api/users/sendrequest')
@@ -185,7 +181,7 @@ describe("Tests de Usuario", () => {
 
   // Test de hacer administrador a un usuario
   test('Designar a un usuario como administrador', async () => {
-    const user = await User.create({ email: 'adminuser@example.com', password: 'password', userName: 'adminuser', admin: false });
+    const user = await User.create({ email: 'user@example.com', password: 'password', userName: 'user'});
 
     const response = await request(app)
       .put(`/api/users/makeadmin/${user._id}`)
@@ -198,9 +194,24 @@ describe("Tests de Usuario", () => {
     expect(updatedUser.admin).toBe(true);
   });
 
+   // Test para quitar condición administrador a un usuario
+   test('Quitar a un usuario el puesto de administrador', async () => {
+    const user = await User.create({ email: 'adminuser@example.com', password: 'password', userName: 'adminuser', admin:true});
+
+    const response = await request(app)
+      .put(`/api/users/makeadmin/${user._id}`)
+      .send();
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('message', 'Condición de usuario cambiada correctamente');
+
+    const updatedUser = await User.findById(user._id);
+    expect(updatedUser.admin).toBe(false);
+  });
+
   // Test de advertir usuario
   test('Advertir a un usuario de su mal comportamiento', async () => {
-    const user = await User.create({ email: 'warnuser@example.com', password: 'password', userName: 'warnuser', warningsN: 0 });
+    const user = await User.create({ email: 'user@example.com', password: 'password', userName: 'user'});
 
     const response = await request(app)
       .put(`/api/users/warnuser/${user._id}`)

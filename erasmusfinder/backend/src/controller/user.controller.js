@@ -8,6 +8,8 @@ const path = require('path');
 const upload = require('../middleware/upload');
 const Review = require('../models/Review');
 const Photo = require('../models/Photo');
+const Forum = require('../models/Forum');
+const Destination = require('../models/Destination');
 
 //LOGIN
 userCtrlr.logIn = async(req, res) =>{
@@ -82,21 +84,44 @@ userCtrlr.getUser = async(req, res) =>{
     
 }
 //DELETE
-userCtrlr.deleteUser = async(req, res) => {
+userCtrlr.deleteUser = async (req, res) => {
     try {
-      const userId = req.params.id;
-  
-      await User.findByIdAndDelete(userId);
-  
-      // Eliminar las fotos y reseñas del usuario
-      await Photo.deleteMany({ user: userId });
-      await Review.deleteMany({ author: userId });
-  
-      res.json({ message: "Usuario eliminado" });
+        const userId = req.params.id;
+
+        const userToDelete = await User.findById(userId);
+        if (!userToDelete) return res.status(404).json({ message: "Usuario no encontrado" });
+
+        const usersFollowing = await User.find({ followingUsers: userId });
+        for (const user of usersFollowing) {
+            user.followedUsers.pull(userId);
+            user.followingUsers.pull(userId);
+            await user.save();
+        }
+
+        const destinations = await Destination.find({ users: userId });
+        for (const destination of destinations) {
+            destination.users.pull(userId);
+            destination.n_users -= 1;
+            await destination.save();
+        }
+
+        const forums = await Forum.find({ users: userId });
+        for (const forum of forums) {
+            forum.users.pull(userId);
+            await forum.save();
+        }
+
+        await User.findByIdAndDelete(userId);
+        await Photo.deleteMany({ user: userId });
+        await Review.deleteMany({ user: userId });
+
+        res.json({ message: "Usuario eliminado" });
     } catch (error) {
-      res.status(500).json({ message: "Error al eliminar el usuario" });
+        console.error('Error al eliminar el usuario:', error);
+        res.status(500).json({ message: "Error al eliminar el usuario" });
     }
-  };
+};
+
 
 //PUT
 userCtrlr.updateUser = async(req, res) => {
