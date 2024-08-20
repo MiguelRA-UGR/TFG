@@ -113,7 +113,6 @@ userCtrlr.deleteUser = async (req, res) => {
 
         await User.findByIdAndDelete(userId);
         await Photo.deleteMany({ user: userId });
-        await Review.deleteMany({ user: userId });
 
         res.json({ message: "Usuario eliminado" });
     } catch (error) {

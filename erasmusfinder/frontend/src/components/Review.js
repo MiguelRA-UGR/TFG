@@ -11,6 +11,7 @@ const Review = ({ review, destination, mode }) => {
   const dispatch = useDispatch();
   const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile")));
   const isAdmin = user.result.admin;
+  const [userName, setUserName] = useState("");
 
   const handleDelete = async (event) => {
     try {
@@ -19,6 +20,10 @@ const Review = ({ review, destination, mode }) => {
     } catch (error) {
       console.error("Error al eliminar la reseña: ", error);
     }
+  };
+
+  const userNameCallBack = (name) => {
+    setUserName(name);
   };
 
   //El modo determina si se esta mostrando la review en la pagina del destino o una review suya al propio autor
@@ -49,16 +54,17 @@ const Review = ({ review, destination, mode }) => {
                 </div>
               ) : (
                 <Avatar
-                  userId={review.author._id}
+                  userId={review.user}
                   outerSize="60px"
                   innerSize="50px"
                   flagSize="20px"
+                  userName={userNameCallBack}
                 />
               )}
 
               <div className="ms-3 flex-grow-1">
                 <h5>
-                  {review.anonymous ? "Anonymous" : review.author.userName}
+                  {review.anonymous ? "Anonymous" : userName}
                 </h5>
               </div>
               <div

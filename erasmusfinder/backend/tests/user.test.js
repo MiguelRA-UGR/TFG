@@ -1,7 +1,7 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
 const User = require("../src/models/User");
-const app = require('../src/index');
+const app = require('../src/app');
 const bcrypt = require("bcrypt");
 
 beforeAll(async () => {

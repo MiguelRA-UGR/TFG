@@ -49,7 +49,7 @@ const ReviewForm = ({ user_id, destination_id }) => {
     
     try {
       dispatch(createReview(updatedReviewData));
-      window.location.reload();
+      //window.location.reload();
     } catch (error) {
       console.error("Error al enviar la reseña: ", error);
     }

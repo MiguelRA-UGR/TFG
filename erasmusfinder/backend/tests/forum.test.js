@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../src/index");
+const app = require("../src/app");
 const Forum = require("../src/models/Forum");
 const Destination = require("../src/models/Destination");
 const User = require("../src/models/User");
@@ -48,7 +48,7 @@ afterAll(async () => {
 });
 
 describe("Tests de Foros", () => {
-  //Test de Creación de un foro
+  //Test de creación de un foro
   test("Crear un nuevo foro", async () => {
     const response = await request(app).post("/api/forums").send({
       title: "Test",

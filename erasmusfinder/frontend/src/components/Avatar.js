@@ -24,10 +24,11 @@ const Avatar = ({
         if (userName) {
           userName(response.data.userName);
         }
+
       } catch (error) {
         console.error("Error fetching user:", error);
         setUser({
-          userName: "Usuario eliminado",
+          userName: "Deleted",
           state: 0,
           photo: null,
           nationality: "us",
@@ -76,10 +77,10 @@ const Avatar = ({
   };
 
   const flagStyles = {
-    width: flagSize,
-    height: flagSize,
+    width: user?.deleted ? 0 : flagSize,
+    height: user?.deleted ? 0 : flagSize,
     objectFit: "cover",
-    border: "3px solid white",
+    border: user?.deleted ? "0px" : "3px solid white",
     borderRadius: "50%",
   };
 

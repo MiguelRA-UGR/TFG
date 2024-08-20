@@ -199,6 +199,8 @@ const Destination = () => {
         const followersObject = Object.assign({}, ...followersData);
         setFollowers(followersObject);
 
+        
+
         const reviewsData = await Promise.all(
           reviewsIds.map(async (reviewId) => {
             const reviewRes = await axios.get(
@@ -211,11 +213,8 @@ const Destination = () => {
           })
         );
 
-        const reviewsWithUsers = reviewsData.map((review) => ({
-          ...review,
-          author: followersObject[review.user],
-        }));
-        setReviews(reviewsWithUsers);
+        setReviews(reviewsData);
+        
 
         const photosData = await Promise.all(
           photosIds.map(async (photoId) => {

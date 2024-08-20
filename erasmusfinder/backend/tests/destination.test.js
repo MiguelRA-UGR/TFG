@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('../src/index');
+const app = require('../src/app');
 const Destination = require('../src/models/Destination');
 
 var genericDestination;
@@ -102,7 +102,7 @@ describe("Tests de Destinos", () => {
     await Destination.create({
       ...genericDestination,
       name: "Another Destination",
-      iso: "AD"
+      iso: "ad"
     });
 
     const response = await request(app).get("/api/dests");

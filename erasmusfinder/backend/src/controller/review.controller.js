@@ -28,6 +28,9 @@ reviewCtrlr.getReviewsByDestination = async (req, res) => {
 
 // POST
 reviewCtrlr.createReview = async (req, res) => {
+    
+    console.log(req.body);
+    
     try {
         const { destination, comment, score, user, anonymous } = req.body;
 
