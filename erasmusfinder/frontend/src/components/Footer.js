@@ -1,11 +1,12 @@
 import React from "react";
+import { stateColors } from "./utils";
 
 const Footer = () => {
   return (
     <div
       className="mt-3"
       style={{
-        color: "#83877a",
+        color: stateColors.zero,
         fontSize: "15px",
         borderTop: "1px solid #e7e7e7",
         padding: "10px",

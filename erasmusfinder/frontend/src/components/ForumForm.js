@@ -3,6 +3,7 @@ import PhotoCrop from "./PhotoCrop";
 import { useDispatch } from "react-redux";
 import { createForum } from "../actions/forum.js";
 import axios from "axios";
+import { stateColors } from "./utils.js";
 
 const initialState = {
   title: "",
@@ -92,8 +93,12 @@ const ForumForm = () => {
       <form className="form-control text-center" onSubmit={handleCreate}>
         <h4>Create a new forum</h4>
         <div className="row">
-          <div className="col-md-6 mb-3 d-flex justify-content-center">
+          <div className="col-md-6 mb-3 d-flex flex-column justify-content-center">
+            <label htmlFor="photo-crop" className="form-label">
+              Upload and crop your forum photo
+            </label>
             <PhotoCrop
+              id="photo-crop"
               image={image}
               onImageChange={handleImageChange}
               onCropData={handleCropData}
@@ -112,7 +117,6 @@ const ForumForm = () => {
                 id="title"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                required
               />
             </div>
 
@@ -133,7 +137,7 @@ const ForumForm = () => {
               type="submit"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning"

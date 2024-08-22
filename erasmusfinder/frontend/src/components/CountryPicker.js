@@ -45,6 +45,9 @@ const CountryPicker = ({ onCountrySelect }) => {
 
   return (
     <div>
+       <label htmlFor="country-selector" className="visually-hidden">
+        Select a country
+      </label>
       <select
         className="form-select"
         id="country-selector"

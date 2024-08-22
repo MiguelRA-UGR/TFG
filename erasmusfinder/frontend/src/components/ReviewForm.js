@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from "react-redux";
 import { createReview } from "../actions/review.js";
 import PropTypes from "prop-types";
-import { ratingColors } from './utils';
+import { ratingColors, stateColors } from './utils';
 
 const initialState = {
   comment: "",
@@ -65,7 +65,7 @@ const ReviewForm = ({ user_id, destination_id }) => {
         <label htmlFor="comment" className="form-label">Comment</label>
         <textarea
           className="form-control"
-          name="comment"
+          id="comment"
           value={comment}
           maxLength={300}
           onChange={handleCommentChange}
@@ -119,7 +119,7 @@ const ReviewForm = ({ user_id, destination_id }) => {
         type="submit"
         style={{
           fontWeight: "bold",
-          backgroundColor: "#f5973d",
+          backgroundColor: stateColors.one,
           color: "#ffffff",
         }}
         className="btn btn-warning"

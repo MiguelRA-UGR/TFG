@@ -163,6 +163,7 @@ const Thread = ({ thread }) => {
               className="btn"
               style={{ color: "white", backgroundColor: stateColors.three }}
               type="button"
+              aria-label="Send Reply"
               onClick={handleReplySubmit}
             >
               <svg

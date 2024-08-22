@@ -353,6 +353,7 @@ const Forum = () => {
                       <button
                         type="button"
                         className="btn btn-warning"
+                        aria-label="Create new thread"
                         onClick={toggleThreadForm}
                         style={{
                           borderRadius: "50%",

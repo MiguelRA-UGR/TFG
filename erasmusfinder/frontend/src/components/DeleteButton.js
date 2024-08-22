@@ -13,6 +13,7 @@ const DeleteButton = ({ handleDelete }) => {
         padding: "0",
       }}
       onClick={handleDelete}
+      aria-label="Delete" 
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

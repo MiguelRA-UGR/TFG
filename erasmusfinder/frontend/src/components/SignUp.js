@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signup, login } from "../actions/auth";
 import { useDispatch } from "react-redux";
+import { stateColors } from "./utils";
 
 const initialState = {
   userName: "",
@@ -232,7 +233,7 @@ export const SignUp = () => {
             style={{
               fontSize: "20px",
               fontWeight: "bold",
-              backgroundColor: "#f5973d",
+              backgroundColor: stateColors.one,
               color: "#ffffff",
             }}
           >
@@ -248,7 +249,7 @@ export const SignUp = () => {
               : "You don't have an account yet?"}{" "}
             <a
               href=""
-              style={{ color: "#f5973d", fontWeight: "bold" }}
+              style={{ color: stateColors.one, fontWeight: "bold" }}
               onClick={toggleSignUp}
             >
               Click here

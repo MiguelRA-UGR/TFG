@@ -26,10 +26,10 @@ export const getColorForScore = (score) => {
   //Colores para los estados
 
   export const stateColors = {
-    zero:"#969696",
-    one:"#f5973d",
-    two:"#6691c3",
-    three:"#61bdb8"
+    zero:"#757575",
+    one:"#C74F00",
+    two:"#4D74A0",
+    three:"#36817C"
 };
 
 export const defaultUsers = [
@@ -38,7 +38,7 @@ export const defaultUsers = [
     name: "Martina",
     country: "Italy",
     status: "Searching destination",
-    status_color: "#f5973d",
+    status_color: stateColors.one,
     avatar: "martina",
     flag: "it",
   },
@@ -47,7 +47,7 @@ export const defaultUsers = [
     name: "Agnes",
     country: "Sweden",
     status: "Coming soon to Madrid",
-    status_color: "#6691c3",
+    status_color: stateColors.two,
     avatar: "agnes",
     flag: "se",
   },
@@ -56,7 +56,7 @@ export const defaultUsers = [
     name: "Eric",
     country: "France",
     status: "Living in Vienna",
-    status_color: "#61bdb8",
+    status_color: stateColors.three,
     avatar: "eric",
     flag: "fr",
   },

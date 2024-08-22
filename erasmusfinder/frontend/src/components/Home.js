@@ -387,7 +387,7 @@ const Home = () => {
                           <p className="card-text mb-0">{user.country}</p>
                         </div>
                         <div
-                          className="btn btn-link mt-2 form-control"
+                          className="mt-2 form-control"
                           style={{
                             fontWeight: "bold",
                             fontSize: `${18 - user.status.length * 0.3}px`,
@@ -476,7 +476,7 @@ const Home = () => {
                   type="submit"
                   style={{
                     fontWeight: "bold",
-                    backgroundColor: "#f5973d",
+                    backgroundColor: stateColors.one,
                     color: "#ffffff",
                   }}
                   className="btn btn-warning"

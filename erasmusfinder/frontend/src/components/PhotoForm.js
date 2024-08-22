@@ -3,7 +3,7 @@ import PhotoCrop from "./PhotoCrop";
 import { useDispatch } from "react-redux";
 import { uploadPhoto } from "../actions/photo.js";
 import axios from 'axios';
-import { extractLatLngFromGoogleMaps } from "./utils.js";
+import { extractLatLngFromGoogleMaps, stateColors } from "./utils.js";
 
 const initialState = {
   comment: "",
@@ -164,7 +164,7 @@ const PhotoForm = () => {
               type="submit"
               style={{
                 fontWeight: "bold",
-                backgroundColor: "#f5973d",
+                backgroundColor: stateColors.one,
                 color: "#ffffff",
               }}
               className="btn btn-warning"

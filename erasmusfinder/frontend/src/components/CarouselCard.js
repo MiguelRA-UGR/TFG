@@ -10,9 +10,11 @@ function formatedName(name) {
 
 export default function CarouselCard(dest) {
   return (
-    <Link to={`/Destination/${dest.id}`} style={{ textDecoration: "none" }}>
+    <div aria-hidden="false">
+      <Link to={`/Destination/${dest.id}`} style={{ textDecoration: "none" }}>
       <div
         className="card text-center"
+        
         id="custom_card"
         style={{
           marginLeft: "5px",
@@ -33,5 +35,7 @@ export default function CarouselCard(dest) {
         </h2>
       </div>
     </Link>
+    </div>
+    
   );
 }
