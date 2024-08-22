@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { defaultUsers, stateColors } from "./utils.js";
+import { cleanString, defaultUsers, stateColors } from "./utils.js";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
@@ -116,7 +116,10 @@ const Home = () => {
           throw new Error("Error al obtener los destinos");
         }
         const data = await res.json();
-        setDestinations(data);
+
+        var destinationsRandom = data.sort(() => Math.random() - 0.5);
+
+        setDestinations(destinationsRandom);
 
         filterFollowedDestinations(data);
       } catch (error) {
@@ -287,7 +290,7 @@ const Home = () => {
                     >
                       <Link to={`/Destination/${destination._id}`}>
                         <img
-                          src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${formatedName(
+                          src={`${process.env.REACT_APP_API_URL}/imgs/frontpages/${cleanString(
                             destination.name
                           )}.png`}
                           style={{ maxHeight: "700px", objectFit: "cover" }}
