@@ -12,8 +12,9 @@ app.set('port', process.env.PORT || 4000);
 // Middlewares
 app.use(cors(
     {
-    origin: "*",
-    methods: ["POST", "GET", "PUT", "DELETE"]
+    origin: "https://erasmusfinder.vercel.app",
+    methods: ["POST", "GET", "PUT", "DELETE"],
+    credentials: true
 }));
 
 
