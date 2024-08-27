@@ -14,12 +14,10 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
 
 app.use(cors(
     {
-    origin: allowedOrigins,
-    methods: ["POST", "GET", "PUT", "DELETE"],
-    credentials: true
+    origin: "*",
+    methods: ["POST", "GET", "PUT", "DELETE"]
 }));
 
-app.options("*", cors())
 
 app.use(express.json());
 app.use(express.static('public'));
