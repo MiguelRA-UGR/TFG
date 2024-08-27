@@ -34,15 +34,19 @@ app.use('/api/threads', require('./routes/threads'));
 app.use('/api/replies', require('./routes/replies'));
 app.use('/api/notifications', require('./routes/notifications'));
 
-// Middleware para manejar errores
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).send('Algo no ha ido bien!');
 });
 
 // Iniciar el servidor
-const server = app.listen(app.get('port'), () => {
-    console.log('Ejecutando servidor en el puerto', app.get('port'));
-});
+async function main() {
+    try {
+        await app.listen(app.get('port'));
+        console.log('Ejecutando servidor en el puerto', app.get('port'));
+    } catch (err) {
+        console.error('Error al iniciar el servidor:', err);
+    }
+}
 
-module.exports = { app };
+main();
