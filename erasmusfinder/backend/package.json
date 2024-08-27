@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --runInBand",
     "dev": "nodemon node ./src/index.js"
   },
   "keywords": [],
@@ -21,13 +20,7 @@
     "path": "^0.12.7"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "nodemon": "^3.1.0",
-    "supertest": "^7.0.0"
-  },
-  "jest": {
-  "testEnvironment": "node",
-  "verbose": true
-}
+    "nodemon": "^3.1.0"
+  }
   
 }
